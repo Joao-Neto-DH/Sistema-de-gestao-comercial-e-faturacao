@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:sistema_de_gestao_comercial/login/input_text_widget.dart';
+import 'package:sistema_de_gestao_comercial/login/login_widget.dart';
+import 'package:sistema_de_gestao_comercial/login/signup_widget.dart';
 
 enum OptionLogin { administracao, fatutracao }
 
@@ -18,33 +21,12 @@ class _SignInState extends State<SignIn> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        TextFormField(
-          style: const TextStyle(fontSize: 14),
-          // decoration: const InputDecoration(hintText: "Email"),
-          keyboardType: TextInputType.emailAddress,
-          textInputAction: TextInputAction.next,
-          // textAlign: TextAlign.center,
-          decoration: const InputDecoration(
-              labelText: "EMAIL",
-              contentPadding: EdgeInsets.all(10),
-              // floatingLabelAlignment: FloatingLabelAlignment.center,
-              border: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(90)))),
-        ),
+        InputText(
+            label: "EMAIL", validator: (email) => null, obscureText: false),
         widget.padding,
         // const Text("Senha"),
-        TextFormField(
-          style: const TextStyle(fontSize: 14),
-          validator: (va) {
-            return "false";
-          },
-          decoration: const InputDecoration(
-              labelText: "SENHA",
-              border: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(90)))),
-          // textAlign: TextAlign.center,
-          obscureText: true,
-        ),
+        InputText(
+            label: "SENHA", validator: (senha) => null, obscureText: true),
         const Padding(
           padding: EdgeInsets.symmetric(vertical: 4),
         ),
@@ -80,15 +62,16 @@ class _SignInState extends State<SignIn> {
         ),
         widget.padding,
         Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-          ElevatedButton(
-              onPressed: () {
-                Form.of(context)!.validate() ? print("Simmm") : print("Naooo");
-              },
-              child: const Text("Entrar")),
+          ElevatedButton(onPressed: () {}, child: const Text("Entrar")),
           const Padding(padding: EdgeInsets.symmetric(horizontal: 16)),
           ElevatedButton(
-              onPressed: () {},
-              child: const Text("Cadastrar"),
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => Login(
+                        formBody: SignUp(padding: widget.padding),
+                        padding: widget.padding)));
+              },
+              child: const Text("Criar Conta"),
               style: ButtonStyle(
                   backgroundColor: MaterialStateColor.resolveWith(
                       (states) => Colors.blueGrey))),

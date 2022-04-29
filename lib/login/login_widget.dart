@@ -18,7 +18,8 @@ class Login extends StatelessWidget {
             return SingleChildScrollView(
                 child: ConstrainedBox(
               constraints: BoxConstraints(
-                  minHeight: viewport.maxHeight, minWidth: viewport.maxWidth),
+                minHeight: viewport.maxHeight,
+              ),
               child: Padding(
                 padding: const EdgeInsets.all(32),
                 child: Form(
