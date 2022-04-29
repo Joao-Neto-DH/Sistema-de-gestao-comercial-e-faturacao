@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sistema_de_gestao_comercial/login/input_text_widget.dart';
 import 'package:sistema_de_gestao_comercial/login/login_widget.dart';
+import 'package:sistema_de_gestao_comercial/login/recover_password_widget.dart';
 import 'package:sistema_de_gestao_comercial/login/signup_widget.dart';
 
 enum OptionLogin { administracao, fatutracao }
@@ -37,7 +38,12 @@ class _SignInState extends State<SignIn> {
                 style: TextStyle(
                   color: Colors.blueGrey,
                 )),
-            onTap: () {},
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => Login(
+                      formBody: RecoverPassword(padding: widget.padding),
+                      padding: widget.padding)));
+            },
           ),
         ),
         RadioListTile<OptionLogin>(
