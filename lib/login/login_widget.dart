@@ -9,24 +9,24 @@ class Login extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Container(
-          decoration: const BoxDecoration(
-              image: DecorationImage(
-                  image: AssetImage("img/background.png"),
-                  alignment: Alignment.topCenter)),
-          child: LayoutBuilder(builder: (context, viewport) {
-            return SingleChildScrollView(
-                child: ConstrainedBox(
-              constraints: BoxConstraints(
-                minHeight: viewport.maxHeight,
-              ),
+        body: Stack(
+          children: [
+            Container(
+              decoration: const BoxDecoration(
+                  image: DecorationImage(
+                      fit: BoxFit.fitWidth,
+                      image: AssetImage("assets/img/background.png"),
+                      alignment: Alignment.topCenter)),
+            ),
+            SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.all(32),
                 child: Form(
                   child: Column(
                     children: [
                       Image.asset(
-                        "img/logo.png",
+                        "assets/img/logo.png",
+                        width: 250,
                       ),
                       padding,
                       const Text(
@@ -41,8 +41,8 @@ class Login extends StatelessWidget {
                   ),
                 ),
               ),
-            ));
-          }),
+            )
+          ],
         ),
         bottomNavigationBar: const Padding(
           padding: EdgeInsets.only(bottom: 10),

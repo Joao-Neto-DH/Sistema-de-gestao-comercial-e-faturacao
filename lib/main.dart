@@ -14,6 +14,7 @@ class GestaoComercial extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: "Sistema de gestão comercial",
       theme: ThemeData(
         primarySwatch: Colors.blue,

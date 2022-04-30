@@ -25,9 +25,7 @@ class RecoverPassword extends StatelessWidget {
                   Navigator.pop(context);
                 },
                 child: const Text("Voltar"),
-                style: ButtonStyle(
-                    backgroundColor: MaterialStateColor.resolveWith(
-                        (states) => Colors.blueGrey)))
+                style: TextButton.styleFrom(backgroundColor: Colors.blueGrey))
           ],
         )
       ],

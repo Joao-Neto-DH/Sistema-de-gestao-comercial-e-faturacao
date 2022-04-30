@@ -78,9 +78,7 @@ class _SignInState extends State<SignIn> {
                         padding: widget.padding)));
               },
               child: const Text("Criar Conta"),
-              style: ButtonStyle(
-                  backgroundColor: MaterialStateColor.resolveWith(
-                      (states) => Colors.blueGrey))),
+              style: TextButton.styleFrom(backgroundColor: Colors.blueGrey)),
         ]),
       ],
     );
