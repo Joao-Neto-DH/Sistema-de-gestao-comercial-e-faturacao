@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:sistema_de_gestao_comercial/login/login_widget.dart';
-import 'package:sistema_de_gestao_comercial/login/signup_widget.dart';
 
 import 'login/signin_widget.dart';
 

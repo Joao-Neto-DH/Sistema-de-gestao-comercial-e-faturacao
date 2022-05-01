@@ -3,6 +3,7 @@ import 'package:sistema_de_gestao_comercial/login/input_text_widget.dart';
 import 'package:sistema_de_gestao_comercial/login/login_widget.dart';
 import 'package:sistema_de_gestao_comercial/login/recover_password_widget.dart';
 import 'package:sistema_de_gestao_comercial/login/signup_widget.dart';
+import 'package:sistema_de_gestao_comercial/screens/main_screen_widget.dart';
 
 enum OptionLogin { administracao, fatutracao }
 
@@ -68,7 +69,16 @@ class _SignInState extends State<SignIn> {
         ),
         widget.padding,
         Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-          ElevatedButton(onPressed: () {}, child: const Text("Entrar")),
+          ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const MainScreen(
+                              title: "Definiçoes",
+                            )));
+              },
+              child: const Text("Entrar")),
           const Padding(padding: EdgeInsets.symmetric(horizontal: 16)),
           ElevatedButton(
               onPressed: () {
