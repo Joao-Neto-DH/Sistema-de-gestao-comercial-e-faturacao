@@ -5,6 +5,8 @@ import 'package:sistema_de_gestao_comercial/login/recover_password_widget.dart';
 import 'package:sistema_de_gestao_comercial/login/signup_widget.dart';
 import 'package:sistema_de_gestao_comercial/screens/main_screen_widget.dart';
 
+import '../screens/empresa/empresa_screen.dart';
+
 enum OptionLogin { administracao, fatutracao }
 
 // ignore: must_be_immutable
@@ -76,6 +78,7 @@ class _SignInState extends State<SignIn> {
                     MaterialPageRoute(
                         builder: (context) => const MainScreen(
                               title: "Definiçoes",
+                              body: EmpresaScreen(),
                             )));
               },
               child: const Text("Entrar")),
