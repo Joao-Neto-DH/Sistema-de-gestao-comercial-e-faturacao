@@ -77,7 +77,7 @@ class _SignInState extends State<SignIn> {
                     context,
                     MaterialPageRoute(
                         builder: (context) => const MainScreen(
-                              title: "Definiçoes",
+                              title: "Empresa",
                               body: EmpresaScreen(),
                             )));
               },

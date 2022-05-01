@@ -19,6 +19,7 @@ class _SideBarState extends State<SideBar> {
   @override
   Widget build(BuildContext context) {
     const ListTileStyle menuStyle = ListTileStyle.list;
+    const Color bgTileColor = Colors.black12;
 
     return Drawer(
       child: ListView(
@@ -47,6 +48,7 @@ class _SideBarState extends State<SideBar> {
                   ],
                 )),
             ListTile(
+              selectedTileColor: bgTileColor,
               style: menuStyle,
               selected: widget.title.toLowerCase() == "empresa",
               title: const Text(
@@ -57,6 +59,7 @@ class _SideBarState extends State<SideBar> {
               },
             ),
             ListTile(
+              selectedTileColor: bgTileColor,
               style: menuStyle,
               selected: widget.title.toLowerCase() == "produtos/serviços",
               title: const Text(
@@ -67,6 +70,7 @@ class _SideBarState extends State<SideBar> {
               },
             ),
             ListTile(
+              selectedTileColor: bgTileColor,
               style: menuStyle,
               selected: widget.title.toLowerCase() == "clientes",
               title: const Text(
@@ -77,6 +81,7 @@ class _SideBarState extends State<SideBar> {
               },
             ),
             ListTile(
+              selectedTileColor: bgTileColor,
               style: menuStyle,
               selected: widget.title.toLowerCase() == "stock",
               title: const Text(
@@ -87,6 +92,7 @@ class _SideBarState extends State<SideBar> {
               },
             ),
             ListTile(
+              selectedTileColor: bgTileColor,
               style: menuStyle,
               selected: widget.title.toLowerCase() == "relatorios",
               title: const Text(
@@ -97,18 +103,18 @@ class _SideBarState extends State<SideBar> {
               },
             ),
             ListTile(
+              selectedTileColor: bgTileColor,
               style: menuStyle,
               selected: widget.title.toLowerCase() == "faturaçao",
               title: const Text(
                 "Faturaçao",
               ),
               onTap: () {
-                () {
-                  _selectMenu("faturaçao");
-                };
+                _selectMenu("faturaçao");
               },
             ),
             ListTile(
+              selectedTileColor: bgTileColor,
               style: menuStyle,
               selected: widget.title.toLowerCase() == "definiçoes",
               title: const Text(
