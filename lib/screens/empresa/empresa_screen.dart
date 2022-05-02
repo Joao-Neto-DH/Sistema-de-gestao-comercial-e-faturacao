@@ -106,24 +106,6 @@ class EmpresaScreen extends StatelessWidget {
           ),
           spaceFields,
           const Text(
-            "Coordenada Bancaria #2",
-          ),
-          spaceLabelField,
-          TextFormField(
-            decoration: const InputDecoration(
-                hintText: "Coordenada Bancaria", border: OutlineInputBorder()),
-          ),
-          spaceFields,
-          const Text(
-            "Coordenada Bancaria #3",
-          ),
-          spaceLabelField,
-          TextFormField(
-            decoration: const InputDecoration(
-                hintText: "Coordenada Bancaria", border: OutlineInputBorder()),
-          ),
-          spaceFields,
-          const Text(
             "IBAN #1",
           ),
           spaceLabelField,
