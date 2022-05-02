@@ -97,15 +97,6 @@ class EmpresaScreen extends StatelessWidget {
           const HorizontalDividerWithLabel(label: "Informaçoes Bancarias"),
           spaceFields,
           const Text(
-            "Coordenada Bancaria #1",
-          ),
-          spaceLabelField,
-          TextFormField(
-            decoration: const InputDecoration(
-                hintText: "Coordenada Bancaria", border: OutlineInputBorder()),
-          ),
-          spaceFields,
-          const Text(
             "IBAN #1",
           ),
           spaceLabelField,
