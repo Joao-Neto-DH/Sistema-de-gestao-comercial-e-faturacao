@@ -4,6 +4,7 @@ import 'package:sistema_de_gestao_comercial/login/login_widget.dart';
 import 'package:sistema_de_gestao_comercial/login/recover_password_widget.dart';
 import 'package:sistema_de_gestao_comercial/login/signup_widget.dart';
 import 'package:sistema_de_gestao_comercial/screens/main_screen_widget.dart';
+import 'package:sistema_de_gestao_comercial/util.dart';
 
 import '../screens/empresa/empresa_screen.dart';
 
@@ -14,9 +15,8 @@ enum OptionLogin { administracao, fatutracao }
 // ignore: must_be_immutable
 class SignIn extends StatefulWidget {
   /// padding - Espaço entre os  itens do formulario
-  SignIn({Key? key, required this.padding}) : super(key: key);
+  SignIn({Key? key}) : super(key: key);
 
-  final Padding padding;
   OptionLogin _optionLogin = OptionLogin.administracao;
 
   @override
@@ -30,7 +30,7 @@ class _SignInState extends State<SignIn> {
       children: [
         InputText(
             label: "EMAIL", validator: (email) => null, obscureText: false),
-        widget.padding,
+        AppUtil.defaultPadding,
         // const Text("Senha"),
         InputText(
             label: "SENHA", validator: (senha) => null, obscureText: true),
@@ -45,10 +45,7 @@ class _SignInState extends State<SignIn> {
                   color: Colors.blueGrey,
                 )),
             onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => Login(
-                      formBody: RecoverPassword(padding: widget.padding),
-                      padding: widget.padding)));
+              Navigator.pushNamed(context, "/recover-password");
             },
           ),
         ),
@@ -72,7 +69,7 @@ class _SignInState extends State<SignIn> {
           title: const Text("Faturação"),
           contentPadding: EdgeInsets.zero,
         ),
-        widget.padding,
+        AppUtil.defaultPadding,
         Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           ElevatedButton(
               onPressed: () {
@@ -88,10 +85,7 @@ class _SignInState extends State<SignIn> {
           const Padding(padding: EdgeInsets.symmetric(horizontal: 16)),
           ElevatedButton(
               onPressed: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => Login(
-                        formBody: SignUp(padding: widget.padding),
-                        padding: widget.padding)));
+                Navigator.pushNamed(context, "/signup");
               },
               child: const Text("Criar Conta"),
               style: TextButton.styleFrom(backgroundColor: Colors.blueGrey)),

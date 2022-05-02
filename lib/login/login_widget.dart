@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:sistema_de_gestao_comercial/util.dart';
 
 /// Tela comum para os formularios de login
 /// ao sistema
 class Login extends StatelessWidget {
   /// formBody - Corpo do formulario
   /// padding - Espaço entre os itens do formulario
-  const Login({Key? key, required this.formBody, required this.padding})
-      : super(key: key);
+  const Login({Key? key, required this.formBody}) : super(key: key);
   final Widget formBody;
-  final Padding padding;
 
   @override
   Widget build(BuildContext context) {
@@ -32,14 +31,14 @@ class Login extends StatelessWidget {
                         "assets/img/logo.png",
                         width: 250,
                       ),
-                      padding,
+                      AppUtil.defaultPadding,
                       const Text(
                         "SISTEMA DE GESTAO COMERCIAL E FATURAÇAO",
                         textAlign: TextAlign.center,
                         style: TextStyle(
                             fontSize: 16, fontWeight: FontWeight.bold),
                       ),
-                      padding,
+                      AppUtil.defaultPadding,
                       formBody
                     ],
                   ),

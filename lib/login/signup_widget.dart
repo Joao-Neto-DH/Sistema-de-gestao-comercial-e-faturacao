@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:sistema_de_gestao_comercial/login/input_text_widget.dart';
+import 'package:sistema_de_gestao_comercial/util.dart';
 
 /// Tela de formulario de cadastro
 class SignUp extends StatelessWidget {
   /// padding - espaço entre os itens do formulario
-  const SignUp({Key? key, required this.padding}) : super(key: key);
-  final Padding padding;
+  const SignUp({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         InputText(
             label: "EMAIL", validator: (email) => null, obscureText: false),
-        padding,
+        AppUtil.defaultPadding,
         InputText(label: "NOME", validator: (nome) => null, obscureText: false),
-        padding,
+        AppUtil.defaultPadding,
         InputText(
             label: "SENHA", validator: (senha) => null, obscureText: true),
-        padding,
+        AppUtil.defaultPadding,
         InputText(
             label: "CONFIRMAR SENHA",
             validator: (senha) => null,
@@ -35,7 +35,7 @@ class SignUp extends StatelessWidget {
             onTap: () => Navigator.pop(context),
           ),
         ),
-        padding,
+        AppUtil.defaultPadding,
         ElevatedButton(onPressed: () {}, child: const Text("Cadastrar"))
       ],
     );

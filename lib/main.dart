@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:sistema_de_gestao_comercial/login/login_widget.dart';
+import 'package:sistema_de_gestao_comercial/login/signup_widget.dart';
 
+import 'login/recover_password_widget.dart';
 import 'login/signin_widget.dart';
 
 void main() {
@@ -18,31 +20,35 @@ class GestaoComercial extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const GestaoLogin(),
+      initialRoute: "/signin",
+      routes: {
+        "/signin": (context) => Login(formBody: SignIn()),
+        "/signup": (context) => const Login(formBody: SignUp()),
+        "/recover-password": (context) =>
+            const Login(formBody: RecoverPassword())
+      },
     );
   }
 }
 
-class GestaoLogin extends StatelessWidget {
-  // final GlobalKey<FormState> _formKey = GlobalKey();
+// class GestaoLogin extends StatelessWidget {
+//   // final GlobalKey<FormState> _formKey = GlobalKey();
 
-  const GestaoLogin({Key? key}) : super(key: key);
-  final Padding _defaultPadding =
-      const Padding(padding: EdgeInsets.symmetric(vertical: 10));
+//   const GestaoLogin({Key? key}) : super(key: key);
 
-  @override
-  Widget build(BuildContext context) {
-    return Login(
-      formBody: SignIn(
-        padding: _defaultPadding,
-      ),
-      padding: _defaultPadding,
-    );
-  }
+//   @override
+//   Widget build(BuildContext context) {
+//     return Login(
+//       formBody: SignIn(
+//         padding: _defaultPadding,
+//       ),
+//       padding: _defaultPadding,
+//     );
+//   }
 
   // void _optionLoginChange(OptionLogin value) {
   //   setState(() {
   //     _optionLogin = value;
   //   });
   // }
-}
+// }
