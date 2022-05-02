@@ -184,10 +184,9 @@ class EmpresaScreen extends StatelessWidget {
     ));
   }
 
-  void _pickImage() {
+  void _pickImage() async {
     final picker = ImagePicker();
-    XFile? file;
-    picker.pickImage(source: ImageSource.gallery).then((value) => file = value);
+    XFile? file = await picker.pickImage(source: ImageSource.gallery);
     print("cara isso foi eu");
     print(file!.mimeType ?? "vazio");
   }
