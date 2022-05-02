@@ -32,6 +32,16 @@ class _EmpresaScreenState extends State<EmpresaScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          spaceFields,
+          const Text(
+            "CADASTRO DE EMPRESA",
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+          spaceLabelField,
+          const Text("Os campos marcados com (*) sao obrigatorios"),
+          const Divider(),
+          spaceFields,
           const Text(
             "Nome da Empresa",
           ),
