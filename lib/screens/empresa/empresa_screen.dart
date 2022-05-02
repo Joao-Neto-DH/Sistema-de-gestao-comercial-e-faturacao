@@ -1,9 +1,21 @@
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
-class EmpresaScreen extends StatelessWidget {
+import 'package:flutter/material.dart';
+import 'package:sistema_de_gestao_comercial/screens/empresa/load_image.dart';
+
+class EmpresaScreen extends StatefulWidget {
   const EmpresaScreen({Key? key}) : super(key: key);
+
+  @override
+  State<EmpresaScreen> createState() => _EmpresaScreenState();
+}
+
+class _EmpresaScreenState extends State<EmpresaScreen> {
+  String _logoImagePath = "";
+  String _backgroundImagePath = "";
+
+  final LoadImage logoImage = LoadImage();
+  final LoadImage backgroundImage = LoadImage();
 
   @override
   Widget build(BuildContext context) {
@@ -13,6 +25,7 @@ class EmpresaScreen extends StatelessWidget {
     const spaceFields = SizedBox(
       height: 24,
     );
+
     return Form(
         child: SingleChildScrollView(
       padding: const EdgeInsets.all(16),
@@ -151,17 +164,34 @@ class EmpresaScreen extends StatelessWidget {
           ),
           spaceFields,
           ElevatedButton(
-              onPressed: _pickImage, child: const Text("Abrir imagem"))
+              onPressed: () {
+                logoImage.pickImage().then((value) => setState(() {
+                      _logoImagePath = value;
+                    }));
+              },
+              child: const Text("Carregar Logo")),
+          _showLogoOrText(_logoImagePath),
+          spaceFields,
+          ElevatedButton(
+              onPressed: () {
+                logoImage.pickImage().then((value) => setState(() {
+                      _backgroundImagePath = value;
+                    }));
+              },
+              child: const Text("Carregar Fundo das Fasturas")),
+          _showLogoOrText(_backgroundImagePath),
+          spaceFields,
+          ElevatedButton(
+              onPressed: () {}, child: const Text("Cadastrar Empresa"))
         ],
       ),
     ));
   }
 
-  void _pickImage() async {
-    final picker = ImagePicker();
-    XFile? file = await picker.pickImage(source: ImageSource.gallery);
-    print("cara isso foi eu");
-    print(file!.mimeType ?? "vazio");
+  Widget _showLogoOrText(String path) {
+    return path != ""
+        ? Image.file(File(path))
+        : const Text("Selecionar imagem");
   }
 }
 
