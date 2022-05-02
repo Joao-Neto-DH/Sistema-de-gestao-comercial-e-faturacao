@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:sistema_de_gestao_comercial/screens/side_bar_widget.dart';
 
+/// Tela comum com o Menu Lateral
 class MainScreen extends StatelessWidget {
+  /// title - Titulo da barra de navegaçao
+  /// body - Conteudo do tela
   const MainScreen({Key? key, required this.title, required this.body})
       : super(key: key);
   final String title;

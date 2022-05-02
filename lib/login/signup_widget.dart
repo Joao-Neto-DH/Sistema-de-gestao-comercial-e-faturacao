@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:sistema_de_gestao_comercial/login/input_text_widget.dart';
 
+/// Tela de formulario de cadastro
 class SignUp extends StatelessWidget {
+  /// padding - espaço entre os itens do formulario
   const SignUp({Key? key, required this.padding}) : super(key: key);
   final Padding padding;
   @override

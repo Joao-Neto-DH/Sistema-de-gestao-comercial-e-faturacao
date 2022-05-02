@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+/// Menu de barra lateral
+/// Drawer
 // ignore: must_be_immutable
 class SideBar extends StatefulWidget {
   SideBar({Key? key, required this.title}) : super(key: key);

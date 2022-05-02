@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 
+/// Wrapper para TextFormField
 class InputText extends StatelessWidget {
+  /// label - Nome do campo
+  /// validator - Callback function
+  /// obscureText - Se e um campo de password
   const InputText({
     Key? key,
     required this.label,

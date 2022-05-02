@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 
+/// Tela comum para os formularios de login
+/// ao sistema
 class Login extends StatelessWidget {
+  /// formBody - Corpo do formulario
+  /// padding - Espaço entre os itens do formulario
   const Login({Key? key, required this.formBody, required this.padding})
       : super(key: key);
   final Widget formBody;

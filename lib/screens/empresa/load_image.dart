@@ -1,5 +1,6 @@
 import 'package:image_picker/image_picker.dart';
 
+/// Carrega a imagem da memoria do telefone
 class LoadImage {
   /// Carrega a imagem a partir do telefone e retorna uma
   /// Future<String> vazia caso nenhuma tenha sido selecionanda

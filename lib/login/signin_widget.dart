@@ -7,10 +7,13 @@ import 'package:sistema_de_gestao_comercial/screens/main_screen_widget.dart';
 
 import '../screens/empresa/empresa_screen.dart';
 
+/// Representa as opçoes de submissao de login
 enum OptionLogin { administracao, fatutracao }
 
+/// Tela de login
 // ignore: must_be_immutable
 class SignIn extends StatefulWidget {
+  /// padding - Espaço entre os  itens do formulario
   SignIn({Key? key, required this.padding}) : super(key: key);
 
   final Padding padding;
