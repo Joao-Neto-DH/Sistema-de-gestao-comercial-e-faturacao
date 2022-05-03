@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:sistema_de_gestao_comercial/login/login_widget.dart';
-import 'package:sistema_de_gestao_comercial/login/signup_widget.dart';
+import 'view/login/login_widget.dart';
+import 'view/login/signup_widget.dart';
 
-import 'login/recover_password_widget.dart';
-import 'login/signin_widget.dart';
+import 'view/login/recover_password_widget.dart';
+import 'view/login/signin_widget.dart';
 
 void main() {
   runApp(const GestaoComercial());

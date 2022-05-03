@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:sistema_de_gestao_comercial/screens/empresa/load_image.dart';
+import './load_image.dart';
 
 /// Tela de cadastro de empresa
 class EmpresaScreen extends StatefulWidget {

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:sistema_de_gestao_comercial/login/input_text_widget.dart';
-import 'package:sistema_de_gestao_comercial/login/login_widget.dart';
-import 'package:sistema_de_gestao_comercial/login/recover_password_widget.dart';
-import 'package:sistema_de_gestao_comercial/login/signup_widget.dart';
-import 'package:sistema_de_gestao_comercial/screens/main_screen_widget.dart';
-import 'package:sistema_de_gestao_comercial/util.dart';
+import './input_text_widget.dart';
+import './login_widget.dart';
+import './recover_password_widget.dart';
+import './signup_widget.dart';
+import '../../view/main_screen_widget.dart';
+import '../../util.dart';
 
-import '../screens/empresa/empresa_screen.dart';
+import '../empresa/empresa_screen.dart';
 
 /// Representa as opçoes de submissao de login
 enum OptionLogin { administracao, fatutracao }
