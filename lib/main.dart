@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:sistema_de_gestao_comercial/view/empresa/empresa_screen.dart';
 import 'view/login/login_widget.dart';
 import 'view/login/signup_widget.dart';
 
 import 'view/login/recover_password_widget.dart';
 import 'view/login/signin_widget.dart';
+import 'view/main_screen_widget.dart';
 
 void main() {
   runApp(const GestaoComercial());
@@ -22,10 +24,13 @@ class GestaoComercial extends StatelessWidget {
       ),
       initialRoute: "/signin",
       routes: {
+        "/": (context) => Login(formBody: SignIn()),
         "/signin": (context) => Login(formBody: SignIn()),
         "/signup": (context) => const Login(formBody: SignUp()),
         "/recover-password": (context) =>
-            const Login(formBody: RecoverPassword())
+            const Login(formBody: RecoverPassword()),
+        "/empresa": (context) =>
+            const MainScreen(title: "Empresa", body: EmpresaScreen())
       },
     );
   }

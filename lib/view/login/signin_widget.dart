@@ -71,13 +71,7 @@ class _SignInState extends State<SignIn> {
         Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           ElevatedButton(
               onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const MainScreen(
-                              title: "Empresa",
-                              body: EmpresaScreen(),
-                            )));
+                Navigator.pushReplacementNamed(context, "/empresa");
               },
               child: const Text("Entrar")),
           const Padding(padding: EdgeInsets.symmetric(horizontal: 16)),
