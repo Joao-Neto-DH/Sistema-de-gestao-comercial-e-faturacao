@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sistema_de_gestao_comercial/view/empresa/empresa_screen.dart';
+import 'package:sistema_de_gestao_comercial/view/produtos_servicos/produtos_e_servicos.dart';
 import 'view/login/login_widget.dart';
 import 'view/login/signup_widget.dart';
 
@@ -30,7 +31,9 @@ class GestaoComercial extends StatelessWidget {
         "/recover-password": (context) =>
             const Login(formBody: RecoverPassword()),
         "/empresa": (context) =>
-            const MainScreen(title: "Empresa", body: EmpresaScreen())
+            const MainScreen(title: "Empresa", body: EmpresaScreen()),
+        "/produtos": (context) => const MainScreen(
+            title: "Produtos/Serviços", body: ProdutosServicos())
       },
     );
   }

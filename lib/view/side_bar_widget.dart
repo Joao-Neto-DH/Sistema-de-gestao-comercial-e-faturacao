@@ -18,13 +18,20 @@ class _SideBarState extends State<SideBar> {
     });
   }
 
+  void _navigateTo(BuildContext context, String to) {
+    if (widget.title.toLowerCase() != to)
+      Navigator.pushNamed(context, "/$to");
+    else
+      Navigator.pop(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     const ListTileStyle menuStyle = ListTileStyle.list;
     const Color bgTileColor = Colors.black12;
 
     return Drawer(
-      child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+      child: ListView(children: [
         DrawerHeader(
             decoration: const BoxDecoration(
                 color: Colors.blue,
@@ -57,7 +64,7 @@ class _SideBarState extends State<SideBar> {
             "Empresa",
           ),
           onTap: () {
-            _selectMenu("empresa");
+            _navigateTo(context, "empresa");
           },
         ),
         ListTile(
@@ -68,7 +75,7 @@ class _SideBarState extends State<SideBar> {
             "Produtos/Serviços",
           ),
           onTap: () {
-            _selectMenu("produtos/serviços");
+            _navigateTo(context, "produtos");
           },
         ),
         ListTile(
@@ -126,11 +133,12 @@ class _SideBarState extends State<SideBar> {
             _selectMenu("definiçoes");
           },
         ),
-        const Spacer(),
+        // const Spacer(),
         Container(
           decoration: const BoxDecoration(
               border: Border(top: BorderSide(color: Colors.black38))),
           padding: const EdgeInsets.symmetric(vertical: 10),
+          margin: const EdgeInsets.only(top: 20),
           // color: Colors.blue,
           child: const Text("@Copyright - Candimba Tecnologia",
               style: TextStyle(fontSize: 10), textAlign: TextAlign.center),

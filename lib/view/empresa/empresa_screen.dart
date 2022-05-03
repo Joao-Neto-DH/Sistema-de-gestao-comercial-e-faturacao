@@ -23,20 +23,21 @@ class _EmpresaScreenState extends State<EmpresaScreen> {
   Widget build(BuildContext context) {
     return Form(
         child: SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
+      padding: AppUtil.paddingBody,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          AppUtil.spaceFields,
           const Text(
             "CADASTRO DE EMPRESA",
             textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            style: AppUtil.styleHeader,
           ),
           AppUtil.spaceLabelField,
-          const Text("Os campos marcados com (*) sao obrigatorios"),
+          const Text.rich(TextSpan(text: "Os campos marcados com (", children: [
+            TextSpan(text: "*", style: TextStyle(color: Colors.red)),
+            TextSpan(text: ") sao obrigatorios")
+          ])),
           const Divider(),
-          AppUtil.spaceFields,
           const Text(
             "Nome da Empresa",
           ),
