@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import './input_text_widget.dart';
-import './login_widget.dart';
-import './recover_password_widget.dart';
-import './signup_widget.dart';
+// import './login_widget.dart';
+// import './recover_password_widget.dart';
+// import './signup_widget.dart';
 import '../../view/main_screen_widget.dart';
 import '../../util.dart';
 
@@ -28,12 +28,10 @@ class _SignInState extends State<SignIn> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        InputText(
-            label: "EMAIL", validator: (email) => null, obscureText: false),
+        InputText(label: "EMAIL"),
         AppUtil.defaultPadding,
         // const Text("Senha"),
-        InputText(
-            label: "SENHA", validator: (senha) => null, obscureText: true),
+        InputText(label: "SENHA", obscureText: true),
         const Padding(
           padding: EdgeInsets.symmetric(vertical: 4),
         ),

@@ -10,18 +10,13 @@ class SignUp extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        InputText(
-            label: "EMAIL", validator: (email) => null, obscureText: false),
+        InputText(label: "EMAIL"),
         AppUtil.defaultPadding,
-        InputText(label: "NOME", validator: (nome) => null, obscureText: false),
+        InputText(label: "NOME"),
         AppUtil.defaultPadding,
-        InputText(
-            label: "SENHA", validator: (senha) => null, obscureText: true),
+        InputText(label: "SENHA"),
         AppUtil.defaultPadding,
-        InputText(
-            label: "CONFIRMAR SENHA",
-            validator: (senha) => null,
-            obscureText: true),
+        InputText(label: "CONFIRMAR SENHA"),
         const Padding(
           padding: EdgeInsets.symmetric(vertical: 4),
         ),

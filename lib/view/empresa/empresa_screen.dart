@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:sistema_de_gestao_comercial/util.dart';
 import './load_image.dart';
+import 'text_form_field_decorated.dart';
 
 /// Tela de cadastro de empresa
 class EmpresaScreen extends StatefulWidget {
@@ -19,160 +21,139 @@ class _EmpresaScreenState extends State<EmpresaScreen> {
 
   @override
   Widget build(BuildContext context) {
-    const spaceLabelField = SizedBox(
-      height: 16,
-    );
-    const spaceFields = SizedBox(
-      height: 24,
-    );
-
     return Form(
         child: SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          spaceFields,
+          AppUtil.spaceFields,
           const Text(
             "CADASTRO DE EMPRESA",
             textAlign: TextAlign.center,
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
-          spaceLabelField,
+          AppUtil.spaceLabelField,
           const Text("Os campos marcados com (*) sao obrigatorios"),
           const Divider(),
-          spaceFields,
+          AppUtil.spaceFields,
           const Text(
             "Nome da Empresa",
           ),
-          spaceLabelField,
-          TextFormField(
-            decoration: const InputDecoration(
-                hintText: "Nome da Empresa", border: OutlineInputBorder()),
+          AppUtil.spaceLabelField,
+          TextFormFieldDecorated(
+            hintText: "Nome da Empresa",
           ),
-          spaceFields,
+          AppUtil.spaceFields,
           const Text(
             "NIF da Empresa",
             textAlign: TextAlign.left,
           ),
-          spaceLabelField,
-          TextFormField(
-            decoration: const InputDecoration(
-                hintText: "NIF da Empresa", border: OutlineInputBorder()),
+          AppUtil.spaceLabelField,
+          TextFormFieldDecorated(
+            hintText: "NIF da Empresa",
           ),
-          spaceFields,
+          AppUtil.spaceFields,
           const Text(
             "Endereço da Empresa",
           ),
-          spaceLabelField,
-          TextFormField(
-            decoration: const InputDecoration(
-                hintText: "Endereço da Empresa", border: OutlineInputBorder()),
+          AppUtil.spaceLabelField,
+          TextFormFieldDecorated(
+            hintText: "Endereço da Empresa",
           ),
-          spaceFields,
+          AppUtil.spaceFields,
           const Text(
             "Cidade",
           ),
-          spaceLabelField,
-          TextFormField(
-            decoration: const InputDecoration(
-                hintText: "Cidade", border: OutlineInputBorder()),
+          AppUtil.spaceLabelField,
+          TextFormFieldDecorated(
+            hintText: "Cidade",
           ),
-          spaceFields,
+          AppUtil.spaceFields,
           const HorizontalDividerWithLabel(label: "Informaçoes de contactos"),
-          spaceFields,
+          AppUtil.spaceFields,
           const Text(
             "Contacto#1",
           ),
-          spaceLabelField,
-          TextFormField(
-            decoration: const InputDecoration(
-                hintText: "Contacto", border: OutlineInputBorder()),
+          AppUtil.spaceLabelField,
+          TextFormFieldDecorated(
+            hintText: "Contacto",
           ),
-          spaceFields,
+          AppUtil.spaceFields,
           const Text(
             "Contacto#2",
           ),
-          spaceLabelField,
-          TextFormField(
-            decoration: const InputDecoration(
-                hintText: "Contacto", border: OutlineInputBorder()),
+          AppUtil.spaceLabelField,
+          TextFormFieldDecorated(
+            hintText: "Contacto",
           ),
-          spaceFields,
+          AppUtil.spaceFields,
           const Text(
             "Email",
           ),
-          spaceLabelField,
-          TextFormField(
-            decoration: const InputDecoration(
-                hintText: "Email", border: OutlineInputBorder()),
+          AppUtil.spaceLabelField,
+          TextFormFieldDecorated(
+            hintText: "Email",
           ),
-          spaceFields,
+          AppUtil.spaceFields,
           const Text(
             "Website",
           ),
-          spaceLabelField,
-          TextFormField(
-            decoration: const InputDecoration(
-                hintText: "Website", border: OutlineInputBorder()),
+          AppUtil.spaceLabelField,
+          TextFormFieldDecorated(
+            hintText: "Website",
           ),
-          spaceFields,
+          AppUtil.spaceFields,
           const HorizontalDividerWithLabel(label: "Informaçoes Bancarias"),
-          spaceFields,
+          AppUtil.spaceFields,
           const Text(
             "IBAN #1",
           ),
-          spaceLabelField,
-          TextFormField(
-            decoration: const InputDecoration(
-                hintText: "IBAN", border: OutlineInputBorder()),
+          AppUtil.spaceLabelField,
+          TextFormFieldDecorated(
+            hintText: "IBAN",
           ),
-          spaceFields,
+          AppUtil.spaceFields,
           const Text(
             "IBAN #2",
           ),
-          spaceLabelField,
-          TextFormField(
-            decoration: const InputDecoration(
-                hintText: "IBAN", border: OutlineInputBorder()),
+          AppUtil.spaceLabelField,
+          TextFormFieldDecorated(
+            hintText: "IBAN",
           ),
-          spaceFields,
+          AppUtil.spaceFields,
           const Text(
             "IBAN #3",
           ),
-          spaceLabelField,
-          TextFormField(
-            decoration: const InputDecoration(
-                hintText: "IBAN", border: OutlineInputBorder()),
+          AppUtil.spaceLabelField,
+          TextFormFieldDecorated(
+            hintText: "IBAN",
           ),
-          spaceFields,
+          AppUtil.spaceFields,
           const Text(
             "Numero da Conta #1",
           ),
-          spaceLabelField,
-          TextFormField(
-            decoration: const InputDecoration(
-                hintText: "Numero da Conta", border: OutlineInputBorder()),
+          AppUtil.spaceLabelField,
+          TextFormFieldDecorated(
+            hintText: "Numero da Conta",
           ),
-          spaceFields,
+          AppUtil.spaceFields,
           const Text(
             "Numero da Conta #2",
           ),
-          spaceLabelField,
-          TextFormField(
-            decoration: const InputDecoration(
-                hintText: "Numero da Conta", border: OutlineInputBorder()),
+          AppUtil.spaceLabelField,
+          TextFormFieldDecorated(
+            hintText: "Numero da Conta",
           ),
-          spaceFields,
+          AppUtil.spaceFields,
           const Text(
             "Numero da Conta #3",
           ),
-          spaceLabelField,
-          TextFormField(
-            decoration: const InputDecoration(
-                hintText: "Numero da Conta", border: OutlineInputBorder()),
+          AppUtil.spaceLabelField,
+          TextFormFieldDecorated(
+            hintText: "Numero da Conta",
           ),
-          spaceFields,
+          AppUtil.spaceFields,
           ElevatedButton(
               onPressed: () {
                 logoImage.pickImage().then((value) => setState(() {
@@ -181,7 +162,7 @@ class _EmpresaScreenState extends State<EmpresaScreen> {
               },
               child: const Text("Carregar Logo")),
           _showLogoOrText(_logoImagePath),
-          spaceFields,
+          AppUtil.spaceFields,
           ElevatedButton(
               onPressed: () {
                 logoImage.pickImage().then((value) => setState(() {
@@ -190,7 +171,7 @@ class _EmpresaScreenState extends State<EmpresaScreen> {
               },
               child: const Text("Carregar Fundo das Fasturas")),
           _showLogoOrText(_backgroundImagePath),
-          spaceFields,
+          AppUtil.spaceFields,
           ElevatedButton(
               onPressed: () {}, child: const Text("Cadastrar Empresa"))
         ],

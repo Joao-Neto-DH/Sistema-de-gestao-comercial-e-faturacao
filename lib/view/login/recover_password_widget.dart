@@ -13,8 +13,7 @@ class RecoverPassword extends StatelessWidget {
       children: [
         const Text("Digite o seu email para recuperar a senha"),
         AppUtil.defaultPadding,
-        InputText(
-            label: "EMAIL", validator: (email) => null, obscureText: false),
+        InputText(label: "EMAIL"),
         AppUtil.defaultPadding,
         AppUtil.defaultPadding,
         Row(
