@@ -3,9 +3,14 @@ import 'package:flutter/material.dart';
 import '../../util.dart';
 import '../empresa/text_form_field_decorated.dart';
 
-class ClienteScreen extends StatelessWidget {
-  const ClienteScreen({Key? key}) : super(key: key);
+class StockScreen extends StatefulWidget {
+  const StockScreen({Key? key}) : super(key: key);
 
+  @override
+  State<StockScreen> createState() => _StockScreenState();
+}
+
+class _StockScreenState extends State<StockScreen> {
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -15,7 +20,7 @@ class ClienteScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           const Text(
-            "CADASTRO DE CLIENTE",
+            "GERENCIAR STOCK",
             textAlign: TextAlign.center,
             style: AppUtil.styleHeader,
           ),
@@ -24,61 +29,39 @@ class ClienteScreen extends StatelessWidget {
             TextSpan(text: "*", style: TextStyle(color: Colors.red)),
             TextSpan(text: ") sao obrigatorios")
           ])),
-          const Divider(),
           const Text(
-            "Nome do Cliente",
+            "Filtrar produto/serviço",
           ),
           AppUtil.spaceLabelField,
           TextFormFieldDecorated(
-            hintText: "Nome",
+            hintText: "Nome do produto/serviço",
           ),
           AppUtil.spaceFields,
+          ElevatedButton(onPressed: () {}, child: const Text("Pesquisar")),
+          const Divider(),
           const Text(
-            "NIF do Cliente",
+            "Quantidade em Stock",
             textAlign: TextAlign.left,
           ),
           AppUtil.spaceLabelField,
           TextFormFieldDecorated(
-            hintText: "NIF",
+            initialValue: "12",
+            enabled: false,
           ),
           AppUtil.spaceFields,
           const Text(
-            "Endereço do Cliente",
+            "Adicionar novo Stock",
           ),
           AppUtil.spaceLabelField,
           TextFormFieldDecorated(
-            hintText: "Endereço",
-          ),
-          AppUtil.spaceFields,
-          const Text(
-            "Email do Cliente",
+            hintText: "Adicionar novo Stock",
           ),
           AppUtil.spaceLabelField,
-          TextFormFieldDecorated(
-            hintText: "EMAIL",
-          ),
-          AppUtil.spaceFields,
-          const Text(
-            "Credito do Cliente",
-          ),
-          AppUtil.spaceLabelField,
-          TextFormFieldDecorated(
-            hintText: "Credito",
-          ),
+          ElevatedButton(
+              onPressed: () {}, child: const Text("Dimininuir Stock")),
           AppUtil.spaceFields,
           ElevatedButton(
-              onPressed: () {}, child: const Text("Cadastrar cliente")),
-          AppUtil.spaceFields,
-          ElevatedButton(
-              onPressed: () {}, child: const Text("Alterar dados do cliente")),
-          AppUtil.spaceFields,
-          ElevatedButton(
-              onPressed: () {}, child: const Text("Extrato do cliente")),
-          AppUtil.spaceFields,
-          ElevatedButton(
-              onPressed: () {}, child: const Text("Eliminar cliente")),
-          AppUtil.spaceFields,
-          ElevatedButton(onPressed: () {}, child: const Text("Listar clientes"))
+              onPressed: () {}, child: const Text("Adicionar Stock")),
         ],
       ),
     ));
