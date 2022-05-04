@@ -3,10 +3,10 @@ import './input_text_widget.dart';
 // import './login_widget.dart';
 // import './recover_password_widget.dart';
 // import './signup_widget.dart';
-import '../../view/main_screen_widget.dart';
+// import '../../view/main_screen_widget.dart';
 import '../../util.dart';
 
-import '../empresa/empresa_screen.dart';
+// import '../empresa/empresa_screen.dart';
 
 /// Representa as opçoes de submissao de login
 enum OptionLogin { administracao, fatutracao }

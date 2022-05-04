@@ -7,16 +7,20 @@ class DefinicoesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        ElevatedButton(
-            onPressed: () {}, child: const Text("Cadastrar utilizador")),
-        AppUtil.spaceFields,
-        ElevatedButton(onPressed: () {}, child: const Text("Alterar senha")),
-        AppUtil.spaceFields,
-        ElevatedButton(onPressed: () {}, child: const Text("Alterar dados")),
-      ],
+    return Container(
+      padding: AppUtil.paddingBody,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          AppUtil.spaceFields,
+          ElevatedButton(
+              onPressed: () {}, child: const Text("Cadastrar utilizador")),
+          AppUtil.spaceFields,
+          ElevatedButton(onPressed: () {}, child: const Text("Alterar senha")),
+          AppUtil.spaceFields,
+          ElevatedButton(onPressed: () {}, child: const Text("Alterar dados")),
+        ],
+      ),
     );
   }
 }

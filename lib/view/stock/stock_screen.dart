@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sistema_de_gestao_comercial/view/empresa/empresa_screen.dart';
 
 import '../../util.dart';
 import '../empresa/text_form_field_decorated.dart';
@@ -29,6 +30,7 @@ class _StockScreenState extends State<StockScreen> {
             TextSpan(text: "*", style: TextStyle(color: Colors.red)),
             TextSpan(text: ") sao obrigatorios")
           ])),
+          AppUtil.spaceFields,
           const Text(
             "Filtrar produto/serviço",
           ),
@@ -38,7 +40,10 @@ class _StockScreenState extends State<StockScreen> {
           ),
           AppUtil.spaceFields,
           ElevatedButton(onPressed: () {}, child: const Text("Pesquisar")),
-          const Divider(),
+          AppUtil.spaceLabelField,
+          const HorizontalDividerWithLabel(
+              label: "Detalhes do Produto/Serviço"),
+          AppUtil.spaceLabelField,
           const Text(
             "Quantidade em Stock",
             textAlign: TextAlign.left,

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:sistema_de_gestao_comercial/view/cliente/cliente_screen.dart';
+import 'package:sistema_de_gestao_comercial/view/definicoes/definicoes_screen.dart';
 import 'package:sistema_de_gestao_comercial/view/empresa/empresa_screen.dart';
 import 'package:sistema_de_gestao_comercial/view/produtos_servicos/produtos_e_servicos.dart';
+import 'package:sistema_de_gestao_comercial/view/stock/stock_screen.dart';
 import 'view/login/login_widget.dart';
 import 'view/login/signup_widget.dart';
 
@@ -33,7 +36,13 @@ class GestaoComercial extends StatelessWidget {
         "/empresa": (context) =>
             const MainScreen(title: "Empresa", body: EmpresaScreen()),
         "/produtos": (context) => const MainScreen(
-            title: "Produtos/Serviços", body: ProdutosServicos())
+            title: "Produtos/Serviços", body: ProdutosServicos()),
+        "/clientes": (context) =>
+            const MainScreen(title: "Clientes", body: ClienteScreen()),
+        "/definiçoes": (context) =>
+            const MainScreen(title: "Definiçoes", body: DefinicoesScreen()),
+        "/stock": (context) =>
+            const MainScreen(title: "Stock", body: StockScreen())
       },
     );
   }

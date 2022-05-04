@@ -12,17 +12,18 @@ class SideBar extends StatefulWidget {
 }
 
 class _SideBarState extends State<SideBar> {
-  void _selectMenu(String menu) {
-    setState(() {
-      widget.title = menu;
-    });
-  }
+  // void _navigateTo(String menu) {
+  //   setState(() {
+  //     widget.title = menu;
+  //   });
+  // }
 
   void _navigateTo(BuildContext context, String to) {
-    if (widget.title.toLowerCase() != to)
+    if (widget.title.toLowerCase() != to) {
       Navigator.pushNamed(context, "/$to");
-    else
+    } else {
       Navigator.pop(context);
+    }
   }
 
   @override
@@ -86,7 +87,7 @@ class _SideBarState extends State<SideBar> {
             "Clientes",
           ),
           onTap: () {
-            _selectMenu("clientes");
+            _navigateTo(context, "clientes");
           },
         ),
         ListTile(
@@ -97,7 +98,7 @@ class _SideBarState extends State<SideBar> {
             "Stock",
           ),
           onTap: () {
-            _selectMenu("stock");
+            _navigateTo(context, "stock");
           },
         ),
         ListTile(
@@ -108,7 +109,7 @@ class _SideBarState extends State<SideBar> {
             "Relatorios",
           ),
           onTap: () {
-            _selectMenu("relatorios");
+            // _navigateTo(context, "relatorios");
           },
         ),
         ListTile(
@@ -119,7 +120,7 @@ class _SideBarState extends State<SideBar> {
             "Faturaçao",
           ),
           onTap: () {
-            _selectMenu("faturaçao");
+            // _navigateTo(context, "faturaçao");
           },
         ),
         ListTile(
@@ -130,7 +131,7 @@ class _SideBarState extends State<SideBar> {
             "Definiçoes",
           ),
           onTap: () {
-            _selectMenu("definiçoes");
+            _navigateTo(context, "definiçoes");
           },
         ),
         // const Spacer(),
