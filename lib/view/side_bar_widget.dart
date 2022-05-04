@@ -41,7 +41,7 @@ class _SideBarState extends State<SideBar> {
               children: [
                 Image.asset(
                   "assets/img/logo.png",
-                  width: MediaQuery.of(context).size.width * .59,
+                  width: MediaQuery.of(context).size.width * .5,
                 ),
                 const SizedBox(
                   height: 10,
