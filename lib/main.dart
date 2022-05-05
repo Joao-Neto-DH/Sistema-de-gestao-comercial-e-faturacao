@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:sistema_de_gestao_comercial/view/cliente/cliente_screen.dart';
 import 'package:sistema_de_gestao_comercial/view/definicoes/definicoes_screen.dart';
 import 'package:sistema_de_gestao_comercial/view/empresa/empresa_screen.dart';
@@ -30,19 +31,19 @@ class GestaoComercial extends StatelessWidget {
       routes: {
         "/": (context) => Login(formBody: SignIn()),
         "/signin": (context) => Login(formBody: SignIn()),
-        "/signup": (context) => const Login(formBody: SignUp()),
+        "/signup": (context) => Login(formBody: const SignUp()),
         "/recover-password": (context) =>
-            const Login(formBody: RecoverPassword()),
+            Login(formBody: const RecoverPassword()),
         "/empresa": (context) =>
-            const MainScreen(title: "Empresa", body: EmpresaScreen()),
-        "/produtos": (context) => const MainScreen(
-            title: "Produtos/Serviços", body: ProdutosServicos()),
+            MainScreen(title: "Empresa", body: const EmpresaScreen()),
+        "/produtos": (context) => MainScreen(
+            title: "Produtos/Serviços", body: const ProdutosServicos()),
         "/clientes": (context) =>
-            const MainScreen(title: "Clientes", body: ClienteScreen()),
+            MainScreen(title: "Clientes", body: const ClienteScreen()),
         "/definiçoes": (context) =>
-            const MainScreen(title: "Definiçoes", body: DefinicoesScreen()),
+            MainScreen(title: "Definiçoes", body: const DefinicoesScreen()),
         "/stock": (context) =>
-            const MainScreen(title: "Stock", body: StockScreen())
+            MainScreen(title: "Stock", body: const StockScreen())
       },
     );
   }

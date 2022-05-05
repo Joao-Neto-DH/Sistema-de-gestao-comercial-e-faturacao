@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:sistema_de_gestao_comercial/util.dart';
 
 /// Tela comum para os formularios de login
@@ -6,7 +7,10 @@ import 'package:sistema_de_gestao_comercial/util.dart';
 class Login extends StatelessWidget {
   /// formBody - Corpo do formulario
   /// padding - Espaço entre os itens do formulario
-  const Login({Key? key, required this.formBody}) : super(key: key);
+  Login({Key? key, required this.formBody}) : super(key: key) {
+    SystemChrome.setPreferredOrientations(
+        [DeviceOrientation.portraitDown, DeviceOrientation.portraitUp]);
+  }
   final Widget formBody;
 
   @override
