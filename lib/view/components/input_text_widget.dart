@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 /// Wrapper para TextFormField
+// ignore: must_be_immutable
 class InputText extends StatelessWidget {
   /// label - Nome do campo
   /// validator - Callback function

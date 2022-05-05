@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import './input_text_widget.dart';
+import '../components/input_text_widget.dart';
 // import './login_widget.dart';
 // import './recover_password_widget.dart';
 // import './signup_widget.dart';

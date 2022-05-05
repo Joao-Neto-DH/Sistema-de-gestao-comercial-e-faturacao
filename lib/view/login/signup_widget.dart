@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import './input_text_widget.dart';
+import '../components/input_text_widget.dart';
 import 'package:sistema_de_gestao_comercial/util.dart';
 
 /// Tela de formulario de cadastro
