@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sistema_de_gestao_comercial/view/empresa/empresa_screen.dart';
 
 import '../../util.dart';
-import '../empresa/text_form_field_decorated.dart';
+import '../components/text_form_field_decorated.dart';
 
 class StockScreen extends StatefulWidget {
   const StockScreen({Key? key}) : super(key: key);

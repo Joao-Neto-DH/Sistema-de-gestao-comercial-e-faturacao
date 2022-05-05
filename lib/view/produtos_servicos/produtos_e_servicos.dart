@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sistema_de_gestao_comercial/util.dart';
-import 'package:sistema_de_gestao_comercial/view/empresa/text_form_field_decorated.dart';
+import '../components/text_form_field_decorated.dart';
 
 class ProdutosServicos extends StatefulWidget {
   const ProdutosServicos({Key? key}) : super(key: key);

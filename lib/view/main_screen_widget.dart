@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import './side_bar_widget.dart';
+import './components/side_bar_widget.dart';
 
 /// Tela comum com o Menu Lateral
 class MainScreen extends StatelessWidget {

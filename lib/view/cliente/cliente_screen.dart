@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../util.dart';
-import '../empresa/text_form_field_decorated.dart';
+import '../components/text_form_field_decorated.dart';
 
 class ClienteScreen extends StatelessWidget {
   const ClienteScreen({Key? key}) : super(key: key);

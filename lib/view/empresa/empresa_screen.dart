@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:sistema_de_gestao_comercial/util.dart';
 import './load_image.dart';
-import 'text_form_field_decorated.dart';
+import '../components/text_form_field_decorated.dart';
 
 /// Tela de cadastro de empresa
 class EmpresaScreen extends StatefulWidget {
