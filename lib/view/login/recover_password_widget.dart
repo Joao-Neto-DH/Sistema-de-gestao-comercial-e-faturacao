@@ -9,17 +9,31 @@ class RecoverPassword extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    TextEditingController emailController = TextEditingController();
     return Column(
       children: [
         const Text("Digite o seu email para recuperar a senha"),
         AppUtil.defaultPadding,
-        InputText(label: "EMAIL"),
+        InputText(
+          label: "EMAIL",
+          controller: emailController,
+          validator: (value) {
+            if (value!.trim().isEmpty) {
+              return "O email não pode estar vazio";
+            }
+            return null;
+          },
+        ),
         AppUtil.defaultPadding,
         AppUtil.defaultPadding,
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            ElevatedButton(onPressed: () {}, child: const Text("Enviar")),
+            ElevatedButton(
+                onPressed: () {
+                  if (Form.of(context)!.validate()) {}
+                },
+                child: const Text("Enviar")),
             const Padding(padding: EdgeInsets.symmetric(horizontal: 16)),
             ElevatedButton(
                 onPressed: () {

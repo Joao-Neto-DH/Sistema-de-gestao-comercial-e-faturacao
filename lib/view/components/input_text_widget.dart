@@ -6,18 +6,20 @@ class InputText extends StatelessWidget {
   /// label - Nome do campo
   /// validator - Callback function
   /// obscureText - Se e um campo de password
-  InputText({
-    Key? key,
-    required this.label,
-    this.validator,
-    this.obscureText = false,
-    this.type,
-  }) : super(key: key);
+  InputText(
+      {Key? key,
+      required this.label,
+      this.validator,
+      this.obscureText = false,
+      this.type,
+      this.controller})
+      : super(key: key);
 
   final TextInputType? type;
   final String label;
   bool obscureText;
   String? Function(String?)? validator;
+  TextEditingController? controller;
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +27,7 @@ class InputText extends StatelessWidget {
       style: const TextStyle(fontSize: 14),
       validator: validator,
       keyboardType: type,
+      controller: controller,
       textInputAction: TextInputAction.next,
       // textAlign: TextAlign.center,
       obscureText: obscureText,
