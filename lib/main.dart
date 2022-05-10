@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+// import 'package:flutter/services.dart';
 import 'package:sistema_de_gestao_comercial/view/cliente/cliente_screen.dart';
 import 'package:sistema_de_gestao_comercial/view/definicoes/definicoes_screen.dart';
 import 'package:sistema_de_gestao_comercial/view/empresa/empresa_screen.dart';
@@ -31,7 +31,7 @@ class GestaoComercial extends StatelessWidget {
       routes: {
         "/": (context) => Login(formBody: SignIn()),
         "/signin": (context) => Login(formBody: SignIn()),
-        "/signup": (context) => Login(formBody: const SignUp()),
+        "/signup": (context) => Login(formBody: SignUp()),
         "/recover-password": (context) =>
             Login(formBody: const RecoverPassword()),
         "/empresa": (context) =>

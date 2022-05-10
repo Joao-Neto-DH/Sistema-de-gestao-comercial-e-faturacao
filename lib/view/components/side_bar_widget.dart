@@ -32,7 +32,7 @@ class _SideBarState extends State<SideBar> {
     const Color bgTileColor = Colors.black12;
 
     return Drawer(
-      child: ListView(children: [
+      child: Column(children: [
         DrawerHeader(
             decoration: const BoxDecoration(
                 color: Colors.blue,
@@ -68,6 +68,7 @@ class _SideBarState extends State<SideBar> {
             _navigateTo(context, "empresa");
           },
         ),
+        const Separator(),
         ListTile(
           selectedTileColor: bgTileColor,
           style: menuStyle,
@@ -79,6 +80,7 @@ class _SideBarState extends State<SideBar> {
             _navigateTo(context, "produtos");
           },
         ),
+        const Separator(),
         ListTile(
           selectedTileColor: bgTileColor,
           style: menuStyle,
@@ -90,6 +92,7 @@ class _SideBarState extends State<SideBar> {
             _navigateTo(context, "clientes");
           },
         ),
+        const Separator(),
         ListTile(
           selectedTileColor: bgTileColor,
           style: menuStyle,
@@ -101,6 +104,7 @@ class _SideBarState extends State<SideBar> {
             _navigateTo(context, "stock");
           },
         ),
+        const Separator(),
         ListTile(
           selectedTileColor: bgTileColor,
           style: menuStyle,
@@ -112,6 +116,7 @@ class _SideBarState extends State<SideBar> {
             // _navigateTo(context, "relatorios");
           },
         ),
+        const Separator(),
         ListTile(
           selectedTileColor: bgTileColor,
           style: menuStyle,
@@ -123,6 +128,7 @@ class _SideBarState extends State<SideBar> {
             // _navigateTo(context, "faturaçao");
           },
         ),
+        const Separator(),
         ListTile(
           selectedTileColor: bgTileColor,
           style: menuStyle,
@@ -134,8 +140,9 @@ class _SideBarState extends State<SideBar> {
             _navigateTo(context, "definiçoes");
           },
         ),
-        // const Spacer(),
+        const Spacer(),
         Container(
+          width: double.infinity,
           decoration: const BoxDecoration(
               border: Border(top: BorderSide(color: Colors.black38))),
           padding: const EdgeInsets.symmetric(vertical: 10),
@@ -145,6 +152,19 @@ class _SideBarState extends State<SideBar> {
               style: TextStyle(fontSize: 10), textAlign: TextAlign.center),
         )
       ]),
+    );
+  }
+}
+
+class Separator extends StatelessWidget {
+  const Separator({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      height: 1,
+      color: Colors.black12,
     );
   }
 }

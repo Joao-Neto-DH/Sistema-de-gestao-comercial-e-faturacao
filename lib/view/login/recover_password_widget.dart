@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sistema_de_gestao_comercial/validator.dart';
 import '../components/input_text_widget.dart';
 import 'package:sistema_de_gestao_comercial/util.dart';
 
@@ -9,19 +10,17 @@ class RecoverPassword extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TextEditingController emailController = TextEditingController();
+    var emailController = TextEditingController();
     return Column(
       children: [
         const Text("Digite o seu email para recuperar a senha"),
         AppUtil.defaultPadding,
         InputText(
           label: "EMAIL",
-          controller: emailController,
-          validator: (value) {
-            if (value!.trim().isEmpty) {
-              return "O email não pode estar vazio";
-            }
-            return null;
+          // controller: emailController,
+          validator: (email) {
+            emailController.text = email!;
+            return Validator.validateEmail(email);
           },
         ),
         AppUtil.defaultPadding,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sistema_de_gestao_comercial/validator.dart';
 import '../components/input_text_widget.dart';
 // import './login_widget.dart';
 // import './recover_password_widget.dart';
@@ -24,14 +25,26 @@ class SignIn extends StatefulWidget {
 }
 
 class _SignInState extends State<SignIn> {
+  var emailController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        InputText(label: "EMAIL"),
+        InputText(
+          label: "EMAIL",
+          controller: emailController,
+          validator: (email) {
+            return Validator.validateEmail(emailController.text);
+          },
+        ),
         AppUtil.defaultPadding,
         // const Text("Senha"),
-        InputText(label: "SENHA", obscureText: true),
+        InputText(
+            label: "SENHA",
+            validator: (password) {
+              return Validator.validatePassword(password);
+            },
+            obscureText: true),
         const Padding(
           padding: EdgeInsets.symmetric(vertical: 4),
         ),
@@ -71,7 +84,9 @@ class _SignInState extends State<SignIn> {
         Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           ElevatedButton(
               onPressed: () {
-                Navigator.pushReplacementNamed(context, "/empresa");
+                if (Form.of(context)!.validate()) {
+                  Navigator.pushReplacementNamed(context, "/empresa");
+                }
               },
               child: const Text("Entrar")),
           const Padding(padding: EdgeInsets.symmetric(horizontal: 16)),
