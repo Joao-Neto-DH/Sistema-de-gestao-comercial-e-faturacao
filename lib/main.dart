@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:sistema_de_gestao_comercial/view/cliente/cliente_screen.dart';
 import 'package:sistema_de_gestao_comercial/view/definicoes/definicoes_screen.dart';
 import 'package:sistema_de_gestao_comercial/view/empresa/empresa_screen.dart';
+import 'package:sistema_de_gestao_comercial/view/faturacao/faturacao_screen.dart';
 import 'package:sistema_de_gestao_comercial/view/produtos_servicos/produtos_e_servicos.dart';
 import 'package:sistema_de_gestao_comercial/view/stock/stock_screen.dart';
 import 'view/login/login_widget.dart';
@@ -21,13 +22,14 @@ class GestaoComercial extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // ListView.builder()
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: "Sistema de gestão comercial",
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      initialRoute: "/signin",
+      initialRoute: "/faturacao",
       routes: {
         "/": (context) => Login(formBody: SignIn()),
         "/signin": (context) => Login(formBody: SignIn()),
@@ -43,7 +45,9 @@ class GestaoComercial extends StatelessWidget {
         "/definiçoes": (context) =>
             MainScreen(title: "Definiçoes", body: const DefinicoesScreen()),
         "/stock": (context) =>
-            MainScreen(title: "Stock", body: const StockScreen())
+            MainScreen(title: "Stock", body: const StockScreen()),
+        "/faturacao": (context) =>
+            MainScreen(title: "Faturaçao", body: FaturacaoScreen())
       },
     );
   }

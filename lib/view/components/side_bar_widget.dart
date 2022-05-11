@@ -125,7 +125,7 @@ class _SideBarState extends State<SideBar> {
             "Faturaçao",
           ),
           onTap: () {
-            // _navigateTo(context, "faturaçao");
+            _navigateTo(context, "faturacao");
           },
         ),
         const Separator(),
