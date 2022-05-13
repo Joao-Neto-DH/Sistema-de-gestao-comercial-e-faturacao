@@ -25,7 +25,9 @@ class SignIn extends StatefulWidget {
 }
 
 class _SignInState extends State<SignIn> {
-  var emailController = TextEditingController();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -41,6 +43,7 @@ class _SignInState extends State<SignIn> {
         // const Text("Senha"),
         InputText(
             label: "SENHA",
+            controller: passwordController,
             validator: (password) {
               return Validator.validatePassword(password);
             },
@@ -85,7 +88,11 @@ class _SignInState extends State<SignIn> {
           ElevatedButton(
               onPressed: () {
                 if (Form.of(context)!.validate()) {
-                  Navigator.pushReplacementNamed(context, "/empresa");
+                  if (widget._optionLogin == OptionLogin.fatutracao) {
+                    Navigator.pushReplacementNamed(context, "/faturacao");
+                  } else {
+                    Navigator.pushReplacementNamed(context, "/empresa");
+                  }
                 }
               },
               child: const Text("Entrar")),

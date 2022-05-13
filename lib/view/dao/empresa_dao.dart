@@ -10,18 +10,23 @@ class EmpresaDAO {
     return db!.query(_table);
   }
 
-  Future<List<Map<String, Object?>>> getEmpresa(EmpresaModel produto) async {
+  Future<List<Map<String, Object?>>> getEmpresa(EmpresaModel empresa) async {
     var db = await DB.instace.database;
-    return db!.query(_table, where: "id = ?", whereArgs: [produto.id]);
+    return db!.query(_table, where: "id = ?", whereArgs: [empresa.id]);
   }
 
-  Future<int> remove(EmpresaModel produto) async {
+  Future<int> remove(EmpresaModel empresa) async {
     var db = await DB.instace.database;
-    return db!.delete(_table, where: "id = ?", whereArgs: [produto.id]);
+    return db!.delete(_table, where: "id = ?", whereArgs: [empresa.id]);
   }
 
-  Future<int> insert(EmpresaModel produto) async {
+  Future<int> insert(EmpresaModel empresa) async {
     var db = await DB.instace.database;
     return db!.insert(_table, {}); //  preencher
+  }
+
+  Future<int> update(EmpresaModel empresa) async {
+    var db = await DB.instace.database;
+    return db!.update(_table, {}, where: "id = ?", whereArgs: [empresa.id]);
   }
 }

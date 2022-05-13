@@ -1,6 +1,6 @@
 import 'package:sistema_de_gestao_comercial/view/model/cliente_model.dart';
 import 'package:sistema_de_gestao_comercial/view/model/db.dart';
-import 'package:sistema_de_gestao_comercial/view/model/produto_model.dart';
+// import 'package:sistema_de_gestao_comercial/view/model/produto_model.dart';
 
 class ClienteDAO {
   static const _table = "clientes";
@@ -10,18 +10,27 @@ class ClienteDAO {
     return db!.query(_table);
   }
 
-  Future<List<Map<String, Object?>>> getProduto(ClienteModel produto) async {
+  Future<List<Map<String, Object?>>> getCliente(ClienteModel cliente) async {
     var db = await DB.instace.database;
-    return db!.query(_table, where: "id = ?", whereArgs: [produto.id]);
+    return db!.query(_table,
+        where: "id = ? like nome = ?",
+        whereArgs: [cliente.id, cliente.nome],
+        limit: 1);
   }
 
-  Future<int> remove(ClienteModel produto) async {
+  Future<int> remove(ClienteModel cliente) async {
     var db = await DB.instace.database;
-    return db!.delete(_table, where: "id = ?", whereArgs: [produto.id]);
+    return db!.delete(_table, where: "id = ?", whereArgs: [cliente.id]);
   }
 
-  Future<int> insert(ClienteModel produto) async {
+  Future<int> insert(ClienteModel cliente) async {
     var db = await DB.instace.database;
-    return db!.insert(_table, {}); //  preencher
+    return db!.insert(_table, cliente.toMap);
+  }
+
+  Future<int> update(ClienteModel cliente) async {
+    var db = await DB.instace.database;
+    return db!.update(_table, cliente.toMap,
+        where: "id = ?", whereArgs: [cliente.id]);
   }
 }

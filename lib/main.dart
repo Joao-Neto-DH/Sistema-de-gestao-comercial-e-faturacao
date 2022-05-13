@@ -29,7 +29,7 @@ class GestaoComercial extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      initialRoute: "/faturacao",
+      initialRoute: "/signin",
       routes: {
         "/": (context) => Login(formBody: SignIn()),
         "/signin": (context) => Login(formBody: SignIn()),
@@ -47,7 +47,7 @@ class GestaoComercial extends StatelessWidget {
         "/stock": (context) =>
             MainScreen(title: "Stock", body: const StockScreen()),
         "/faturacao": (context) =>
-            MainScreen(title: "Faturaçao", body: FaturacaoScreen())
+            MainScreen(title: "Faturaçao", body: const FaturacaoScreen())
       },
     );
   }

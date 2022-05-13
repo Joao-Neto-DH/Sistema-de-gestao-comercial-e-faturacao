@@ -18,26 +18,121 @@ class DB {
       path,
       version: _version,
     );
-    await _db!.execute('''
-      CREATE TABLE if not exists clientes (
-        id       INTEGER AUTO INCREMENT not null,
-        nome     VARCHAR (50)             NOT NULL,
-        endereco VARCHAR (50)             NOT NULL,
-        nif      VARCHAR (14)             NOT NULL,
-        email    VARCHAR (30)             NOT NULL,
-        credito  DECIMAL (5, 2),
-        PRIMARY KEY (
-            id
-        ),
+    await _generateTable(_db);
+    return _db;
+  }
+
+  Future<void> _generateTable(Database? db) async {
+    await db!.execute('''
+    CREATE TABLE IF NOT EXISTS usuarios (
+        id    INTEGER      PRIMARY KEY AUTOINCREMENT,
+        email VARCHAR (60) NOT NULL
+                          UNIQUE,
+        nome  VARCHAR (60) NOT NULL,
+        senha VARCHAR (60) NOT NULL
+    );
+    
+    CREATE TABLE IF NOT EXISTS clientes (
+        id       INTEGER        PRIMARY KEY AUTOINCREMENT,
+        nome     VARCHAR (60)   NOT NULL,
+        endereco VARCHAR (60)   NOT NULL,
+        nif      VARCHAR (20)   NOT NULL,
+        email    VARCHAR (60)   NOT NULL,
+        credito  DECIMAL (8, 2),
         UNIQUE (
             nome,
             endereco,
             nif,
             email
         )
-    )
-''');
-    return _db;
+    );
+
+    CREATE TABLE IF NOT EXISTS contactos (
+        id         INTEGER      PRIMARY KEY AUTOINCREMENT,
+        empresa_id INTEGER      NOT NULL
+                                REFERENCES empresa (id),
+        telefone   VARCHAR (14) NOT NULL,
+        website    VARCHAR (60),
+        email      VARCHAR (60) NOT NULL,
+        UNIQUE (
+            telefone,
+            website,
+            email
+        )
+    );
+
+    CREATE TABLE IF NOT EXISTS coordenadas_bancarias (
+        id         INTEGER      PRIMARY KEY AUTOINCREMENT,
+        empresa_id INTEGER      NOT NULL,
+        coordenada VARCHAR (25) NOT NULL,
+        conta      VARCHAR (25),
+        UNIQUE (
+            coordenada,
+            conta
+        ),
+        FOREIGN KEY (
+            empresa_id
+        )
+        REFERENCES empresa (id) 
+    );
+
+    CREATE TABLE IF NOT EXISTS empresas (
+        id       INTEGER      PRIMARY KEY AUTOINCREMENT,
+        nome     VARCHAR (60) NOT NULL,
+        nif      VARCHAR (20) NOT NULL,
+        endereco VARCHAR (60) NOT NULL,
+        cidade   VARCHAR (60) NOT NULL,
+        UNIQUE (
+            nome,
+            nif,
+            endereco,
+            cidade
+        )
+    );
+
+    CREATE TABLE IF NOT EXISTS imagens (
+        id         INTEGER       PRIMARY KEY AUTOINCREMENT,
+        empresa_id INTEGER       NOT NULL
+                                REFERENCES empresa (id),
+        logo       VARCHAR (100) NOT NULL,
+        logo_marca BOOLEAN       DEFAULT false,
+        UNIQUE (
+            logo
+        )
+    );
+
+    CREATE TABLE IF NOT EXISTS produtos (
+        id    INTEGER         PRIMARY KEY AUTOINCREMENT,
+        nome  VARCHAR (60)    NOT NULL,
+        preco DECIMAL (12, 2) NOT NULL,
+        iva   BOOLEAN         NOT NULL
+                              DEFAULT false,
+        stock INTEGER         NOT NULL
+                              DEFAULT -1,
+        UNIQUE (
+            nome
+        )
+    );
+
+    CREATE TABLE IF NOT EXISTS vendidos (
+        id          INTEGER         PRIMARY KEY AUTOINCREMENT,
+        produto_id  INTEGER         NOT NULL,
+        cliente_id  INTEGER         NOT NULL,
+        quantidade  INTEGER         NOT NULL,
+        preco       DECIMAL (12, 2) NOT NULL,
+        data_compra DATETIME        NOT NULL
+                                    DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (
+            produto_id
+        )
+        REFERENCES produtos (id),
+        FOREIGN KEY (
+            cliente_id
+        )
+        REFERENCES clientes (id) 
+    );
+
+    ''');
   }
 
   Future<void> close() async {

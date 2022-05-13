@@ -22,4 +22,29 @@ class Contacto {
   String? email;
 
   Contacto({this.id, this.website, this.email, required this.telefone});
+
+  Map<String, Object?> get toMap {
+    return {"id": id, "telefone": telefone, "website": website, "email": email};
+  }
+
+  factory Contacto.fromMap(Map<String, dynamic> contacto) {
+    return Contacto(
+      id: contacto["id"],
+      telefone: contacto["telefone"],
+      website: contacto["website"],
+      email: contacto["email"],
+    );
+  }
+  @override
+  bool operator ==(Object other) {
+    return other is Contacto &&
+        other.id == id &&
+        other.telefone == telefone &&
+        other.website == website &&
+        other.email == email;
+  }
+
+  @override
+  int get hashCode =>
+      id.hashCode ^ telefone.hashCode ^ website.hashCode ^ email.hashCode;
 }

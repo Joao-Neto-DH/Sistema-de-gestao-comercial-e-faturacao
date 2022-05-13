@@ -10,19 +10,24 @@ class CoordenadaBancariaDAO {
     return db!.query(_table);
   }
 
-  Future<List<Map<String, Object?>>> getProduto(
-      CoordenadaBancariaModel produto) async {
+  Future<List<Map<String, Object?>>> getCoordenada(
+      CoordenadaBancariaModel coordenada) async {
     var db = await DB.instace.database;
-    return db!.query(_table, where: "id = ?", whereArgs: [produto.id]);
+    return db!.query(_table, where: "id = ?", whereArgs: [coordenada.id]);
   }
 
-  Future<int> remove(CoordenadaBancariaModel produto) async {
+  Future<int> remove(CoordenadaBancariaModel coordenada) async {
     var db = await DB.instace.database;
-    return db!.delete(_table, where: "id = ?", whereArgs: [produto.id]);
+    return db!.delete(_table, where: "id = ?", whereArgs: [coordenada.id]);
   }
 
-  Future<int> insert(CoordenadaBancariaModel produto) async {
+  Future<int> insert(CoordenadaBancariaModel coordenada) async {
     var db = await DB.instace.database;
     return db!.insert(_table, {}); //  preencher
+  }
+
+  Future<int> update(CoordenadaBancariaModel coordenada) async {
+    var db = await DB.instace.database;
+    return db!.update(_table, {}, where: "id = ?", whereArgs: [coordenada.id]);
   }
 }

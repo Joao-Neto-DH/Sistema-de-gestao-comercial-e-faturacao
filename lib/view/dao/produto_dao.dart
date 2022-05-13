@@ -23,4 +23,9 @@ class ProdutoDAO {
     var db = await DB.instace.database;
     return db!.insert(_table, {}); //  preencher
   }
+
+  Future<int> update(ProdutoModel produto) async {
+    var db = await DB.instace.database;
+    return db!.update(_table, {}, where: "id = ?", whereArgs: [produto.id]);
+  }
 }
