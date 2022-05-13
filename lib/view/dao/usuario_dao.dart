@@ -13,8 +13,8 @@ class UsuarioDAO {
 
   Future<List<Map<String, Object?>>> getUsuario(UsuarioModel usuario) async {
     var db = await DB.instace.database;
-    print(await db!.query(_table));
-    return db.query(_table,
+    // print(await db!.query(_table));
+    return db!.query(_table,
         where: "email = ? and senha = ?",
         whereArgs: [usuario.email, usuario.senha],
         limit: 1);

@@ -4,6 +4,7 @@ import 'package:sistema_de_gestao_comercial/view/model/empresa_model.dart';
 
 class EmpresaDAO {
   static const _table = "empresas";
+  static const _table2 = "contactos";
 
   Future<List<Map<String, Object?>>> get all async {
     var db = await DB.instace.database;
@@ -22,11 +23,12 @@ class EmpresaDAO {
 
   Future<int> insert(EmpresaModel empresa) async {
     var db = await DB.instace.database;
-    return db!.insert(_table, {}); //  preencher
+    return db!.insert(_table, empresa.toMap); //  preencher
   }
 
   Future<int> update(EmpresaModel empresa) async {
     var db = await DB.instace.database;
-    return db!.update(_table, {}, where: "id = ?", whereArgs: [empresa.id]);
+    return db!.update(_table, empresa.toMap,
+        where: "id = ?", whereArgs: [empresa.id]);
   }
 }

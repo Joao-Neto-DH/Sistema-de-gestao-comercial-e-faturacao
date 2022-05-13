@@ -4,7 +4,7 @@ class EmpresaModel {
   String nif;
   String endereco;
   String cidade;
-  var contacto = <Contacto>[];
+  var contactos = <Contacto>[];
 
   EmpresaModel(
       {this.id,
@@ -12,7 +12,44 @@ class EmpresaModel {
       required this.nif,
       required this.endereco,
       required this.cidade,
-      required this.contacto});
+      required this.contactos});
+
+  Map<String, Object?> get toMap => {
+        "id": id,
+        "nome": nome,
+        "nif": nif,
+        "endereco": endereco,
+        "cidade": cidade
+      };
+
+  factory EmpresaModel.fromMap(
+      Map<String, dynamic> empresa, List<Contacto> contactos) {
+    return EmpresaModel(
+        id: empresa["id"],
+        nome: empresa["nome"],
+        nif: empresa["nif"],
+        endereco: empresa["endereco"],
+        cidade: empresa["cidade"],
+        contactos: contactos);
+  }
+  @override
+  bool operator ==(Object other) {
+    return other is EmpresaModel &&
+        other.id == id &&
+        other.nome == nome &&
+        other.nif == nif &&
+        other.endereco == endereco &&
+        other.cidade == cidade;
+  }
+
+  @override
+  int get hashCode =>
+      id.hashCode ^
+      nome.hashCode ^
+      nif.hashCode ^
+      nome.hashCode ^
+      endereco.hashCode ^
+      cidade.hashCode;
 }
 
 class Contacto {

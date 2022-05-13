@@ -28,4 +28,9 @@ class UsuarioModel {
 
   @override
   int get hashCode => id.hashCode ^ nome.hashCode ^ email.hashCode;
+
+  @override
+  String toString() {
+    return "$id - $nome - $email";
+  }
 }

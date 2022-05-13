@@ -89,17 +89,7 @@ class _SignInState extends State<SignIn> {
         Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           ElevatedButton(
               onPressed: () async {
-                if (Form.of(context)!.validate()) {
-                  // if (widget._optionLogin == OptionLogin.fatutracao) {
-                  //   Navigator.pushReplacementNamed(context, "/faturacao");
-                  // } else {
-                  //   Navigator.pushReplacementNamed(context, "/empresa");
-                  // }
-                  var map = await _login(UsuarioModel(
-                      email: emailController.value.text,
-                      senha: passwordController.value.text));
-                  print(map);
-                }
+                await _entrar(context);
               },
               child: const Text("Entrar")),
           const Padding(padding: EdgeInsets.symmetric(horizontal: 16)),
@@ -112,6 +102,27 @@ class _SignInState extends State<SignIn> {
         ]),
       ],
     );
+  }
+
+  Future<void> _entrar(BuildContext context) async {
+    if (Form.of(context)!.validate()) {
+      try {
+        var user = await _login(UsuarioModel(
+            email: emailController.value.text,
+            senha: passwordController.value.text));
+
+        if (user.isNotEmpty) {
+          if (widget._optionLogin == OptionLogin.fatutracao) {
+            Navigator.pushReplacementNamed(context, "/faturacao");
+          } else {
+            Navigator.pushReplacementNamed(context, "/empresa");
+          }
+        }
+      } catch (e) {
+        AppUtil.snackBar(context,
+            "Nao possivel fazer o login. Certifique-se que este usuario existe e tente novamente!");
+      }
+    }
   }
 
   Future<Map<String, Object?>> _login(UsuarioModel usuario) async {

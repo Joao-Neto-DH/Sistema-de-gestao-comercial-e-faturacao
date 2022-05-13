@@ -9,6 +9,7 @@ class TextFormFieldDecorated extends StatelessWidget {
       this.validator,
       this.keyboardType,
       this.enabled,
+      this.controller,
       this.initialValue})
       : super(key: key);
   String? Function(String?)? validator;
@@ -16,12 +17,14 @@ class TextFormFieldDecorated extends StatelessWidget {
   TextInputType? keyboardType;
   bool? enabled;
   String? initialValue;
+  TextEditingController? controller;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       initialValue: initialValue,
       enabled: enabled,
+      controller: controller,
       validator: validator,
       keyboardType: keyboardType,
       decoration: InputDecoration(
