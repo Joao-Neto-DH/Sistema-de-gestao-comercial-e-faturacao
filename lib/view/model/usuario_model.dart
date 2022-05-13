@@ -2,10 +2,9 @@ class UsuarioModel {
   int? id;
   String email;
   String senha;
-  String nome;
+  String? nome;
 
-  UsuarioModel(
-      {this.id, required this.email, required this.nome, required this.senha});
+  UsuarioModel({this.id, required this.email, this.nome, required this.senha});
 
   Map<String, Object?> get toMap {
     return {"id": id, "nome": nome, "email": email, "senha": senha};

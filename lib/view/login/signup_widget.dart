@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sistema_de_gestao_comercial/validator.dart';
+import 'package:sistema_de_gestao_comercial/view/dao/usuario_dao.dart';
+import 'package:sistema_de_gestao_comercial/view/model/usuario_model.dart';
 import '../components/input_text_widget.dart';
 import 'package:sistema_de_gestao_comercial/util.dart';
 
@@ -7,8 +9,10 @@ import 'package:sistema_de_gestao_comercial/util.dart';
 class SignUp extends StatelessWidget {
   /// padding - espaço entre os itens do formulario
   SignUp({Key? key}) : super(key: key);
-  var password = TextEditingController();
-  var emailController = TextEditingController();
+  final passwordController = TextEditingController();
+  final emailController = TextEditingController();
+  final nomeController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -23,14 +27,15 @@ class SignUp extends StatelessWidget {
         AppUtil.defaultPadding,
         InputText(
           label: "NOME",
-          validator: (name) {
-            return Validator.validateName(name);
+          controller: nomeController,
+          validator: (nome) {
+            return Validator.validateName(nome);
           },
         ),
         AppUtil.defaultPadding,
         InputText(
           label: "SENHA",
-          controller: password,
+          controller: passwordController,
           validator: (password) {
             return Validator.validatePassword(password);
           },
@@ -41,7 +46,7 @@ class SignUp extends StatelessWidget {
           label: "CONFIRMAR SENHA",
           validator: (confirmPassword) {
             return Validator.validateConfirmPassword(
-                password.text, confirmPassword);
+                passwordController.text, confirmPassword);
           },
           obscureText: true,
         ),
@@ -60,11 +65,33 @@ class SignUp extends StatelessWidget {
         ),
         AppUtil.defaultPadding,
         ElevatedButton(
-            onPressed: () {
-              if (Form.of(context)!.validate()) {}
+            onPressed: () async {
+              if (Form.of(context)!.validate()) {
+                try {
+                  await _signup(UsuarioModel(
+                      nome: nomeController.value.text,
+                      email: emailController.value.text,
+                      senha: passwordController.value.text));
+                  AppUtil.snackBar(context, "Usuario criado com sucesso!");
+
+                  nomeController.text = "";
+                  emailController.text = "";
+                  passwordController.text = "";
+                  Form.of(context)!.reset();
+                } catch (e) {
+                  // print(await all());
+                  AppUtil.snackBar(context,
+                      "Não foi possivel fazer o cadastro. Este Email ja esta a ser utilizado por outro usuario!");
+                }
+              }
             },
             child: const Text("Cadastrar"))
       ],
     );
+  }
+
+  Future<int> _signup(UsuarioModel usuario) async {
+    var dao = UsuarioDAO();
+    return await dao.insert(usuario);
   }
 }

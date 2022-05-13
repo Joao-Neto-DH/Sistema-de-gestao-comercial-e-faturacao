@@ -1,4 +1,5 @@
 import 'package:sistema_de_gestao_comercial/view/model/usuario_model.dart';
+import 'package:sqflite/sqflite.dart';
 
 import '../model/db.dart';
 
@@ -12,9 +13,10 @@ class UsuarioDAO {
 
   Future<List<Map<String, Object?>>> getUsuario(UsuarioModel usuario) async {
     var db = await DB.instace.database;
-    return db!.query(_table,
-        where: "id = ? like email = ?",
-        whereArgs: [usuario.id, usuario.email],
+    print(await db!.query(_table));
+    return db.query(_table,
+        where: "email = ? and senha = ?",
+        whereArgs: [usuario.email, usuario.senha],
         limit: 1);
   }
 
@@ -25,7 +27,8 @@ class UsuarioDAO {
 
   Future<int> insert(UsuarioModel usuario) async {
     var db = await DB.instace.database;
-    return db!.insert(_table, usuario.toMap);
+    return db!.insert(_table, usuario.toMap,
+        conflictAlgorithm: ConflictAlgorithm.rollback);
   }
 
   Future<int> update(UsuarioModel usuario) async {

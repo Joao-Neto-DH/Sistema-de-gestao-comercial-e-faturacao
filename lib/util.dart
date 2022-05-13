@@ -12,4 +12,10 @@ class AppUtil {
   );
   static const styleHeader =
       TextStyle(fontSize: 20, fontWeight: FontWeight.bold);
+
+  static void snackBar(BuildContext context, String info) {
+    final snackBar =
+        SnackBar(duration: const Duration(seconds: 3), content: Text(info));
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
 }

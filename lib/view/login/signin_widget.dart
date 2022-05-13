@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sistema_de_gestao_comercial/validator.dart';
+import 'package:sistema_de_gestao_comercial/view/dao/usuario_dao.dart';
+import 'package:sistema_de_gestao_comercial/view/model/usuario_model.dart';
 import '../components/input_text_widget.dart';
 // import './login_widget.dart';
 // import './recover_password_widget.dart';
@@ -86,13 +88,17 @@ class _SignInState extends State<SignIn> {
         AppUtil.defaultPadding,
         Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
                 if (Form.of(context)!.validate()) {
-                  if (widget._optionLogin == OptionLogin.fatutracao) {
-                    Navigator.pushReplacementNamed(context, "/faturacao");
-                  } else {
-                    Navigator.pushReplacementNamed(context, "/empresa");
-                  }
+                  // if (widget._optionLogin == OptionLogin.fatutracao) {
+                  //   Navigator.pushReplacementNamed(context, "/faturacao");
+                  // } else {
+                  //   Navigator.pushReplacementNamed(context, "/empresa");
+                  // }
+                  var map = await _login(UsuarioModel(
+                      email: emailController.value.text,
+                      senha: passwordController.value.text));
+                  print(map);
                 }
               },
               child: const Text("Entrar")),
@@ -106,6 +112,12 @@ class _SignInState extends State<SignIn> {
         ]),
       ],
     );
+  }
+
+  Future<Map<String, Object?>> _login(UsuarioModel usuario) async {
+    var dao = UsuarioDAO();
+    var map = await dao.getUsuario(usuario);
+    return map[0];
   }
 
   void _optionLoginChange(OptionLogin value) {
