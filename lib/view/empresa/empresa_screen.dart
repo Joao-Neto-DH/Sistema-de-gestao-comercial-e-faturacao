@@ -2,6 +2,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:sistema_de_gestao_comercial/util.dart';
 import 'package:sistema_de_gestao_comercial/validator.dart';
+import 'package:sistema_de_gestao_comercial/view/model/coordenada_bancaria_model.dart';
+import 'package:sistema_de_gestao_comercial/view/model/empresa_model.dart';
 import './load_image.dart';
 import '../components/text_form_field_decorated.dart';
 
@@ -14,12 +16,36 @@ class EmpresaScreen extends StatefulWidget {
 }
 
 class _EmpresaScreenState extends State<EmpresaScreen> {
+//  Key para controlar o formulario
   final formKey = GlobalKey<FormState>();
+//  Imagens da empresa(logotipo e marca d'agua)
   String _logoImagePath = "";
   String _backgroundImagePath = "";
-
   final LoadImage logoImage = LoadImage();
   final LoadImage backgroundImage = LoadImage();
+//  Dados da empresa
+  final nomeController = TextEditingController();
+  final nifController = TextEditingController();
+  final enderecoController = TextEditingController();
+  final cidadeController = TextEditingController();
+//  Dados de contacto da empresa
+  final contactoControllers = [
+    TextEditingController(),
+    TextEditingController(),
+  ];
+  final emailController = TextEditingController();
+  final websiteController = TextEditingController();
+//  Dados bancario da empresa
+  final ibanControllers = [
+    TextEditingController(),
+    TextEditingController(),
+    TextEditingController()
+  ];
+  final contaControllers = [
+    TextEditingController(),
+    TextEditingController(),
+    TextEditingController()
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +72,9 @@ class _EmpresaScreenState extends State<EmpresaScreen> {
                 "Nome da Empresa",
               ),
               AppUtil.spaceLabelField,
+              //dados da empresa
               TextFormFieldDecorated(
+                controller: nomeController,
                 validator: (value) {
                   return Validator.validateNotEmpty(value!);
                 },
@@ -60,6 +88,7 @@ class _EmpresaScreenState extends State<EmpresaScreen> {
               AppUtil.spaceLabelField,
               TextFormFieldDecorated(
                 hintText: "NIF da Empresa",
+                controller: nifController,
                 validator: (value) {
                   return Validator.validateNotEmpty(value!);
                 },
@@ -71,6 +100,7 @@ class _EmpresaScreenState extends State<EmpresaScreen> {
               AppUtil.spaceLabelField,
               TextFormFieldDecorated(
                 hintText: "Endereço da Empresa",
+                controller: enderecoController,
                 validator: (value) {
                   return Validator.validateNotEmpty(value!);
                 },
@@ -82,11 +112,13 @@ class _EmpresaScreenState extends State<EmpresaScreen> {
               AppUtil.spaceLabelField,
               TextFormFieldDecorated(
                 hintText: "Cidade",
+                controller: cidadeController,
                 validator: (value) {
                   return Validator.validateNotEmpty(value!);
                 },
               ),
               AppUtil.spaceFields,
+              //dados de contacto da empresa
               const HorizontalDividerWithLabel(
                   label: "Informaçoes de contactos"),
               AppUtil.spaceFields,
@@ -96,6 +128,7 @@ class _EmpresaScreenState extends State<EmpresaScreen> {
               AppUtil.spaceLabelField,
               TextFormFieldDecorated(
                 hintText: "Contacto",
+                controller: contactoControllers[0],
                 validator: (value) {
                   return Validator.validateNotEmpty(value!);
                 },
@@ -106,6 +139,7 @@ class _EmpresaScreenState extends State<EmpresaScreen> {
               ),
               AppUtil.spaceLabelField,
               TextFormFieldDecorated(
+                controller: contactoControllers[1],
                 hintText: "Contacto",
               ),
               AppUtil.spaceFields,
@@ -115,6 +149,7 @@ class _EmpresaScreenState extends State<EmpresaScreen> {
               AppUtil.spaceLabelField,
               TextFormFieldDecorated(
                 hintText: "Email",
+                controller: emailController,
                 validator: (value) {
                   return Validator.validateNotEmpty(value!);
                 },
@@ -125,9 +160,11 @@ class _EmpresaScreenState extends State<EmpresaScreen> {
               ),
               AppUtil.spaceLabelField,
               TextFormFieldDecorated(
+                controller: websiteController,
                 hintText: "Website",
               ),
               AppUtil.spaceFields,
+              //Dados bancarios da empresa
               const HorizontalDividerWithLabel(label: "Informaçoes Bancarias"),
               AppUtil.spaceFields,
               const Text(
@@ -136,6 +173,7 @@ class _EmpresaScreenState extends State<EmpresaScreen> {
               AppUtil.spaceLabelField,
               TextFormFieldDecorated(
                 hintText: "IBAN",
+                controller: ibanControllers[0],
                 validator: (value) {
                   return Validator.validateNotEmpty(value!);
                 },
@@ -146,6 +184,7 @@ class _EmpresaScreenState extends State<EmpresaScreen> {
               ),
               AppUtil.spaceLabelField,
               TextFormFieldDecorated(
+                controller: ibanControllers[1],
                 hintText: "IBAN",
               ),
               AppUtil.spaceFields,
@@ -154,6 +193,7 @@ class _EmpresaScreenState extends State<EmpresaScreen> {
               ),
               AppUtil.spaceLabelField,
               TextFormFieldDecorated(
+                controller: ibanControllers[2],
                 hintText: "IBAN",
               ),
               AppUtil.spaceFields,
@@ -163,6 +203,7 @@ class _EmpresaScreenState extends State<EmpresaScreen> {
               AppUtil.spaceLabelField,
               TextFormFieldDecorated(
                 hintText: "Numero da Conta",
+                controller: contaControllers[0],
                 validator: (value) {
                   return Validator.validateNotEmpty(value!);
                 },
@@ -173,6 +214,7 @@ class _EmpresaScreenState extends State<EmpresaScreen> {
               ),
               AppUtil.spaceLabelField,
               TextFormFieldDecorated(
+                controller: contaControllers[1],
                 hintText: "Numero da Conta",
               ),
               AppUtil.spaceFields,
@@ -181,6 +223,7 @@ class _EmpresaScreenState extends State<EmpresaScreen> {
               ),
               AppUtil.spaceLabelField,
               TextFormFieldDecorated(
+                controller: contaControllers[2],
                 hintText: "Numero da Conta",
               ),
               AppUtil.spaceFields,
@@ -205,14 +248,49 @@ class _EmpresaScreenState extends State<EmpresaScreen> {
               ElevatedButton(
                   onPressed: () {
                     if (formKey.currentState!.validate()) {
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                          content: Text("Empresa Cadastrada com sucesso!!!")));
+                      final contactos = <ContactoModel>[];
+                      final coordenadas = <CoordenadaBancariaModel>[];
+
+                      contactoControllers.forEach(((element) {
+                        if (element.value.text.trim().isNotEmpty) {
+                          contactos.add(ContactoModel(
+                              telefone: element.value.text.trim()));
+                        }
+                      }));
+
+                      for (var i = 0; i < contaControllers.length; i++) {
+                        if (contaControllers[i].value.text.isNotEmpty &&
+                            ibanControllers[i].value.text.isNotEmpty) {
+                          coordenadas.add(CoordenadaBancariaModel(
+                              coordenada: ibanControllers[i].value.text,
+                              conta: contaControllers[i].value.text));
+                        } else if (contaControllers[i].value.text.isNotEmpty !=
+                            ibanControllers[i].value.text.isNotEmpty) {
+                          AppUtil.snackBar(context,
+                              "Um dos campos bancarios(Numero de Conta, IBAN) numero ${i + 1} nao esta preenchido! Por favor preencha e tente novan«mente");
+                          return;
+                        }
+                      }
+
+                      _cadastrarEmpresa(EmpresaModel(
+                          nome: nomeController.value.text,
+                          nif: nifController.value.text,
+                          email: emailController.value.text,
+                          endereco: enderecoController.value.text,
+                          cidade: cidadeController.value.text,
+                          contactos: contactos));
+                      // ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      //     content: Text("Empresa Cadastrada com sucesso!!!")));
                     }
                   },
                   child: const Text("Cadastrar Empresa"))
             ],
           ),
         ));
+  }
+
+  Future<void> _cadastrarEmpresa(EmpresaModel empresa) async {
+    print(empresa);
   }
 
   Widget _showLogoOrText(String path) {

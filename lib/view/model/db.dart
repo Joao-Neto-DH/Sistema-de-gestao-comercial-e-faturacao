@@ -24,14 +24,6 @@ class DB {
 
   Future<void> _generateTable(Database? db) async {
     await db!.execute('''
-    CREATE TABLE IF NOT EXISTS usuarios (
-        id    INTEGER      PRIMARY KEY AUTOINCREMENT,
-        email VARCHAR (60) NOT NULL
-                          UNIQUE,
-        nome  VARCHAR (60) NOT NULL,
-        senha VARCHAR (60) NOT NULL
-    );
-    
     CREATE TABLE IF NOT EXISTS clientes (
         id       INTEGER        PRIMARY KEY AUTOINCREMENT,
         nome     VARCHAR (60)   NOT NULL,
@@ -52,12 +44,8 @@ class DB {
         empresa_id INTEGER      NOT NULL
                                 REFERENCES empresa (id),
         telefone   VARCHAR (14) NOT NULL,
-        website    VARCHAR (60),
-        email      VARCHAR (60) NOT NULL,
         UNIQUE (
-            telefone,
-            website,
-            email
+            telefone
         )
     );
 
@@ -82,11 +70,14 @@ class DB {
         nif      VARCHAR (20) NOT NULL,
         endereco VARCHAR (60) NOT NULL,
         cidade   VARCHAR (60) NOT NULL,
+        website    VARCHAR (60),
+        email      VARCHAR (60) NOT NULL,
         UNIQUE (
             nome,
             nif,
             endereco,
-            cidade
+            website,
+            email
         )
     );
 
@@ -131,7 +122,6 @@ class DB {
         )
         REFERENCES clientes (id) 
     );
-
     ''');
   }
 
@@ -140,24 +130,5 @@ class DB {
       await _db!.close();
       _db = null;
     }
-  }
-
-  Future<int> insert() async {
-    if (_db != null && _db!.isOpen) {
-      return await _db!.insert("clientes", <String, Object>{
-        "nome": "Delcio",
-        "endereco": "Viana",
-        "nif": "123456",
-        "email": "joaolima88@gmial.com"
-      });
-    }
-    return -1;
-  }
-
-  Future<List<Map<String, Object?>>> get all async {
-    if (_db != null && _db!.isOpen) {
-      return await _db!.rawQuery("select * from clientes");
-    }
-    return [];
   }
 }

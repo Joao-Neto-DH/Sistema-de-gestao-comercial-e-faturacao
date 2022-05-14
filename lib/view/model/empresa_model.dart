@@ -4,7 +4,9 @@ class EmpresaModel {
   String nif;
   String endereco;
   String cidade;
-  var contactos = <Contacto>[];
+  var contactos = <ContactoModel>[];
+  String email;
+  String? website;
 
   EmpresaModel(
       {this.id,
@@ -12,6 +14,8 @@ class EmpresaModel {
       required this.nif,
       required this.endereco,
       required this.cidade,
+      required this.email,
+      this.website,
       required this.contactos});
 
   Map<String, Object?> get toMap => {
@@ -19,17 +23,21 @@ class EmpresaModel {
         "nome": nome,
         "nif": nif,
         "endereco": endereco,
-        "cidade": cidade
+        "cidade": cidade,
+        "email": email,
+        "website": website
       };
 
   factory EmpresaModel.fromMap(
-      Map<String, dynamic> empresa, List<Contacto> contactos) {
+      Map<String, dynamic> empresa, List<ContactoModel> contactos) {
     return EmpresaModel(
         id: empresa["id"],
         nome: empresa["nome"],
         nif: empresa["nif"],
         endereco: empresa["endereco"],
         cidade: empresa["cidade"],
+        email: empresa["email"],
+        website: empresa["website"],
         contactos: contactos);
   }
   @override
@@ -49,39 +57,51 @@ class EmpresaModel {
       nif.hashCode ^
       nome.hashCode ^
       endereco.hashCode ^
-      cidade.hashCode;
+      cidade.hashCode ^
+      email.hashCode ^
+      website.hashCode;
+
+  @override
+  String toString() {
+    return "$email - $nif - $nome - $endereco - $cidade - $email - $website - $contactos";
+  }
 }
 
-class Contacto {
+class ContactoModel {
   int? id;
   String telefone;
-  String? website;
-  String? email;
+  // String? website;
+  // String? email;
 
-  Contacto({this.id, this.website, this.email, required this.telefone});
+  ContactoModel({this.id, required this.telefone});
 
   Map<String, Object?> get toMap {
-    return {"id": id, "telefone": telefone, "website": website, "email": email};
+    return {
+      "id": id,
+      "telefone": telefone,
+    };
   }
 
-  factory Contacto.fromMap(Map<String, dynamic> contacto) {
-    return Contacto(
+  factory ContactoModel.fromMap(Map<String, dynamic> contacto) {
+    return ContactoModel(
       id: contacto["id"],
       telefone: contacto["telefone"],
-      website: contacto["website"],
-      email: contacto["email"],
     );
   }
   @override
   bool operator ==(Object other) {
-    return other is Contacto &&
+    return other is ContactoModel &&
         other.id == id &&
-        other.telefone == telefone &&
-        other.website == website &&
-        other.email == email;
+        other.telefone == telefone;
+    // other.website == website &&
+    // other.email == email;
   }
 
   @override
-  int get hashCode =>
-      id.hashCode ^ telefone.hashCode ^ website.hashCode ^ email.hashCode;
+  int get hashCode => id.hashCode ^ telefone.hashCode;
+
+  @override
+  String toString() {
+    return "$id - $telefone";
+  }
 }
