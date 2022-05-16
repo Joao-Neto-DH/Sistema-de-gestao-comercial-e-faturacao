@@ -21,7 +21,7 @@ class ProdutoDAO {
 
   Future<int> insert(ProdutoModel produto) async {
     var db = await DB.instace.database;
-    return db!.insert(_table, {}); //  preencher
+    return db!.insert(_table, produto.toMap); //  preencher
   }
 
   Future<int> update(ProdutoModel produto) async {

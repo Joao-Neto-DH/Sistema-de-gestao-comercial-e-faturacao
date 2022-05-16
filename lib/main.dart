@@ -41,7 +41,7 @@ class GestaoComercial extends StatelessWidget {
         "/produtos": (context) => MainScreen(
             title: "Produtos/Serviços", body: const ProdutosServicos()),
         "/clientes": (context) =>
-            MainScreen(title: "Clientes", body: const ClienteScreen()),
+            MainScreen(title: "Clientes", body: ClienteScreen()),
         "/definiçoes": (context) =>
             MainScreen(title: "Definiçoes", body: const DefinicoesScreen()),
         "/stock": (context) =>

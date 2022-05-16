@@ -32,7 +32,7 @@ class Validator {
     return null;
   }
 
-  static String? validateNotEmpty(String value) {
-    return value.isEmpty ? "Este campo não pode ser vazio" : null;
+  static String? validateNotEmpty(String? value) {
+    return value!.trim().isEmpty ? "Este campo não pode ser vazio" : null;
   }
 }

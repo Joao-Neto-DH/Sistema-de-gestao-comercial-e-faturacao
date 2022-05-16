@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:sistema_de_gestao_comercial/dao/produto_dao.dart';
+import 'package:sistema_de_gestao_comercial/model/produto_model.dart';
 import 'package:sistema_de_gestao_comercial/util.dart';
+import 'package:sistema_de_gestao_comercial/validator.dart';
 import '../components/text_form_field_decorated.dart';
 
 class ProdutosServicos extends StatefulWidget {
@@ -12,10 +15,16 @@ class ProdutosServicos extends StatefulWidget {
 class _ProdutosServicosState extends State<ProdutosServicos> {
   var _hasIVA = true;
   var _hasStock = true;
+  final formKey = GlobalKey<FormState>();
+
+  final nomeController = TextEditingController();
+  final precoController = TextEditingController();
+  final qtdController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Form(
+      key: formKey,
       child: SingleChildScrollView(
           padding: AppUtil.paddingBody,
           child: Column(
@@ -29,19 +38,27 @@ class _ProdutosServicosState extends State<ProdutosServicos> {
               const Divider(),
               const Text("Nome do produto/serviço"),
               AppUtil.spaceLabelField,
-              TextFormFieldDecorated(hintText: "Nome do produto/serviço"),
+
+              TextFormFieldDecorated(
+                hintText: "Nome do produto/serviço",
+                controller: nomeController,
+                validator: Validator.validateName,
+              ),
               AppUtil.spaceFields,
               const Text("Preço do produto/serviço"),
               AppUtil.spaceLabelField,
               TextFormFieldDecorated(
                 hintText: "Preço do produto/serviço",
                 keyboardType: TextInputType.number,
+                controller: precoController,
+                validator: Validator.validateNotEmpty,
               ),
               AppUtil.spaceFields,
               const Text("Referencia"),
               AppUtil.spaceLabelField,
               TextFormFieldDecorated(
                 hintText: "Referencia",
+                enabled: false,
               ),
               AppUtil.spaceFields,
               //checkboxes de IVA e Stock
@@ -69,9 +86,26 @@ class _ProdutosServicosState extends State<ProdutosServicos> {
                 enabled: _hasStock,
                 hintText: "Quantidade em Stock",
                 keyboardType: TextInputType.number,
+                controller: qtdController,
+                validator: (value) =>
+                    _hasStock ? Validator.validateNotEmpty(value) : null,
               ),
               AppUtil.spaceFields,
-              ElevatedButton(onPressed: () {}, child: const Text("Salvar")),
+              ElevatedButton(
+                  onPressed: () {
+                    if (formKey.currentState!.validate()) {
+                      AppUtil.snackBar(context, "info");
+                      _cadastrarProduto(ProdutoModel(
+                        nome: nomeController.value.text,
+                        preco: double.parse(precoController.value.text),
+                        stock: qtdController.value.text.isEmpty
+                            ? -1
+                            : int.parse(qtdController.value.text),
+                        iva: _hasIVA,
+                      ));
+                    }
+                  },
+                  child: const Text("Salvar")),
               AppUtil.spaceLabelField,
               ElevatedButton(onPressed: () {}, child: const Text("Alterar")),
               AppUtil.spaceLabelField,
@@ -80,5 +114,11 @@ class _ProdutosServicosState extends State<ProdutosServicos> {
             ],
           )),
     );
+  }
+
+  void _cadastrarProduto(ProdutoModel produto) async {
+    final dao = ProdutoDAO();
+    print(await dao.insert(produto));
+    print(await dao.all);
   }
 }

@@ -80,8 +80,6 @@ class DB {
         email    VARCHAR (60)   NOT NULL,
         credito  DECIMAL (8, 2),
         UNIQUE (
-            nome,
-            endereco,
             nif,
             email
         )
