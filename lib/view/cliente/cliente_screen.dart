@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import '../../dao/cliente_dao.dart';
 
 import '../../util.dart';
 import '../components/text_form_field_decorated.dart';
+import '../../model/cliente_model.dart';
 
 class ClienteScreen extends StatelessWidget {
   const ClienteScreen({Key? key}) : super(key: key);
@@ -67,7 +69,17 @@ class ClienteScreen extends StatelessWidget {
           ),
           AppUtil.spaceFields,
           ElevatedButton(
-              onPressed: () {}, child: const Text("Cadastrar cliente")),
+              onPressed: () async {
+                final res = await _cadastrarClieente(ClienteModel(
+                    nome: "nome",
+                    nif: "nif",
+                    endereco: "endereco",
+                    email: "email",
+                    credito: 10));
+
+                print(res);
+              },
+              child: const Text("Cadastrar cliente")),
           AppUtil.spaceFields,
           ElevatedButton(
               onPressed: () {}, child: const Text("Alterar dados do cliente")),
@@ -82,5 +94,12 @@ class ClienteScreen extends StatelessWidget {
         ],
       ),
     ));
+  }
+
+  Future<int> _cadastrarClieente(ClienteModel cliente) async {
+    final dao = ClienteDAO();
+    final res = await dao.insert(cliente);
+    print(await dao.all);
+    return res;
   }
 }

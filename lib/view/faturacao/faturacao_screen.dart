@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sistema_de_gestao_comercial/util.dart';
 import 'package:sistema_de_gestao_comercial/view/components/text_form_field_decorated.dart';
 import 'package:sistema_de_gestao_comercial/view/empresa/empresa_screen.dart';
-import 'package:sistema_de_gestao_comercial/view/model/db.dart';
+import '../../model/db.dart';
 
 class FaturacaoScreen extends StatefulWidget {
   const FaturacaoScreen({Key? key}) : super(key: key);

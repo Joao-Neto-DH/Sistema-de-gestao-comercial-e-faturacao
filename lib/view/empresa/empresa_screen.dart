@@ -2,8 +2,13 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:sistema_de_gestao_comercial/util.dart';
 import 'package:sistema_de_gestao_comercial/validator.dart';
-import 'package:sistema_de_gestao_comercial/view/model/coordenada_bancaria_model.dart';
-import 'package:sistema_de_gestao_comercial/view/model/empresa_model.dart';
+import '../../dao/contacto_dao.dart';
+import '../../dao/coordenada_bancaria_dao.dart';
+import '../../dao/empresa_dao.dart';
+import '../../dao/logo_dao.dart';
+import '../../model/coordenada_bancaria_model.dart';
+import '../../model/empresa_model.dart';
+import '../../model/logo_model.dart';
 import './load_image.dart';
 import '../components/text_form_field_decorated.dart';
 
@@ -246,7 +251,7 @@ class _EmpresaScreenState extends State<EmpresaScreen> {
               _showLogoOrText(_backgroundImagePath),
               AppUtil.spaceFields,
               ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
                     if (formKey.currentState!.validate()) {
                       final contactos = <ContactoModel>[];
                       final coordenadas = <CoordenadaBancariaModel>[];
@@ -272,13 +277,15 @@ class _EmpresaScreenState extends State<EmpresaScreen> {
                         }
                       }
 
-                      _cadastrarEmpresa(EmpresaModel(
+                      var res = await _cadastrarEmpresa(EmpresaModel(
                           nome: nomeController.value.text,
                           nif: nifController.value.text,
                           email: emailController.value.text,
                           endereco: enderecoController.value.text,
                           cidade: cidadeController.value.text,
                           contactos: contactos));
+                      await _cadastrarCoordenadas(res, coordenadas);
+
                       // ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                       //     content: Text("Empresa Cadastrada com sucesso!!!")));
                     }
@@ -289,8 +296,74 @@ class _EmpresaScreenState extends State<EmpresaScreen> {
         ));
   }
 
-  Future<void> _cadastrarEmpresa(EmpresaModel empresa) async {
-    print(empresa);
+  Future<void> _cadastrarLogos(int empresaID) async {
+    final logoDAO = LogoDAO();
+    final logos = <LogoModel>[];
+
+    logos.add(LogoModel(
+        logo: _logoImagePath,
+        empresaID: empresaID,
+        isFundo: _logoImagePath == _backgroundImagePath));
+
+    if (!(_logoImagePath == _backgroundImagePath)) {
+      logos.add(LogoModel(
+          logo: _backgroundImagePath,
+          empresaID: empresaID,
+          isFundo: _logoImagePath == _backgroundImagePath));
+    }
+
+    for (var logo in logos) {
+      try {
+        await logoDAO.insert(logo);
+      } catch (e) {
+        print("Ocorreu um erro nas imagens $e");
+      }
+    }
+    // return ;
+  }
+
+  Future<void> _cadastrarCoordenadas(
+      int empresaID, List<CoordenadaBancariaModel> coordenadas) async {
+    final coorDAO = CoordenadaBancariaDAO();
+
+    for (var coordenada in coordenadas) {
+      try {
+        await coorDAO.insert(coordenada);
+      } catch (e) {
+        print("Ocorreu um erro nas coordenadas $e");
+      }
+    }
+  }
+
+  Future<int> _cadastrarEmpresa(EmpresaModel empresa) async {
+    final empDAO = EmpresaDAO();
+    int empresaID;
+
+    try {
+      empresaID = await empDAO.insert(empresa);
+    } catch (e) {
+      empresaID = -1;
+      print("Ocorreu um erro na empresa");
+    }
+
+    if (empresaID > 0) {
+      final contDAO = ContactoDAO();
+
+      for (var contacto in empresa.contactos) {
+        contacto.empresaID = empresaID;
+        try {
+          await contDAO.insert(contacto);
+        } catch (e) {
+          print("Ocorreu um erro nos contactos $e");
+        }
+      }
+
+      await _cadastrarLogos(empresaID);
+    }
+
+    return empresaID;
+
+    // print(empresa);
   }
 
   Widget _showLogoOrText(String path) {

@@ -1,6 +1,6 @@
-import 'package:sistema_de_gestao_comercial/view/model/coordenada_bancaria_model.dart';
-import 'package:sistema_de_gestao_comercial/view/model/db.dart';
-// import 'package:sistema_de_gestao_comercial/view/model/produto_model.dart';
+import '../model/coordenada_bancaria_model.dart';
+import '../model/db.dart';
+// import '../model/produto_model.dart';
 
 class CoordenadaBancariaDAO {
   static const _table = "coordenadas";

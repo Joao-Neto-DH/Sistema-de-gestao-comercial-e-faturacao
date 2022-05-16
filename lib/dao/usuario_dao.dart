@@ -1,4 +1,4 @@
-import 'package:sistema_de_gestao_comercial/view/model/usuario_model.dart';
+import '../model/usuario_model.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../model/db.dart';

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sistema_de_gestao_comercial/validator.dart';
-import 'package:sistema_de_gestao_comercial/view/dao/usuario_dao.dart';
-import 'package:sistema_de_gestao_comercial/view/model/usuario_model.dart';
+import '../../dao/usuario_dao.dart';
+import '../../model/usuario_model.dart';
 import '../components/input_text_widget.dart';
 // import './login_widget.dart';
 // import './recover_password_widget.dart';
@@ -119,6 +119,7 @@ class _SignInState extends State<SignIn> {
           }
         }
       } catch (e) {
+        print(e);
         AppUtil.snackBar(context,
             "Nao possivel fazer o login. Certifique-se que este usuario existe e tente novamente!");
       }

@@ -69,15 +69,17 @@ class EmpresaModel {
 
 class ContactoModel {
   int? id;
+  int? empresaID;
   String telefone;
   // String? website;
   // String? email;
 
-  ContactoModel({this.id, required this.telefone});
+  ContactoModel({this.id, this.empresaID, required this.telefone});
 
   Map<String, Object?> get toMap {
     return {
       "id": id,
+      "empresa_id": empresaID,
       "telefone": telefone,
     };
   }
@@ -85,6 +87,7 @@ class ContactoModel {
   factory ContactoModel.fromMap(Map<String, dynamic> contacto) {
     return ContactoModel(
       id: contacto["id"],
+      empresaID: contacto["empresa_id"],
       telefone: contacto["telefone"],
     );
   }
@@ -92,16 +95,17 @@ class ContactoModel {
   bool operator ==(Object other) {
     return other is ContactoModel &&
         other.id == id &&
+        other.empresaID == empresaID &&
         other.telefone == telefone;
     // other.website == website &&
     // other.email == email;
   }
 
   @override
-  int get hashCode => id.hashCode ^ telefone.hashCode;
+  int get hashCode => id.hashCode ^ empresaID.hashCode ^ telefone.hashCode;
 
   @override
   String toString() {
-    return "$id - $telefone";
+    return "$id - $empresaID - $telefone";
   }
 }

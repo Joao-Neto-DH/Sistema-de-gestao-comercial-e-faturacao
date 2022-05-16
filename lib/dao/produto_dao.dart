@@ -1,5 +1,5 @@
-import 'package:sistema_de_gestao_comercial/view/model/db.dart';
-import 'package:sistema_de_gestao_comercial/view/model/produto_model.dart';
+import '../model/db.dart';
+import '../model/produto_model.dart';
 
 class ProdutoDAO {
   static const _table = "produtos";

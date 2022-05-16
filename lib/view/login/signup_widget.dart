@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sistema_de_gestao_comercial/validator.dart';
-import 'package:sistema_de_gestao_comercial/view/dao/usuario_dao.dart';
-import 'package:sistema_de_gestao_comercial/view/model/usuario_model.dart';
+import '../../dao/usuario_dao.dart';
+import '../../model/usuario_model.dart';
 import '../components/input_text_widget.dart';
 import 'package:sistema_de_gestao_comercial/util.dart';
 
@@ -79,7 +79,9 @@ class SignUp extends StatelessWidget {
                   passwordController.text = "";
                   Form.of(context)!.reset();
                 } catch (e) {
-                  // print(await all());
+                  print(e);
+                  var dao = UsuarioDAO();
+                  print(await dao.all);
                   AppUtil.snackBar(context,
                       "Não foi possivel fazer o cadastro. Este Email ja esta a ser utilizado por outro usuario!");
                 }
