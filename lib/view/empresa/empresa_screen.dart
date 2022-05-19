@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:sistema_de_gestao_comercial/controller/empresa_controller.dart';
 import 'package:sistema_de_gestao_comercial/util.dart';
 import 'package:sistema_de_gestao_comercial/validator.dart';
-import '../../dao/contacto_dao.dart';
-import '../../dao/coordenada_bancaria_dao.dart';
-import '../../dao/empresa_dao.dart';
-import '../../dao/logo_dao.dart';
+// import '../../dao/contacto_dao.dart';
+// import '../../dao/coordenada_bancaria_dao.dart';
+// import '../../dao/empresa_dao.dart';
+// import '../../dao/logo_dao.dart';
 import '../../model/coordenada_bancaria_model.dart';
 import '../../model/empresa_model.dart';
 import '../../model/logo_model.dart';
@@ -284,10 +284,11 @@ class _EmpresaScreenState extends State<EmpresaScreen> {
                           email: emailController.value.text,
                           endereco: enderecoController.value.text,
                           cidade: cidadeController.value.text,
-                          contactos: contactos);
+                          contactos: contactos,
+                          coordenadas: coordenadas);
 
                       final res = await controller.cadastrarEmpresa(
-                          empresa, contactos, coordenadas, _cadastrarLogos());
+                          empresa, _cadastrarLogos());
                       // var res = await _cadastrarEmpresa(EmpresaModel(
                       //     nome: nomeController.value.text,
                       //     nif: nifController.value.text,
@@ -296,8 +297,8 @@ class _EmpresaScreenState extends State<EmpresaScreen> {
                       //     cidade: cidadeController.value.text,
                       //     contactos: contactos));
                       // await _cadastrarCoordenadas(res, coordenadas);
-
-                      if (res != 1) {
+                      // print("RESULTADO $res");
+                      if (res != -1) {
                         AppUtil.snackBar(
                             context, "Empresa Cadastrada com sucesso!!!");
                       } else {

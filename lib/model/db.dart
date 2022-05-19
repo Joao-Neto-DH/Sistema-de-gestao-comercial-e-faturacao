@@ -20,14 +20,13 @@ class DB {
     );
     try {
       await _generateTable(_db);
-    } catch (e) {
-      print(e);
-    }
+      // ignore: empty_catches
+    } catch (e) {}
     return _db;
   }
 
   Future<void> _generateTable(Database? db) async {
-    print("apagando tabelas");
+    // print("apagando tabelas");
     await db!.execute('''
     drop TABLE if exists clientes;
 
@@ -45,7 +44,7 @@ class DB {
 
     drop table if exists usuarios;
     ''');
-    print("criando de tabelas");
+    // print("criando de tabelas");
     await db.execute('''
     CREATE TABLE if not exists usuarios (
         id    INTEGER      PRIMARY KEY AUTOINCREMENT,
@@ -57,19 +56,12 @@ class DB {
 
     await db.execute('''CREATE TABLE if not exists empresas (
         id       INTEGER      PRIMARY KEY AUTOINCREMENT,
-        nome     VARCHAR (60) NOT NULL,
-        nif      VARCHAR (20) NOT NULL,
-        endereco VARCHAR (60) NOT NULL,
+        nome     VARCHAR (60) NOT NULL UNIQUE,
+        nif      VARCHAR (20) NOT NULL UNIQUE,
+        endereco VARCHAR (60) NOT NULL UNIQUE,
         cidade   VARCHAR (60) NOT NULL,
         website    VARCHAR (60),
-        email      VARCHAR (60) NOT NULL,
-        UNIQUE (
-            nome,
-            nif,
-            endereco,
-            website,
-            email
-        )
+        email      VARCHAR (60) NOT NULL UNIQUE
     )''');
 
     await db.execute('''CREATE TABLE if not exists clientes (
@@ -156,7 +148,7 @@ class DB {
 
   Future<void> close() async {
     if (_db != null && _db!.isOpen) {
-      print("fechando a conexao");
+      // print("fechando a conexao");
       await _db!.close();
       _db = null;
     }

@@ -79,9 +79,9 @@ class SignUp extends StatelessWidget {
                   passwordController.text = "";
                   Form.of(context)!.reset();
                 } catch (e) {
-                  print(e);
-                  var dao = UsuarioDAO();
-                  print(await dao.all);
+                  // print(e);
+                  // var dao = UsuarioDAO();
+                  // print(await dao.all);
                   AppUtil.snackBar(context,
                       "Não foi possivel fazer o cadastro. Este Email ja esta a ser utilizado por outro usuario!");
                 }

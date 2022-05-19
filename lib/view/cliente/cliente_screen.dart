@@ -91,7 +91,7 @@ class ClienteScreen extends StatelessWidget {
                   onPressed: () async {
                     if (formKey.currentState!.validate()) {
                       try {
-                        await _cadastrarClieente(ClienteModel(
+                        await _cadastrarCliente(ClienteModel(
                             nome: nomeController.value.text,
                             nif: nifController.value.text,
                             endereco: enderecoController.value.text,
@@ -103,7 +103,7 @@ class ClienteScreen extends StatelessWidget {
                         AppUtil.snackBar(
                             context, "Cliente cadastrado com sucesso");
                       } catch (e) {
-                        print(e);
+                        // print(e);
                         AppUtil.snackBar(context,
                             "Erro ao cadastrar o cliente. Verifique se nao existe um cliente com estes dados e tente novamente");
                       }
@@ -136,10 +136,10 @@ class ClienteScreen extends StatelessWidget {
         ));
   }
 
-  Future<int> _cadastrarClieente(ClienteModel cliente) async {
+  Future<int> _cadastrarCliente(ClienteModel cliente) async {
     final dao = ClienteDAO();
     final res = await dao.insert(cliente);
-    print(await dao.all);
+    // print(await dao.all);
     return res;
   }
 }

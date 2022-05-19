@@ -1,3 +1,5 @@
+import 'package:sistema_de_gestao_comercial/model/coordenada_bancaria_model.dart';
+
 class EmpresaModel {
   int? id;
   String nome;
@@ -5,6 +7,7 @@ class EmpresaModel {
   String endereco;
   String cidade;
   var contactos = <ContactoModel>[];
+  var coordenadas = <CoordenadaBancariaModel>[];
   String email;
   String? website;
 
@@ -16,7 +19,8 @@ class EmpresaModel {
       required this.cidade,
       required this.email,
       this.website,
-      required this.contactos});
+      required this.contactos,
+      required this.coordenadas});
 
   Map<String, Object?> get toMap => {
         "id": id,
@@ -29,7 +33,9 @@ class EmpresaModel {
       };
 
   factory EmpresaModel.fromMap(
-      Map<String, dynamic> empresa, List<ContactoModel> contactos) {
+      Map<String, dynamic> empresa,
+      List<ContactoModel> contactos,
+      List<CoordenadaBancariaModel> coordenadas) {
     return EmpresaModel(
         id: empresa["id"],
         nome: empresa["nome"],
@@ -38,7 +44,8 @@ class EmpresaModel {
         cidade: empresa["cidade"],
         email: empresa["email"],
         website: empresa["website"],
-        contactos: contactos);
+        contactos: contactos,
+        coordenadas: coordenadas);
   }
   @override
   bool operator ==(Object other) {
@@ -63,7 +70,7 @@ class EmpresaModel {
 
   @override
   String toString() {
-    return "$email - $nif - $nome - $endereco - $cidade - $email - $website - $contactos";
+    return "$email - $nif - $nome - $endereco - $cidade - $email - $website - $contactos - $coordenadas";
   }
 }
 

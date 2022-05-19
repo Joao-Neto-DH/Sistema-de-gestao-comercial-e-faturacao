@@ -118,7 +118,7 @@ class _ProdutosServicosState extends State<ProdutosServicos> {
 
   void _cadastrarProduto(ProdutoModel produto) async {
     final dao = ProdutoDAO();
-    print(await dao.insert(produto));
-    print(await dao.all);
+    await dao.insert(produto);
+    // print(await dao.all);
   }
 }
