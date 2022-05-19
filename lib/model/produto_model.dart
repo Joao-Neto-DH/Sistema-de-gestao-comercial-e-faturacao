@@ -20,7 +20,13 @@ class ProdutoModel {
   });
 
   Map<String, Object?> get toMap {
-    return {"id": id, "nome": nome, "preco": preco, "stock": stock, "iva": iva};
+    return {
+      "id": id,
+      "nome": nome,
+      "preco": preco,
+      "stock": stock,
+      "iva": iva == true ? 1 : 0
+    };
   }
 
   factory ProdutoModel.fromMap(Map<String, dynamic> produto) {
@@ -29,7 +35,7 @@ class ProdutoModel {
       nome: produto["nome"],
       preco: produto["preco"],
       stock: produto["stock"],
-      iva: produto["iva"],
+      iva: produto["iva"] == 1 ? true : false,
     );
   }
 

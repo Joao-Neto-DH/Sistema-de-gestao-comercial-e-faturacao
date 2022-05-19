@@ -26,7 +26,7 @@ class EmpresaDAO {
     return db!.delete(_empresaTable, where: "id = ?", whereArgs: [empresa.id]);
   }
 
-  Future<int?> insert(EmpresaModel empresa, List<LogoModel> logos) async {
+  Future<int?> insert(EmpresaModel empresa) async {
     // await DB.instace.close();
     var db = await DB.instace.database;
     const int erro = -1;
@@ -49,7 +49,7 @@ class EmpresaDAO {
         cords.add(res);
       }
 
-      for (var logo in logos) {
+      for (var logo in empresa.logos) {
         logo.empresaID = id;
         final res = await db?.insert(_imagemTable, logo.toMap);
         imgs.add(res);

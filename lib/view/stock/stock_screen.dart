@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sistema_de_gestao_comercial/controller/stock_controller.dart';
 import 'package:sistema_de_gestao_comercial/dao/produto_dao.dart';
 import 'package:sistema_de_gestao_comercial/validator.dart';
 import 'package:sistema_de_gestao_comercial/view/empresa/empresa_screen.dart';
@@ -15,6 +16,7 @@ class StockScreen extends StatefulWidget {
 
 class _StockScreenState extends State<StockScreen> {
   final nomeController = TextEditingController();
+  List<Map<String, Object?>> produtos = [];
 
   @override
   Widget build(BuildContext context) {
@@ -44,10 +46,18 @@ class _StockScreenState extends State<StockScreen> {
             validator: Validator.validateName,
             controller: nomeController,
           ),
+          _found(),
           AppUtil.spaceFields,
           ElevatedButton(
-              onPressed: () {
-                _produto(nomeController.value.text);
+              onPressed: () async {
+                final controller = StockController();
+                try {
+                  produtos =
+                      await controller.produto(nomeController.value.text);
+                  setState(() {});
+                } catch (e) {
+                  AppUtil.snackBar(context, "Produto/Serviço nao encontrado");
+                }
               },
               child: const Text("Pesquisar")),
           AppUtil.spaceLabelField,
@@ -82,9 +92,10 @@ class _StockScreenState extends State<StockScreen> {
     ));
   }
 
-  Future<List<Map<String, Object?>>> _produto(String nomeOrId) async {
-    final dao = ProdutoDAO();
-    final res = await dao.getProdutoByNomeOrId(nomeOrId);
-    return res;
+  Widget _found() {
+    if (produtos.isNotEmpty) {
+      return Text("Encontrados ${produtos.length} produto/serviços(s)");
+    }
+    return const Text("");
   }
 }

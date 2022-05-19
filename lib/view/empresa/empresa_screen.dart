@@ -285,10 +285,10 @@ class _EmpresaScreenState extends State<EmpresaScreen> {
                           endereco: enderecoController.value.text,
                           cidade: cidadeController.value.text,
                           contactos: contactos,
-                          coordenadas: coordenadas);
+                          coordenadas: coordenadas,
+                          logos: _logos());
 
-                      final res = await controller.cadastrarEmpresa(
-                          empresa, _cadastrarLogos());
+                      final res = await controller.cadastrarEmpresa(empresa);
                       // var res = await _cadastrarEmpresa(EmpresaModel(
                       //     nome: nomeController.value.text,
                       //     nif: nifController.value.text,
@@ -313,7 +313,7 @@ class _EmpresaScreenState extends State<EmpresaScreen> {
         ));
   }
 
-  List<LogoModel> _cadastrarLogos() {
+  List<LogoModel> _logos() {
     // final logoDAO = LogoDAO();
     final logos = <LogoModel>[];
 
