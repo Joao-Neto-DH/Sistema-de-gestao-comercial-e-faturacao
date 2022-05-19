@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sistema_de_gestao_comercial/controller/cliente_controller.dart';
 import 'package:sistema_de_gestao_comercial/validator.dart';
 import '../../dao/cliente_dao.dart';
 
@@ -90,8 +91,9 @@ class ClienteScreen extends StatelessWidget {
               ElevatedButton(
                   onPressed: () async {
                     if (formKey.currentState!.validate()) {
+                      final controller = ClienteController();
                       try {
-                        await _cadastrarCliente(ClienteModel(
+                        await controller.cadastrarCliente(ClienteModel(
                             nome: nomeController.value.text,
                             nif: nifController.value.text,
                             endereco: enderecoController.value.text,
@@ -108,14 +110,6 @@ class ClienteScreen extends StatelessWidget {
                             "Erro ao cadastrar o cliente. Verifique se nao existe um cliente com estes dados e tente novamente");
                       }
                     }
-                    // final res = await _cadastrarClieente(ClienteModel(
-                    //     nome: "nome",
-                    //     nif: "nif",
-                    //     endereco: "endereco",
-                    //     email: "email",
-                    //     credito: 10));
-
-                    // print(res);
                   },
                   child: const Text("Cadastrar cliente")),
               AppUtil.spaceFields,
@@ -134,12 +128,5 @@ class ClienteScreen extends StatelessWidget {
             ],
           ),
         ));
-  }
-
-  Future<int> _cadastrarCliente(ClienteModel cliente) async {
-    final dao = ClienteDAO();
-    final res = await dao.insert(cliente);
-    // print(await dao.all);
-    return res;
   }
 }

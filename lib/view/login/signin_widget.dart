@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sistema_de_gestao_comercial/controller/login_controller.dart';
 import 'package:sistema_de_gestao_comercial/validator.dart';
 import '../../dao/usuario_dao.dart';
 import '../../model/usuario_model.dart';
@@ -106,8 +107,10 @@ class _SignInState extends State<SignIn> {
 
   Future<void> _entrar(BuildContext context) async {
     if (Form.of(context)!.validate()) {
+      final controller = LoginController();
+
       try {
-        var user = await _login(UsuarioModel(
+        final user = await controller.login(UsuarioModel(
             email: emailController.value.text,
             senha: passwordController.value.text));
 
@@ -124,12 +127,6 @@ class _SignInState extends State<SignIn> {
             "Nao possivel fazer o login. Certifique-se que este usuario existe e tente novamente!");
       }
     }
-  }
-
-  Future<Map<String, Object?>> _login(UsuarioModel usuario) async {
-    var dao = UsuarioDAO();
-    var map = await dao.getUsuario(usuario);
-    return map[0];
   }
 
   void _optionLoginChange(OptionLogin value) {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sistema_de_gestao_comercial/controller/produto_controller.dart';
 import 'package:sistema_de_gestao_comercial/dao/produto_dao.dart';
 import 'package:sistema_de_gestao_comercial/model/produto_model.dart';
 import 'package:sistema_de_gestao_comercial/util.dart';
@@ -92,17 +93,24 @@ class _ProdutosServicosState extends State<ProdutosServicos> {
               ),
               AppUtil.spaceFields,
               ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
                     if (formKey.currentState!.validate()) {
-                      AppUtil.snackBar(context, "info");
-                      _cadastrarProduto(ProdutoModel(
-                        nome: nomeController.value.text,
-                        preco: double.parse(precoController.value.text),
-                        stock: qtdController.value.text.isEmpty
-                            ? -1
-                            : int.parse(qtdController.value.text),
-                        iva: _hasIVA,
-                      ));
+                      final controller = ProdutoController();
+                      try {
+                        await controller.cadastrarProduto(ProdutoModel(
+                          nome: nomeController.value.text,
+                          preco: double.parse(precoController.value.text),
+                          stock: qtdController.value.text.isEmpty
+                              ? -1
+                              : int.parse(qtdController.value.text),
+                          iva: _hasIVA,
+                        ));
+                        AppUtil.snackBar(
+                            context, "Produto/Serviço cadastrado com sucesso!");
+                      } catch (e) {
+                        AppUtil.snackBar(context,
+                            "Erro ao cadastrar Produto/Serviço. Certifique-se o mesmo produto nao exista e tente novamente!");
+                      }
                     }
                   },
                   child: const Text("Salvar")),
@@ -114,11 +122,5 @@ class _ProdutosServicosState extends State<ProdutosServicos> {
             ],
           )),
     );
-  }
-
-  void _cadastrarProduto(ProdutoModel produto) async {
-    final dao = ProdutoDAO();
-    await dao.insert(produto);
-    // print(await dao.all);
   }
 }

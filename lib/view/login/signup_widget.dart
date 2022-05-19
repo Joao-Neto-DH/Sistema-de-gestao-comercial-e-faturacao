@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sistema_de_gestao_comercial/controller/login_controller.dart';
 import 'package:sistema_de_gestao_comercial/validator.dart';
 import '../../dao/usuario_dao.dart';
 import '../../model/usuario_model.dart';
@@ -67,16 +68,15 @@ class SignUp extends StatelessWidget {
         ElevatedButton(
             onPressed: () async {
               if (Form.of(context)!.validate()) {
+                final controller = LoginController();
+
                 try {
-                  await _signup(UsuarioModel(
+                  await controller.signup(UsuarioModel(
                       nome: nomeController.value.text,
                       email: emailController.value.text,
                       senha: passwordController.value.text));
                   AppUtil.snackBar(context, "Usuario criado com sucesso!");
 
-                  nomeController.text = "";
-                  emailController.text = "";
-                  passwordController.text = "";
                   Form.of(context)!.reset();
                 } catch (e) {
                   // print(e);
@@ -90,10 +90,5 @@ class SignUp extends StatelessWidget {
             child: const Text("Cadastrar"))
       ],
     );
-  }
-
-  Future<int> _signup(UsuarioModel usuario) async {
-    var dao = UsuarioDAO();
-    return await dao.insert(usuario);
   }
 }
