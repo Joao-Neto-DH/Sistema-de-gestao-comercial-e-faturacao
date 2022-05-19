@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:sistema_de_gestao_comercial/dao/produto_dao.dart';
+import 'package:sistema_de_gestao_comercial/validator.dart';
 import 'package:sistema_de_gestao_comercial/view/empresa/empresa_screen.dart';
 
 import '../../util.dart';
@@ -12,6 +14,8 @@ class StockScreen extends StatefulWidget {
 }
 
 class _StockScreenState extends State<StockScreen> {
+  final nomeController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -37,9 +41,15 @@ class _StockScreenState extends State<StockScreen> {
           AppUtil.spaceLabelField,
           TextFormFieldDecorated(
             hintText: "Nome do produto/serviço",
+            validator: Validator.validateName,
+            controller: nomeController,
           ),
           AppUtil.spaceFields,
-          ElevatedButton(onPressed: () {}, child: const Text("Pesquisar")),
+          ElevatedButton(
+              onPressed: () {
+                _produto(nomeController.value.text);
+              },
+              child: const Text("Pesquisar")),
           AppUtil.spaceLabelField,
           const HorizontalDividerWithLabel(
               label: "Detalhes do Produto/Serviço"),
@@ -70,5 +80,11 @@ class _StockScreenState extends State<StockScreen> {
         ],
       ),
     ));
+  }
+
+  Future<List<Map<String, Object?>>> _produto(String nomeOrId) async {
+    final dao = ProdutoDAO();
+    final res = await dao.getProdutoByNomeOrId(nomeOrId);
+    return res;
   }
 }

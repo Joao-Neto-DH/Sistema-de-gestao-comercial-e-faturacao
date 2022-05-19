@@ -32,6 +32,21 @@ class ProdutoModel {
       iva: produto["iva"],
     );
   }
+
+  ProdutoModel copyWith({
+    bool? iva,
+    String? nome,
+    double? preco,
+    int? stock,
+  }) {
+    return ProdutoModel(
+        id: id,
+        iva: this.iva,
+        nome: nome ?? this.nome,
+        preco: preco ?? this.preco,
+        stock: stock ?? this.stock);
+  }
+
   @override
   bool operator ==(Object other) {
     return other is ProdutoModel &&

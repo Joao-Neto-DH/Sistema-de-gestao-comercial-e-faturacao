@@ -11,7 +11,15 @@ class ProdutoDAO {
 
   Future<List<Map<String, Object?>>> getProduto(ProdutoModel produto) async {
     var db = await DB.instace.database;
-    return db!.query(_table, where: "id = ?", whereArgs: [produto.id]);
+    return db!
+        .query(_table, where: "id = ? or nome = ?", whereArgs: [produto.id]);
+  }
+
+  Future<List<Map<String, Object?>>> getProdutoByNomeOrId(
+      String nomeOrId) async {
+    var db = await DB.instace.database;
+    return db!.query(_table,
+        where: "id = ? or nome = ?", whereArgs: [nomeOrId, nomeOrId]);
   }
 
   Future<int> remove(ProdutoModel produto) async {

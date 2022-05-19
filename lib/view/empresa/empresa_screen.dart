@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:sistema_de_gestao_comercial/controller/empresa_controller.dart';
 import 'package:sistema_de_gestao_comercial/util.dart';
 import 'package:sistema_de_gestao_comercial/validator.dart';
 import '../../dao/contacto_dao.dart';
@@ -276,18 +277,33 @@ class _EmpresaScreenState extends State<EmpresaScreen> {
                           return;
                         }
                       }
-
-                      var res = await _cadastrarEmpresa(EmpresaModel(
+                      final controller = EmpresaController();
+                      final empresa = EmpresaModel(
                           nome: nomeController.value.text,
                           nif: nifController.value.text,
                           email: emailController.value.text,
                           endereco: enderecoController.value.text,
                           cidade: cidadeController.value.text,
-                          contactos: contactos));
-                      await _cadastrarCoordenadas(res, coordenadas);
+                          contactos: contactos);
 
-                      // ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                      //     content: Text("Empresa Cadastrada com sucesso!!!")));
+                      final res = await controller.cadastrarEmpresa(
+                          empresa, contactos, coordenadas, _cadastrarLogos());
+                      // var res = await _cadastrarEmpresa(EmpresaModel(
+                      //     nome: nomeController.value.text,
+                      //     nif: nifController.value.text,
+                      //     email: emailController.value.text,
+                      //     endereco: enderecoController.value.text,
+                      //     cidade: cidadeController.value.text,
+                      //     contactos: contactos));
+                      // await _cadastrarCoordenadas(res, coordenadas);
+
+                      if (res != 1) {
+                        AppUtil.snackBar(
+                            context, "Empresa Cadastrada com sucesso!!!");
+                      } else {
+                        AppUtil.snackBar(context,
+                            "Falha ao cadastrar a empresa. Verifique se estas informaçoes nao estao sendo utilizadas por outra empresa e tente novamente!");
+                      }
                     }
                   },
                   child: const Text("Cadastrar Empresa"))
@@ -296,75 +312,81 @@ class _EmpresaScreenState extends State<EmpresaScreen> {
         ));
   }
 
-  Future<void> _cadastrarLogos(int empresaID) async {
-    final logoDAO = LogoDAO();
+  List<LogoModel> _cadastrarLogos() {
+    // final logoDAO = LogoDAO();
     final logos = <LogoModel>[];
 
-    logos.add(LogoModel(
-        logo: _logoImagePath,
-        empresaID: empresaID,
-        isFundo: _logoImagePath == _backgroundImagePath));
-
-    if (!(_logoImagePath == _backgroundImagePath)) {
+    if (_logoImagePath != "") {
       logos.add(LogoModel(
-          logo: _backgroundImagePath,
-          empresaID: empresaID,
+          logo: _logoImagePath,
+          // empresaID: empresaID,
           isFundo: _logoImagePath == _backgroundImagePath));
-    }
 
-    for (var logo in logos) {
-      try {
-        await logoDAO.insert(logo);
-      } catch (e) {
-        print("Ocorreu um erro nas imagens $e");
+      if (!(_logoImagePath == _backgroundImagePath) &&
+          _backgroundImagePath != "") {
+        logos.add(LogoModel(
+            logo: _backgroundImagePath,
+            // empresaID: empresaID,
+            isFundo: _logoImagePath == _backgroundImagePath));
       }
     }
-    // return ;
+    return logos;
   }
 
-  Future<void> _cadastrarCoordenadas(
-      int empresaID, List<CoordenadaBancariaModel> coordenadas) async {
-    final coorDAO = CoordenadaBancariaDAO();
+  //   for (var logo in logos) {
+  //     try {
+  //       await logoDAO.insert(logo);
+  //     } catch (e) {
+  //       print("Ocorreu um erro nas imagens $e");
+  //     }
+  //   }
+  //   // return ;
+  // }
 
-    for (var coordenada in coordenadas) {
-      try {
-        await coorDAO.insert(coordenada);
-      } catch (e) {
-        print("Ocorreu um erro nas coordenadas $e");
-      }
-    }
-  }
+  // Future<void> _cadastrarCoordenadas(
+  //     int empresaID, List<CoordenadaBancariaModel> coordenadas) async {
+  //   final coorDAO = CoordenadaBancariaDAO();
 
-  Future<int> _cadastrarEmpresa(EmpresaModel empresa) async {
-    final empDAO = EmpresaDAO();
-    int empresaID;
+  //   for (var coordenada in coordenadas) {
+  //     try {
+  //       await coorDAO.insert(coordenada);
+  //     } catch (e) {
+  //       // print(coordenadas);
+  //       print("Ocorreu um erro nas coordenadas $e");
+  //     }
+  //   }
+  // }
 
-    try {
-      empresaID = await empDAO.insert(empresa);
-    } catch (e) {
-      empresaID = -1;
-      print("Ocorreu um erro na empresa");
-    }
+  // Future<int> _cadastrarEmpresa(EmpresaModel empresa) async {
+  //   final empDAO = EmpresaDAO();
+  //   int empresaID;
 
-    if (empresaID > 0) {
-      final contDAO = ContactoDAO();
+  //   try {
+  //     empresaID = await empDAO.insert(empresa);
+  //   } catch (e) {
+  //     empresaID = -1;
+  //     print("Ocorreu um erro na empresa");
+  //   }
 
-      for (var contacto in empresa.contactos) {
-        contacto.empresaID = empresaID;
-        try {
-          await contDAO.insert(contacto);
-        } catch (e) {
-          print("Ocorreu um erro nos contactos $e");
-        }
-      }
+  //   if (empresaID > 0) {
+  //     final contDAO = ContactoDAO();
 
-      await _cadastrarLogos(empresaID);
-    }
+  //     for (var contacto in empresa.contactos) {
+  //       contacto.empresaID = empresaID;
+  //       try {
+  //         await contDAO.insert(contacto);
+  //       } catch (e) {
+  //         print("Ocorreu um erro nos contactos $e");
+  //       }
+  //     }
 
-    return empresaID;
+  //     await _cadastrarLogos(empresaID);
+  //   }
 
-    // print(empresa);
-  }
+  // return empresaID;
+
+  // print(empresa);
+  // }
 
   Widget _showLogoOrText(String path) {
     return path != ""
