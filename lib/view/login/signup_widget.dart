@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sistema_de_gestao_comercial/controller/login_controller.dart';
 import 'package:sistema_de_gestao_comercial/validator.dart';
-import '../../dao/usuario_dao.dart';
+// import '../../dao/usuario_dao.dart';
 import '../../model/usuario_model.dart';
 import '../components/input_text_widget.dart';
 import 'package:sistema_de_gestao_comercial/util.dart';

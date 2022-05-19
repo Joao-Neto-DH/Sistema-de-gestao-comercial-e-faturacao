@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sistema_de_gestao_comercial/controller/produto_controller.dart';
-import 'package:sistema_de_gestao_comercial/dao/produto_dao.dart';
+// import 'package:sistema_de_gestao_comercial/dao/produto_dao.dart';
 import 'package:sistema_de_gestao_comercial/model/produto_model.dart';
 import 'package:sistema_de_gestao_comercial/util.dart';
 import 'package:sistema_de_gestao_comercial/validator.dart';

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sistema_de_gestao_comercial/controller/cliente_controller.dart';
 import 'package:sistema_de_gestao_comercial/validator.dart';
-import '../../dao/cliente_dao.dart';
+// import '../../dao/cliente_dao.dart';
 
 import '../../util.dart';
 import '../components/text_form_field_decorated.dart';
