@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:sistema_de_gestao_comercial/controller/stock_controller.dart';
-import 'package:sistema_de_gestao_comercial/dao/produto_dao.dart';
+// import 'package:sistema_de_gestao_comercial/controller/stock_controller.dart';
+// import 'package:sistema_de_gestao_comercial/dao/produto_dao.dart';
 import 'package:sistema_de_gestao_comercial/validator.dart';
 import 'package:sistema_de_gestao_comercial/view/empresa/empresa_screen.dart';
 
+import '../../controller/produto_controller.dart';
 import '../../util.dart';
 import '../components/text_form_field_decorated.dart';
 
@@ -17,6 +18,7 @@ class StockScreen extends StatefulWidget {
 class _StockScreenState extends State<StockScreen> {
   final nomeController = TextEditingController();
   List<Map<String, Object?>> produtos = [];
+  bool quantidade = false;
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +52,7 @@ class _StockScreenState extends State<StockScreen> {
           AppUtil.spaceFields,
           ElevatedButton(
               onPressed: () async {
-                final controller = StockController();
+                final controller = ProdutoController();
                 try {
                   produtos =
                       await controller.produto(nomeController.value.text);
@@ -70,7 +72,7 @@ class _StockScreenState extends State<StockScreen> {
           ),
           AppUtil.spaceLabelField,
           TextFormFieldDecorated(
-            initialValue: "12",
+            initialValue: quantidade ? "Sim" : "Nao",
             enabled: false,
           ),
           AppUtil.spaceFields,
@@ -79,6 +81,7 @@ class _StockScreenState extends State<StockScreen> {
           ),
           AppUtil.spaceLabelField,
           TextFormFieldDecorated(
+            enabled: quantidade != null,
             hintText: "Adicionar novo Stock",
           ),
           AppUtil.spaceLabelField,
@@ -94,6 +97,10 @@ class _StockScreenState extends State<StockScreen> {
 
   Widget _found() {
     if (produtos.isNotEmpty) {
+      // final qtd = produtos[0]["stock"];
+
+      quantidade = !quantidade;
+      // print(qtd);
       return Text("Encontrados ${produtos.length} produto/serviços(s)");
     }
     return const Text("");

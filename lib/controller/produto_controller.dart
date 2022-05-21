@@ -8,4 +8,9 @@ class ProdutoController {
     await dao.insert(produto);
     // print(await dao.all);
   }
+
+  Future<List<Map<String, Object?>>> produto(String nomeOrId) async {
+    final res = await dao.getProdutoByNomeOrId(nomeOrId);
+    return res;
+  }
 }

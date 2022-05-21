@@ -115,15 +115,12 @@ class DB {
 
     await db.execute('''CREATE TABLE if not exists produtos (
         id    INTEGER         PRIMARY KEY AUTOINCREMENT,
-        nome  VARCHAR (60)    NOT NULL,
+        nome  VARCHAR (60)    NOT NULL UNIQUE,
         preco DECIMAL (12, 2) NOT NULL,
         iva   BOOLEAN         NOT NULL
                               DEFAULT false,
         stock INTEGER         NOT NULL
-                              DEFAULT -1,
-        UNIQUE (
-            nome
-        )
+                              DEFAULT -1
     )''');
 
     await db.execute('''CREATE TABLE if not exists vendidos (
