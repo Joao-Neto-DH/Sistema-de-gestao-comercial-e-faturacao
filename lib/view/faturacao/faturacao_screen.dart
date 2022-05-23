@@ -135,6 +135,7 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
                           }
                           final item = ProdutoItem(
                             produto: _produto!,
+                            state: setState,
                             qtd: qtd,
                           );
                           item.onDeletePressed = () {
@@ -220,11 +221,14 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
       ]));
 }
 
+// ignore: must_be_immutable
 class ProdutoItem extends StatefulWidget {
-  ProdutoItem({Key? key, required this.produto, this.qtd = 0})
+  ProdutoItem(
+      {Key? key, required this.produto, required this.state, this.qtd = 0})
       : super(key: key);
   final ProdutoModel produto;
   void Function()? onDeletePressed;
+  void Function(VoidCallback fn) state;
   int qtd;
   @override
   State<ProdutoItem> createState() => _ProdutoItemState();
@@ -248,6 +252,7 @@ class _ProdutoItemState extends State<ProdutoItem> {
                   if (widget.produto.stock != -1 &&
                       widget.qtd < widget.produto.stock) {
                     widget.qtd++;
+                    widget.state(() {});
                   }
                 });
               },

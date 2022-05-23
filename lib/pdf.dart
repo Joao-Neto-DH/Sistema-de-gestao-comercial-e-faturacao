@@ -15,6 +15,8 @@ class PDFGenerator {
 
   addPage() {
     pdf.addPage(pw.MultiPage(
+      // footer: (context) => pw.Text("Rodape"),
+      pageFormat: PdfPageFormat.a4,
       build: (context) {
         return _content();
       },
@@ -99,7 +101,7 @@ class PDFGenerator {
   }
 
   pw.Widget _columnTitle(String title) {
-    return pw.Text("Nº", style: pw.TextStyle(fontWeight: pw.FontWeight.bold));
+    return pw.Text(title, style: pw.TextStyle(fontWeight: pw.FontWeight.bold));
   }
 
   pw.TableRow _row(Widget widget) {

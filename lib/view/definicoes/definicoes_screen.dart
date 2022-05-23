@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+// import 'package:flutter/widgets.dart';
 
 import '../../util.dart';
 
@@ -14,7 +15,10 @@ class DefinicoesScreen extends StatelessWidget {
         children: [
           AppUtil.spaceFields,
           ElevatedButton(
-              onPressed: () {}, child: const Text("Cadastrar utilizador")),
+              onPressed: () {
+                Navigator.pushNamed(context, "/signup");
+              },
+              child: const Text("Cadastrar utilizador")),
           AppUtil.spaceFields,
           ElevatedButton(onPressed: () {}, child: const Text("Alterar senha")),
           AppUtil.spaceFields,
