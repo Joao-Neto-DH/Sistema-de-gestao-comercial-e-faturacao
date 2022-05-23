@@ -269,7 +269,7 @@ class _ProdutoItemState extends State<ProdutoItem> {
                   }
                 });
               },
-              icon: const Icon(Icons.reduce_capacity),
+              icon: const Icon(Icons.minimize),
             ),
             IconButton(
               onPressed: widget.onDeletePressed,
