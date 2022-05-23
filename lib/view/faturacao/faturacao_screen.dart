@@ -3,6 +3,7 @@ import 'package:sistema_de_gestao_comercial/pdf.dart';
 import 'package:sistema_de_gestao_comercial/util.dart';
 import 'package:sistema_de_gestao_comercial/view/components/text_form_field_decorated.dart';
 import 'package:sistema_de_gestao_comercial/view/empresa/empresa_screen.dart';
+import 'package:permission_handler/permission_handler.dart';
 // import '../../model/db.dart';
 
 class FaturacaoScreen extends StatefulWidget {
@@ -100,10 +101,18 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
             Row(mainAxisAlignment: MainAxisAlignment.center, children: [
               ElevatedButton(
                   onPressed: () async {
-                    // final pdf = PDFGenerator();
-                    // pdf.addPage();
-                    // var file = await pdf.save();
-                    // print(await file.exists());
+                    var status = await Permission.storage.status;
+                    if (status.isDenied) {
+                      status = await Permission.storage.request();
+                    } else if (status.isPermanentlyDenied) {
+                      openAppSettings();
+                    }
+                    if (!status.isDenied && !status.isPermanentlyDenied) {
+                      final pdf = PDFGenerator();
+                      pdf.addPage();
+                      await pdf.save();
+                      // print(await file.exists());
+                    }
                   },
                   child: const Text("Faturar")),
               const SizedBox(
