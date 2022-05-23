@@ -80,22 +80,26 @@ class PDFGenerator {
                         bottom:
                             pw.BorderSide(color: PdfColors.black, width: 2))),
                 children: [
-                  pw.Text("Nº"),
+                  _columnTitle("Nº"),
                   pw.Spacer(),
-                  pw.Text("Produto/Serviço"),
+                  _columnTitle("Produto/Serviço"),
                   pw.Spacer(),
-                  pw.Text("Qtd."),
+                  _columnTitle("Qtd."),
                   pw.Spacer(),
-                  pw.Text("Preco Unit."),
+                  _columnTitle("Preco Unit."),
                   pw.Spacer(),
-                  pw.Text("IVA(14%)"),
+                  _columnTitle("IVA(14%)"),
                   pw.Spacer(),
-                  pw.Text("Total"),
+                  _columnTitle("Total"),
                 ]),
             pw.TableRow(children: [pw.SizedBox(height: 10)]),
             for (var item in itens) _row(item)
           ]),
     ];
+  }
+
+  pw.Widget _columnTitle(String title) {
+    return pw.Text("Nº", style: pw.TextStyle(fontWeight: pw.FontWeight.bold));
   }
 
   pw.TableRow _row(Widget widget) {
