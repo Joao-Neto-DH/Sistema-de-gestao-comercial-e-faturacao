@@ -22,7 +22,7 @@ class ProdutoModel {
   Map<String, Object?> get toMap {
     return {
       "id": id,
-      "nome": nome,
+      "nome": nome.toLowerCase(),
       "preco": preco,
       "stock": stock,
       "iva": iva == true ? 1 : 0
@@ -32,7 +32,7 @@ class ProdutoModel {
   factory ProdutoModel.fromMap(Map<String, dynamic> produto) {
     return ProdutoModel(
       id: produto["id"],
-      nome: produto["nome"],
+      nome: produto["nome"].toString().toUpperCase(),
       preco: produto["preco"] * 1.0,
       stock: produto["stock"],
       iva: produto["iva"] == 1 ? true : false,

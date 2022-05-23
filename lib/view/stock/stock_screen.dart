@@ -7,6 +7,8 @@ import 'package:sistema_de_gestao_comercial/view/empresa/empresa_screen.dart';
 
 import '../../controller/produto_controller.dart';
 import '../../util.dart';
+import '../components/dropdown_product.dart';
+import '../components/pesquisar_produto.dart';
 import '../components/text_form_field_decorated.dart';
 
 class StockScreen extends StatefulWidget {
@@ -21,17 +23,13 @@ class _StockScreenState extends State<StockScreen> {
   var _produtos = <ProdutoModel>[];
   final _quantidadeController = TextEditingController();
   ProdutoModel? _produto;
-  bool _stocavel = true;
-  final samples = ["name", "body", "some"];
-  String? _selected;
+  // bool _stocavel = true;
   @override
   void initState() {
     super.initState();
     if (_produtos.isNotEmpty) {
       _produto = _produtos[0];
     }
-
-    _selected = samples[0];
   }
 
   @override
@@ -62,24 +60,36 @@ class _StockScreenState extends State<StockScreen> {
             validator: Validator.validateName,
             controller: _nomeOrIDController,
           ),
-          _found(),
+          dropdownProduct(
+            _produtos,
+            _produto,
+            ((value) => setState(() {
+                  _produto = value;
+                  _quantidadeController.text = _produto!.stock.toString();
+                })),
+          ),
           AppUtil.spaceFields,
-          ElevatedButton(
-              onPressed: () async {
-                final controller = ProdutoController();
-                try {
-                  _produtos.clear();
-                  _produtos =
-                      await controller.produto(_nomeOrIDController.value.text);
-                  // for (var produto in res) {
-                  //   _produtos.add(ProdutoModel.fromMap(produto));
-                  // }
-                  setState(() {});
-                } catch (e) {
-                  AppUtil.snackBar(context, "Produto/Serviço nao encontrado");
-                }
-              },
-              child: const Text("Pesquisar")),
+          pesquisarProduto(() async {
+            final controller = ProdutoController();
+            try {
+              _produtos.clear();
+              _produtos =
+                  await controller.produto(_nomeOrIDController.value.text);
+              // for (var produto in res) {
+              //   _produtos.add(ProdutoModel.fromMap(produto));
+              // }
+              // setState(() {});
+              if (_produtos.isNotEmpty) {
+                _produto = _produtos[0];
+                _quantidadeController.text = _produto!.stock.toString();
+              } else {
+                _quantidadeController.text = "";
+              }
+              setState(() {});
+            } catch (e) {
+              AppUtil.snackBar(context, "Produto/Serviço nao encontrado");
+            }
+          }),
           AppUtil.spaceLabelField,
           const HorizontalDividerWithLabel(
               label: "Detalhes do Produto/Serviço"),
@@ -99,7 +109,7 @@ class _StockScreenState extends State<StockScreen> {
           ),
           AppUtil.spaceLabelField,
           TextFormFieldDecorated(
-            enabled: !_stocavel,
+            enabled: _produto == null ? false : _produto!.stock > 0,
             hintText: "Adicionar novo Stock",
             keyboardType: TextInputType.number,
           ),
@@ -114,35 +124,34 @@ class _StockScreenState extends State<StockScreen> {
     ));
   }
 
-  Widget _found() {
-    if (_produtos.isNotEmpty) {
-      // final qtd = produtos[0]["stock"];
-
-      // quantidade = !quantidade;
-      if (_produtos.length > 1) {
-        return DropdownButton<ProdutoModel>(
-            // hint: const Text("Seleciona o cliente"),
-            value: _produto,
-            items: _produtos
-                .map((e) => DropdownMenuItem(
-                      child: Text(e.nome),
-                      value: e,
-                    ))
-                .toList(),
-            onChanged: (value) {
-              // print(value);
-              setState(() {
-                _produto = value!;
-              });
-            });
-      }
-      _stocavel = _produtos[0].stock < 0;
-      _quantidadeController.text =
-          _stocavel ? "Produto nao estocavel" : _produtos[0].stock.toString();
-      // print(qtd);
-      return Text("Encontrados ${_produtos.length} produto/serviços(s)");
-    }
-    _quantidadeController.text = "";
-    return const Text("Nenhum produto encontrado");
-  }
+  // Widget _found() {
+  //   if (_produtos.isNotEmpty) {
+  //     // final qtd = produtos[0]["stock"];
+  //     // quantidade = !quantidade;
+  //     if (_produtos.length > 1) {
+  //       return DropdownButton<ProdutoModel>(
+  //           // hint: const Text("Seleciona o cliente"),
+  //           value: _produto,
+  //           items: _produtos
+  //               .map((e) => DropdownMenuItem(
+  //                     child: Text(e.nome),
+  //                     value: e,
+  //                   ))
+  //               .toList(),
+  //           onChanged: (value) {
+  //             // print(value);
+  //             setState(() {
+  //               _produto = value!;
+  //             });
+  //           });
+  //     }
+  //     _stocavel = _produtos[0].stock < 0;
+  //     _quantidadeController.text =
+  //         _stocavel ? "Produto nao estocavel" : _produtos[0].stock.toString();
+  //     // print(qtd);
+  //     return Text("Encontrados ${_produtos.length} produto/serviços(s)");
+  //   }
+  //   _quantidadeController.text = "";
+  //   return const Text("Nenhum produto encontrado");
+  // }
 }
