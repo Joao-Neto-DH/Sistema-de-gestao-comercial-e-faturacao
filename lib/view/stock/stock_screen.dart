@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sistema_de_gestao_comercial/model/produto_model.dart';
 // import 'package:sistema_de_gestao_comercial/controller/stock_controller.dart';
 // import 'package:sistema_de_gestao_comercial/dao/produto_dao.dart';
 import 'package:sistema_de_gestao_comercial/validator.dart';
@@ -16,9 +17,22 @@ class StockScreen extends StatefulWidget {
 }
 
 class _StockScreenState extends State<StockScreen> {
-  final nomeController = TextEditingController();
-  List<Map<String, Object?>> produtos = [];
-  bool quantidade = false;
+  final _nomeOrIDController = TextEditingController();
+  var _produtos = <ProdutoModel>[];
+  final _quantidadeController = TextEditingController();
+  ProdutoModel? _produto;
+  bool _stocavel = true;
+  final samples = ["name", "body", "some"];
+  String? _selected;
+  @override
+  void initState() {
+    super.initState();
+    if (_produtos.isNotEmpty) {
+      _produto = _produtos[0];
+    }
+
+    _selected = samples[0];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,9 +58,9 @@ class _StockScreenState extends State<StockScreen> {
           ),
           AppUtil.spaceLabelField,
           TextFormFieldDecorated(
-            hintText: "Nome do produto/serviço",
+            hintText: "Nome ou id do produto/serviço",
             validator: Validator.validateName,
-            controller: nomeController,
+            controller: _nomeOrIDController,
           ),
           _found(),
           AppUtil.spaceFields,
@@ -54,8 +68,12 @@ class _StockScreenState extends State<StockScreen> {
               onPressed: () async {
                 final controller = ProdutoController();
                 try {
-                  produtos =
-                      await controller.produto(nomeController.value.text);
+                  _produtos.clear();
+                  _produtos =
+                      await controller.produto(_nomeOrIDController.value.text);
+                  // for (var produto in res) {
+                  //   _produtos.add(ProdutoModel.fromMap(produto));
+                  // }
                   setState(() {});
                 } catch (e) {
                   AppUtil.snackBar(context, "Produto/Serviço nao encontrado");
@@ -72,7 +90,7 @@ class _StockScreenState extends State<StockScreen> {
           ),
           AppUtil.spaceLabelField,
           TextFormFieldDecorated(
-            initialValue: quantidade ? "Sim" : "Nao",
+            controller: _quantidadeController,
             enabled: false,
           ),
           AppUtil.spaceFields,
@@ -81,8 +99,9 @@ class _StockScreenState extends State<StockScreen> {
           ),
           AppUtil.spaceLabelField,
           TextFormFieldDecorated(
-            enabled: quantidade != null,
+            enabled: !_stocavel,
             hintText: "Adicionar novo Stock",
+            keyboardType: TextInputType.number,
           ),
           AppUtil.spaceLabelField,
           ElevatedButton(
@@ -96,13 +115,34 @@ class _StockScreenState extends State<StockScreen> {
   }
 
   Widget _found() {
-    if (produtos.isNotEmpty) {
+    if (_produtos.isNotEmpty) {
       // final qtd = produtos[0]["stock"];
 
-      quantidade = !quantidade;
+      // quantidade = !quantidade;
+      if (_produtos.length > 1) {
+        return DropdownButton<ProdutoModel>(
+            // hint: const Text("Seleciona o cliente"),
+            value: _produto,
+            items: _produtos
+                .map((e) => DropdownMenuItem(
+                      child: Text(e.nome),
+                      value: e,
+                    ))
+                .toList(),
+            onChanged: (value) {
+              // print(value);
+              setState(() {
+                _produto = value!;
+              });
+            });
+      }
+      _stocavel = _produtos[0].stock < 0;
+      _quantidadeController.text =
+          _stocavel ? "Produto nao estocavel" : _produtos[0].stock.toString();
       // print(qtd);
-      return Text("Encontrados ${produtos.length} produto/serviços(s)");
+      return Text("Encontrados ${_produtos.length} produto/serviços(s)");
     }
-    return const Text("");
+    _quantidadeController.text = "";
+    return const Text("Nenhum produto encontrado");
   }
 }

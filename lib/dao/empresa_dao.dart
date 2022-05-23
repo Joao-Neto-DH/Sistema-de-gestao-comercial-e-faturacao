@@ -2,7 +2,7 @@
 
 import '../model/db.dart';
 import '../model/empresa_model.dart';
-import '../model/logo_model.dart';
+// import '../model/logo_model.dart';
 // import '../model/produto_model.dart';
 
 class EmpresaDAO {

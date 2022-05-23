@@ -19,7 +19,7 @@ class ProdutoDAO {
       String nomeOrId) async {
     var db = await DB.instace.database;
     return db!.query(_table,
-        where: "id = ? or nome = ?", whereArgs: [nomeOrId, nomeOrId]);
+        where: "id = ? or nome like ?", whereArgs: [nomeOrId, nomeOrId]);
   }
 
   Future<int> remove(ProdutoModel produto) async {

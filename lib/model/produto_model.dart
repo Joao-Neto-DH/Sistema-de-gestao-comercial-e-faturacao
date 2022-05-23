@@ -33,7 +33,7 @@ class ProdutoModel {
     return ProdutoModel(
       id: produto["id"],
       nome: produto["nome"],
-      preco: produto["preco"],
+      preco: produto["preco"] * 1.0,
       stock: produto["stock"],
       iva: produto["iva"] == 1 ? true : false,
     );

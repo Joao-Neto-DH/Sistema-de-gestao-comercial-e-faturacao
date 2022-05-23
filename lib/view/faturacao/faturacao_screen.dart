@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sistema_de_gestao_comercial/pdf.dart';
 import 'package:sistema_de_gestao_comercial/util.dart';
 import 'package:sistema_de_gestao_comercial/view/components/text_form_field_decorated.dart';
 import 'package:sistema_de_gestao_comercial/view/empresa/empresa_screen.dart';
@@ -97,7 +98,14 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
           AppUtil.spaceLabelField,
           if (produtos.isNotEmpty)
             Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-              ElevatedButton(onPressed: () {}, child: const Text("Faturar")),
+              ElevatedButton(
+                  onPressed: () async {
+                    // final pdf = PDFGenerator();
+                    // pdf.addPage();
+                    // var file = await pdf.save();
+                    // print(await file.exists());
+                  },
+                  child: const Text("Faturar")),
               const SizedBox(
                 width: 10,
               ),

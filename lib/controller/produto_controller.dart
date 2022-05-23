@@ -9,8 +9,12 @@ class ProdutoController {
     // print(await dao.all);
   }
 
-  Future<List<Map<String, Object?>>> produto(String nomeOrId) async {
+  Future<List<ProdutoModel>> produto(String nomeOrId) async {
     final res = await dao.getProdutoByNomeOrId(nomeOrId);
-    return res;
+    final produtos = <ProdutoModel>[];
+    res.forEach((produto) {
+      produtos.add(ProdutoModel.fromMap(produto));
+    });
+    return produtos;
   }
 }
