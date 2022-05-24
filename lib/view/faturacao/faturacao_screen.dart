@@ -82,25 +82,7 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
                 }),
                 Row(
                   children: [
-                    Expanded(child: pesquisarProduto(() async {
-                      final controller = ProdutoController();
-                      try {
-                        _produtos.clear();
-                        _produtos = await controller
-                            .produto(_produtoNomeIdController!.value.text);
-                        // for (var produto in res) {
-                        //   _produtos.add(ProdutoModel.fromMap(produto));
-                        // }
-                        // setState(() {});
-                        if (_produtos.isNotEmpty) {
-                          _produto = _produtos[0];
-                        }
-                        setState(() {});
-                      } catch (e) {
-                        AppUtil.snackBar(
-                            context, "Produto/Serviço nao encontrado");
-                      }
-                    })),
+                    Expanded(child: pesquisarProduto(onPesquisarProduto)),
                     // const SizedBox(
                     //   width: 10,
                     // ),
@@ -121,37 +103,7 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
                 AppUtil.spaceFields,
                 Center(
                   child: ElevatedButton(
-                      onPressed: () {
-                        if (_produto != null) {
-                          final qtd =
-                              int.tryParse(_quantidadeController.value.text) ??
-                                  1;
-
-                          if (_produto!.stock != -1 &&
-                              (_produto!.stock < qtd || qtd < 0)) {
-                            AppUtil.snackBar(context,
-                                "Quantidade digitada nao pode ser maior que a quantidade em Stock nem menor que 0");
-                            return;
-                          }
-                          final item = ProdutoItem(
-                            produto: _produto!,
-                            state: setState,
-                            qtd: qtd,
-                          );
-                          item.onDeletePressed = () {
-                            setState(() {
-                              _itens.remove(item);
-                            });
-                          };
-                          setState(() {
-                            _itens.add(item);
-                            _produto = null;
-                          });
-                        } else {
-                          AppUtil.snackBar(
-                              context, "Nenhum produto selecionado");
-                        }
-                      },
+                      onPressed: onAddLista,
                       child: const Text("Adicionar a fatura")),
                 ),
                 AppUtil.spaceFields,
@@ -166,22 +118,7 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
           if (_itens.isNotEmpty)
             Row(mainAxisAlignment: MainAxisAlignment.center, children: [
               ElevatedButton(
-                  onPressed: () async {
-                    var status = await Permission.storage.status;
-                    if (status.isDenied) {
-                      status = await Permission.storage.request();
-                    } else if (status.isPermanentlyDenied) {
-                      openAppSettings();
-                    }
-                    if (!status.isDenied && !status.isPermanentlyDenied) {
-                      final pdf = PDFGenerator(_itens);
-                      pdf.addPage();
-                      await pdf.save();
-                      // print(await file.exists());
-                      AppUtil.snackBar(context, "Fatura salva com sucesso!");
-                    }
-                  },
-                  child: const Text("Faturar")),
+                  onPressed: onFaturar, child: const Text("Faturar")),
               const SizedBox(
                 width: 10,
               ),
@@ -190,6 +127,69 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
         ],
       ),
     );
+  }
+
+  void onPesquisarProduto() async {
+    final controller = ProdutoController();
+    try {
+      _produtos.clear();
+      _produtos =
+          await controller.produto(_produtoNomeIdController!.value.text);
+      // for (var produto in res) {
+      //   _produtos.add(ProdutoModel.fromMap(produto));
+      // }
+      // setState(() {});
+      if (_produtos.isNotEmpty) {
+        _produto = _produtos[0];
+      }
+      setState(() {});
+    } catch (e) {
+      AppUtil.snackBar(context, "Produto/Serviço nao encontrado");
+    }
+  }
+
+  void onAddLista() {
+    if (_produto != null) {
+      final qtd = int.tryParse(_quantidadeController.value.text) ?? 1;
+
+      if (_produto!.stock != -1 && (_produto!.stock < qtd || qtd < 0)) {
+        AppUtil.snackBar(context,
+            "Quantidade digitada nao pode ser maior que a quantidade em Stock nem menor que 0");
+        return;
+      }
+      final item = ProdutoItem(
+        produto: _produto!,
+        state: setState,
+        qtd: qtd,
+      );
+      item.onDeletePressed = () {
+        setState(() {
+          _itens.remove(item);
+        });
+      };
+      setState(() {
+        _itens.add(item);
+        _produto = null;
+      });
+    } else {
+      AppUtil.snackBar(context, "Nenhum produto selecionado");
+    }
+  }
+
+  void onFaturar() async {
+    var status = await Permission.storage.status;
+    if (status.isDenied) {
+      status = await Permission.storage.request();
+    } else if (status.isPermanentlyDenied) {
+      openAppSettings();
+    }
+    if (!status.isDenied && !status.isPermanentlyDenied) {
+      final pdf = PDFGenerator(_itens);
+      pdf.addPage();
+      await pdf.save();
+      // print(await file.exists());
+      AppUtil.snackBar(context, "Fatura salva com sucesso!");
+    }
   }
 
   Center _listaVazia() =>
@@ -266,6 +266,7 @@ class _ProdutoItemState extends State<ProdutoItem> {
                 setState(() {
                   if (widget.produto.stock != -1 && widget.qtd > 1) {
                     widget.qtd--;
+                    widget.state(() {});
                   }
                 });
               },
