@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:sistema_de_gestao_comercial/controller/cliente_controller.dart';
+import 'package:sistema_de_gestao_comercial/model/cliente_model.dart';
 import 'package:sistema_de_gestao_comercial/model/produto_model.dart';
 import 'package:sistema_de_gestao_comercial/pdf.dart';
 import 'package:sistema_de_gestao_comercial/util.dart';
@@ -19,14 +21,15 @@ class FaturacaoScreen extends StatefulWidget {
 
 class _FaturacaoScreenState extends State<FaturacaoScreen> {
   final _itens = <Widget>[];
-  final samples = ["Arroz", "Massa", "Peixe"];
-  var _selected = "Arroz";
+  var _clientes = <ClienteModel>[];
+  ClienteModel? _cliente;
   var _produtos = <ProdutoModel>[];
   ProdutoModel? _produto;
 
   final TextEditingController? _produtoNomeIdController =
       TextEditingController();
   final _quantidadeController = TextEditingController();
+  final _clienteController = TextEditingController();
   @override
   // void initState() {
   //   super.initState();
@@ -47,23 +50,36 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
                 const Text("Selecionar cliente"),
                 AppUtil.spaceLabelField,
                 TextFormFieldDecorated(
+                  controller: _clienteController,
                   hintText: "Selecione um cliente",
                 ),
-                DropdownButton(
+                AppUtil.spaceLabelField,
+                DropdownButton<ClienteModel>(
                     // hint: const Text("Seleciona o cliente"),
-                    value: _selected,
-                    items: samples
-                        .map((e) => DropdownMenuItem<String>(
-                              child: Text(e),
+                    value: _cliente,
+                    items: _clientes
+                        .map((e) => DropdownMenuItem(
+                              child: Text(e.nome),
                               value: e,
                             ))
                         .toList(),
                     onChanged: (value) {
                       // print(value);
-                      _selected = value as String;
+                      _cliente = value;
                       setState(() {});
                     }),
-                AppUtil.spaceFields,
+                // AppUtil.spaceFields,s
+                Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: onPesquisarCliente,
+                        child: const Text("Pesquisar"),
+                      ),
+                    ),
+                  ],
+                ),
+                AppUtil.spaceLabelField,
                 const HorizontalDividerWithLabel(
                     label: "Dados do produto/serviço"),
                 AppUtil.spaceFields,
@@ -129,6 +145,19 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
     );
   }
 
+  void onPesquisarCliente() async {
+    final controller = ClienteController();
+    final res =
+        await controller.getClienteByNomeOrId(_clienteController.value.text);
+    _clientes = res;
+    if (res.isNotEmpty) {
+      _cliente = _clientes[0];
+    } else {
+      _cliente = null;
+    }
+    setState(() {});
+  }
+
   void onPesquisarProduto() async {
     final controller = ProdutoController();
     try {
@@ -184,7 +213,14 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
       openAppSettings();
     }
     if (!status.isDenied && !status.isPermanentlyDenied) {
-      final pdf = PDFGenerator(_itens);
+      final pdf = PDFGenerator(_itens,
+          cliente: _cliente ??
+              ClienteModel(
+                  nome: "Desconhecido",
+                  nif: "Desconhecido",
+                  endereco: "Desconhecido",
+                  email: "Desconhecido",
+                  credito: 0));
       pdf.addPage();
       await pdf.save();
       // print(await file.exists());

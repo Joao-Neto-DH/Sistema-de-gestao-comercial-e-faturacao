@@ -4,6 +4,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:path/path.dart';
 import 'package:pdf/widgets.dart' as pw;
+import 'package:sistema_de_gestao_comercial/model/cliente_model.dart';
 import 'dart:io';
 
 import 'package:sistema_de_gestao_comercial/view/faturacao/faturacao_screen.dart';
@@ -11,7 +12,8 @@ import 'package:sistema_de_gestao_comercial/view/faturacao/faturacao_screen.dart
 class PDFGenerator {
   final pdf = pw.Document();
   final List<Widget> itens;
-  PDFGenerator(this.itens);
+  final ClienteModel cliente;
+  PDFGenerator(this.itens, {required this.cliente});
 
   addPage() {
     pdf.addPage(pw.MultiPage(
@@ -53,15 +55,15 @@ class PDFGenerator {
                     children: [
                       _titleWidget("CLIENTE"),
                       _spaceBetweenText(),
-                      pw.Text("Nome do cliente".toUpperCase()),
+                      pw.Text(cliente.nome.toUpperCase()),
                       _spaceBetweenText(),
-                      pw.Text("Endereço: "),
+                      pw.Text("Endereço: ${cliente.endereco}"),
                       _spaceBetweenText(),
-                      pw.Text("NIF: "),
+                      pw.Text("NIF: ${cliente.nif}"),
+                      // _spaceBetweenText(),
+                      // pw.Text("Telefone: "),
                       _spaceBetweenText(),
-                      pw.Text("Telefone: "),
-                      _spaceBetweenText(),
-                      pw.Text("Conta Conta: "),
+                      pw.Text("Email: ${cliente.email}"),
                     ]),
               ])), // Cabeçalho
       _spaceBetween(),

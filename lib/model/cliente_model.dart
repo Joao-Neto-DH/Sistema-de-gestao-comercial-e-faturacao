@@ -32,7 +32,7 @@ class ClienteModel {
         nif: cliente["nif"],
         endereco: cliente["endereco"],
         email: cliente["email"],
-        credito: cliente["credito"]);
+        credito: cliente["credito"] * 1.0);
   }
   @override
   bool operator ==(Object other) {

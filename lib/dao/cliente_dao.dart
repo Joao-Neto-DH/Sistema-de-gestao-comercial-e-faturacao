@@ -13,9 +13,15 @@ class ClienteDAO {
   Future<List<Map<String, Object?>>> getCliente(ClienteModel cliente) async {
     var db = await DB.instace.database;
     return db!.query(_table,
-        where: "id = ? like nome = ?",
+        where: "id = ? or nome like ?",
         whereArgs: [cliente.id, cliente.nome],
         limit: 1);
+  }
+
+  Future<List<Map<String, Object?>>> cliente(String nomeOrID) async {
+    var db = await DB.instace.database;
+    return db!.query(_table,
+        where: "id = ? or nome like ?", whereArgs: [nomeOrID, "%$nomeOrID%"]);
   }
 
   Future<int> remove(ClienteModel cliente) async {
