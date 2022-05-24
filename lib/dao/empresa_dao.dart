@@ -21,6 +21,19 @@ class EmpresaDAO {
     return db!.query(_empresaTable, where: "id = ?", whereArgs: [empresa.id]);
   }
 
+  Future<List<Map<String, Object?>>> empresa(String nomeOrID) async {
+    var db = await DB.instace.database;
+    return db!.query(_empresaTable,
+        where: "id = ? or nome like ?", whereArgs: [nomeOrID, "%$nomeOrID%"]);
+  }
+
+  Future<List<Map<String, Object?>>> empresaDados(
+      String table, int empresaID) async {
+    var db = await DB.instace.database;
+    return db!.rawQuery(
+        "select * from $table as t where t.empresa_id = ?", [empresaID]);
+  }
+
   Future<int> remove(EmpresaModel empresa) async {
     var db = await DB.instace.database;
     return db!.delete(_empresaTable, where: "id = ?", whereArgs: [empresa.id]);

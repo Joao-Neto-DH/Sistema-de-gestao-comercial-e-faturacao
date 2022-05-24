@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:sistema_de_gestao_comercial/controller/cliente_controller.dart';
+import 'package:sistema_de_gestao_comercial/controller/empresa_controller.dart';
 import 'package:sistema_de_gestao_comercial/model/cliente_model.dart';
+import 'package:sistema_de_gestao_comercial/model/empresa_model.dart';
 import 'package:sistema_de_gestao_comercial/model/produto_model.dart';
 import 'package:sistema_de_gestao_comercial/pdf.dart';
 import 'package:sistema_de_gestao_comercial/util.dart';
@@ -25,11 +27,14 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
   ClienteModel? _cliente;
   var _produtos = <ProdutoModel>[];
   ProdutoModel? _produto;
+  var _empresas = <EmpresaModel>[];
+  EmpresaModel? _empresa;
 
   final TextEditingController? _produtoNomeIdController =
       TextEditingController();
   final _quantidadeController = TextEditingController();
   final _clienteController = TextEditingController();
+  final _empresaController = TextEditingController();
   @override
   // void initState() {
   //   super.initState();
@@ -47,6 +52,55 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                const Text("Selecionar Empresa"),
+                AppUtil.spaceLabelField,
+                TextFormFieldDecorated(
+                  controller: _empresaController,
+                  hintText: "Selecione uma Empresa",
+                ),
+                AppUtil.spaceLabelField,
+                DropdownButton<EmpresaModel>(
+                    // hint: const Text("Seleciona o cliente"),
+                    value: _empresa,
+                    items: _empresas
+                        .map((e) => DropdownMenuItem(
+                              child: Text(e.nome),
+                              value: e,
+                            ))
+                        .toList(),
+                    onChanged: (value) {
+                      // print(value);
+                      setState(() {
+                        _empresa = value;
+                      });
+                    }),
+                // AppUtil.spaceFields,s
+                Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () async {
+                          final controller = EmpresaController();
+                          _empresas = await controller
+                              .getEmpresa(_empresaController.value.text);
+                          // print(res);
+                          if (_empresas.isNotEmpty) {
+                            _empresa = _empresas[0];
+                          } else {
+                            _empresa = null;
+                          }
+                          setState(() {});
+                        },
+                        child: const Text("Pesquisar"),
+                      ),
+                    ),
+                  ],
+                ),
+                AppUtil.spaceLabelField,
+                const HorizontalDividerWithLabel(
+                    label: "Dados do produto/serviço"),
+                AppUtil.spaceFields,
+                //Empresa
                 const Text("Selecionar cliente"),
                 AppUtil.spaceLabelField,
                 TextFormFieldDecorated(
@@ -138,7 +192,13 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
               const SizedBox(
                 width: 10,
               ),
-              OutlinedButton(onPressed: () {}, child: const Text("Cancelar"))
+              OutlinedButton(
+                  onPressed: () {
+                    setState(() {
+                      _itens.clear();
+                    });
+                  },
+                  child: const Text("Apagar Lista"))
             ])
         ],
       ),
@@ -213,18 +273,26 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
       openAppSettings();
     }
     if (!status.isDenied && !status.isPermanentlyDenied) {
-      final pdf = PDFGenerator(_itens,
-          cliente: _cliente ??
-              ClienteModel(
-                  nome: "Desconhecido",
-                  nif: "Desconhecido",
-                  endereco: "Desconhecido",
-                  email: "Desconhecido",
-                  credito: 0));
-      pdf.addPage();
-      await pdf.save();
-      // print(await file.exists());
-      AppUtil.snackBar(context, "Fatura salva com sucesso!");
+      if (_empresa != null) {
+        final pdf = PDFGenerator(_itens,
+            cliente: _cliente ??
+                ClienteModel(
+                    nome: "Desconhecido",
+                    nif: "Desconhecido",
+                    endereco: "Desconhecido",
+                    email: "Desconhecido",
+                    credito: 0));
+        pdf.addPage();
+        await pdf.save();
+        // print(await file.exists());
+        AppUtil.snackBar(context, "Fatura salva com sucesso!");
+        return;
+      }
+      AppUtil.snackBar(context,
+          "Nenhuma empresa selecionada! Por favor selecione uma empresa para faturar");
+    } else {
+      AppUtil.snackBar(context,
+          "O aplicativo nao tem permissao de acessar o armazenamento. Por Favor de permissao para poder continuar");
     }
   }
 
