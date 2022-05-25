@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class AppUtil {
   static const defaultPadding =
@@ -17,5 +18,10 @@ class AppUtil {
     final snackBar =
         SnackBar(duration: const Duration(seconds: 3), content: Text(info));
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
+  static String formatNumber(double number) {
+    final format = NumberFormat("#,###.00 Kz", "pt_BR");
+    return format.format(number);
   }
 }

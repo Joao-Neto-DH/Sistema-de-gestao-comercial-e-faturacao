@@ -6,6 +6,7 @@ import 'package:path/path.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:sistema_de_gestao_comercial/model/cliente_model.dart';
 import 'package:sistema_de_gestao_comercial/model/empresa_model.dart';
+import 'package:sistema_de_gestao_comercial/util.dart';
 import 'dart:io';
 
 import 'package:sistema_de_gestao_comercial/view/faturacao/faturacao_screen.dart';
@@ -15,7 +16,11 @@ class PDFGenerator {
   final List<Widget> itens;
   final ClienteModel cliente;
   final EmpresaModel empresa;
-  PDFGenerator(this.itens, {required this.cliente, required this.empresa});
+  final date = DateTime.now().toString().split(".")[0];
+  var _totalIva = 0.0;
+  final double precoTotal;
+  PDFGenerator(this.itens,
+      {required this.cliente, required this.empresa, required this.precoTotal});
 
   addPage() {
     pdf.addPage(pw.MultiPage(
@@ -70,17 +75,32 @@ class PDFGenerator {
                     ]),
               ])), // Cabeçalho
       _spaceBetween(),
-      pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
-        pw.Text("Data e Hora de Fatura: ${DateTime.now()}".toUpperCase()),
-        _spaceBetweenText(),
-        pw.Text("FATURA PROFORMA",
-            style: pw.TextStyle(fontWeight: pw.FontWeight.bold))
-      ]), // Data
+      pw.Row(
+          mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: pw.CrossAxisAlignment.start,
+          children: [
+            pw.Column(
+                crossAxisAlignment: pw.CrossAxisAlignment.start,
+                children: [
+                  pw.Text("Data de Fatura: $date".toUpperCase()),
+                  _spaceBetweenText(),
+                  pw.Text("FATURA PROFORMA",
+                      style: pw.TextStyle(fontWeight: pw.FontWeight.bold))
+                ]),
+            pw.Column(
+                crossAxisAlignment: pw.CrossAxisAlignment.start,
+                children: [
+                  pw.Text("Forma de Pagamento",
+                      style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+                  pw.Text("Cash")
+                ])
+          ]), // Data
       _spaceBetween(),
       pw.Table(
           // border: const pw.TableBorder(
           //     bottom: pw.BorderSide(color: PdfColors.black)),
           children: [
+            //  cabeçalho
             pw.TableRow(
                 decoration: const pw.BoxDecoration(
                     border: pw.Border(
@@ -100,8 +120,89 @@ class PDFGenerator {
                   _columnTitle("Total"),
                 ]),
             pw.TableRow(children: [pw.SizedBox(height: 10)]),
-            for (var item in itens) _row(item)
+            for (var item in itens) _row(item), // conteudo
+            pw.TableRow(children: [pw.SizedBox(height: 10)]),
+            //  Rodape
+            pw.TableRow(children: [
+              _columnTitle("Taxa"),
+              pw.Spacer(),
+              _columnTitle("Incidencia"),
+              pw.Spacer(),
+              _columnTitle(""),
+              pw.Spacer(),
+              _columnTitle("IVA"),
+              pw.Spacer(),
+              _columnTitle(""),
+              pw.Spacer(),
+              _columnTitle("ISENÇAO"),
+            ]),
+            pw.TableRow(children: [
+              pw.Text("IVA(14%)"),
+              pw.Spacer(),
+              pw.Text(AppUtil.formatNumber(precoTotal - _totalIva)),
+              pw.Spacer(),
+              pw.Text(""),
+              pw.Spacer(),
+              pw.Text(AppUtil.formatNumber(_totalIva)),
+              pw.Spacer(),
+              pw.Text(""),
+              pw.Spacer(),
+              pw.Text("ISENÇAO"),
+            ])
           ]),
+
+      _spaceBetween(),
+      pw.Row(
+          mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: pw.CrossAxisAlignment.start,
+          children: [
+            pw.Column(
+                crossAxisAlignment: pw.CrossAxisAlignment.start,
+                children: [
+                  pw.Container(
+                      padding: const pw.EdgeInsets.all(4),
+                      color: PdfColors.grey300,
+                      child: pw.Text("Coordenadas Bancarias")),
+                  for (var coord in empresa.coordenadas)
+                    pw.Text(coord.coordenada),
+                ]),
+            pw.Container(
+                width: 250,
+                child: pw.Column(
+                    crossAxisAlignment: pw.CrossAxisAlignment.start,
+                    children: [
+                      pw.Row(
+                          mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                          children: [
+                            _columnTitle("Subtotal"),
+                            pw.Text("0.00")
+                          ]),
+                      pw.Row(
+                          mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                          children: [
+                            _columnTitle("Desconto"),
+                            pw.Text("0.00")
+                          ]),
+                      pw.Row(
+                          mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                          children: [
+                            _columnTitle("IVA"),
+                            pw.Text(AppUtil.formatNumber(_totalIva))
+                          ]),
+                      pw.Row(
+                          mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                          children: [
+                            _columnTitle("Retençao da fonte"),
+                            pw.Text(AppUtil.formatNumber(0))
+                          ]),
+                      pw.Row(
+                          mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                          children: [
+                            _columnTitle("Total"),
+                            pw.Text(AppUtil.formatNumber(precoTotal))
+                          ]),
+                    ]))
+          ])
     ];
   }
 
@@ -111,6 +212,8 @@ class PDFGenerator {
 
   pw.TableRow _row(Widget widget) {
     final item = widget as ProdutoItem;
+    final iva = item.produto.preco * 0.14;
+    _totalIva += iva;
     return pw.TableRow(
         decoration: const pw.BoxDecoration(
             border: pw.Border(bottom: pw.BorderSide(color: PdfColors.black))),
@@ -123,9 +226,7 @@ class PDFGenerator {
           pw.Spacer(),
           pw.Text("${item.produto.preco.toStringAsFixed(2)}Kz"),
           pw.Spacer(),
-          pw.Text(item.produto.iva!
-              ? "${(item.produto.preco * 0.14).toStringAsFixed(2)}Kz"
-              : ""),
+          pw.Text(item.produto.iva! ? "${(iva).toStringAsFixed(2)}Kz" : ""),
           pw.Spacer(),
           pw.Text("${(item.produto.preco * item.qtd).toStringAsFixed(2)}Kz"),
         ]);
@@ -160,7 +261,7 @@ class PDFGenerator {
     //-${DateTime.now().toString()}
 
     final path = await getExternalStorageDirectory();
-    final joined = join(path!.path, "fatura-${DateTime.now().toString()}.pdf");
+    final joined = join(path!.path, "fatura-$date.pdf");
     var file = File(joined);
     return await file.writeAsBytes(await pdf.save());
   }

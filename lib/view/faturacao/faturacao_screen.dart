@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:sistema_de_gestao_comercial/controller/cliente_controller.dart';
 import 'package:sistema_de_gestao_comercial/controller/empresa_controller.dart';
 import 'package:sistema_de_gestao_comercial/model/cliente_model.dart';
@@ -45,7 +44,6 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
   final _clienteController = TextEditingController();
   final _empresaController = TextEditingController();
   final _pagamentoController = TextEditingController();
-  final format = NumberFormat.simpleCurrency(locale: "pt_BR");
   @override
   // void initState() {
   //   super.initState();
@@ -162,9 +160,14 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
               Row(
                 children: [
                   Expanded(child: pesquisarProduto(onPesquisarProduto)),
-                  // const SizedBox(
-                  //   width: 10,
-                  // ),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  Expanded(
+                    child: ElevatedButton(
+                        onPressed: onAddLista,
+                        child: const Text("Adicionar a fatura")),
+                  ),
                   // Expanded(
                   //     child: ElevatedButton(
                   //         onPressed: () {}, child: const Text("Selecionar")))
@@ -219,17 +222,13 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
                   AppUtil.spaceFields,
                   TextFormFieldDecorated(
                     keyboardType: TextInputType.number,
-                    hintText: format.format((_pago() - _precoTotal())),
+                    hintText: AppUtil.formatNumber((_pago() - _precoTotal())),
                     enabled: false,
                   ),
                 ],
               )),
               AppUtil.spaceFields,
-              Center(
-                child: ElevatedButton(
-                    onPressed: onAddLista,
-                    child: const Text("Adicionar a fatura")),
-              ),
+
               AppUtil.spaceFields,
               const HorizontalDividerWithLabel(
                   label: "Produtos/serviços listados"),
@@ -344,7 +343,8 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
                     endereco: "Diversos",
                     email: "Diversos",
                     credito: 0),
-            empresa: _empresa!);
+            empresa: _empresa!,
+            precoTotal: _precoTotal());
         pdf.addPage();
         await pdf.save();
         // print(await file.exists());
@@ -454,6 +454,10 @@ class Pagamento {
   String tipo;
   double cashValor;
   double? multicaixaValor;
+  double? troco;
   Pagamento(
-      {required this.tipo, required this.cashValor, this.multicaixaValor});
+      {required this.tipo,
+      required this.cashValor,
+      this.multicaixaValor,
+      this.troco});
 }
