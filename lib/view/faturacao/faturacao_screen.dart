@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:sistema_de_gestao_comercial/controller/cliente_controller.dart';
 import 'package:sistema_de_gestao_comercial/controller/empresa_controller.dart';
 import 'package:sistema_de_gestao_comercial/model/cliente_model.dart';
@@ -29,12 +30,22 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
   ProdutoModel? _produto;
   var _empresas = <EmpresaModel>[];
   EmpresaModel? _empresa;
+  final _pagamentos = [
+    "Cash",
+    "Multicaixa",
+    "Transferencia",
+    "Deposito",
+    "Pagamento Duplo"
+  ];
+  String? _pagamento;
 
   final TextEditingController? _produtoNomeIdController =
       TextEditingController();
   final _quantidadeController = TextEditingController();
   final _clienteController = TextEditingController();
   final _empresaController = TextEditingController();
+  final _pagamentoController = TextEditingController();
+  final format = NumberFormat.simpleCurrency(locale: "pt_BR");
   @override
   // void initState() {
   //   super.initState();
@@ -48,140 +59,182 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
       padding: AppUtil.paddingBody,
       child: Column(
         children: [
-          Form(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text("Selecionar Empresa"),
-                AppUtil.spaceLabelField,
-                TextFormFieldDecorated(
-                  controller: _empresaController,
-                  hintText: "Selecione uma Empresa",
-                ),
-                AppUtil.spaceLabelField,
-                DropdownButton<EmpresaModel>(
-                    // hint: const Text("Seleciona o cliente"),
-                    value: _empresa,
-                    items: _empresas
-                        .map((e) => DropdownMenuItem(
-                              child: Text(e.nome),
-                              value: e,
-                            ))
-                        .toList(),
-                    onChanged: (value) {
-                      // print(value);
-                      setState(() {
-                        _empresa = value;
-                      });
-                    }),
-                // AppUtil.spaceFields,s
-                Row(
-                  children: [
-                    Expanded(
-                      child: ElevatedButton(
-                        onPressed: () async {
-                          final controller = EmpresaController();
-                          _empresas = await controller
-                              .getEmpresa(_empresaController.value.text);
-                          // print(res);
-                          if (_empresas.isNotEmpty) {
-                            _empresa = _empresas[0];
-                          } else {
-                            _empresa = null;
-                          }
-                          setState(() {});
-                        },
-                        child: const Text("Pesquisar"),
-                      ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text("Selecionar Empresa"),
+              AppUtil.spaceLabelField,
+              TextFormFieldDecorated(
+                controller: _empresaController,
+                hintText: "Selecione uma Empresa",
+              ),
+              AppUtil.spaceLabelField,
+              DropdownButton<EmpresaModel>(
+                  // hint: const Text("Seleciona o cliente"),
+                  value: _empresa,
+                  items: _empresas
+                      .map((e) => DropdownMenuItem(
+                            child: Text(e.nome),
+                            value: e,
+                          ))
+                      .toList(),
+                  onChanged: (value) {
+                    // print(value);
+                    setState(() {
+                      _empresa = value;
+                    });
+                  }),
+              // AppUtil.spaceFields,s
+              Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        final controller = EmpresaController();
+                        _empresas = await controller
+                            .getEmpresa(_empresaController.value.text);
+                        // print(res);
+                        if (_empresas.isNotEmpty) {
+                          _empresa = _empresas[0];
+                        } else {
+                          _empresa = null;
+                        }
+                        setState(() {});
+                      },
+                      child: const Text("Pesquisar"),
                     ),
-                  ],
-                ),
-                AppUtil.spaceLabelField,
-                const HorizontalDividerWithLabel(
-                    label: "Dados do produto/serviço"),
-                AppUtil.spaceFields,
-                //Empresa
-                const Text("Selecionar cliente"),
-                AppUtil.spaceLabelField,
-                TextFormFieldDecorated(
-                  controller: _clienteController,
-                  hintText: "Selecione um cliente",
-                ),
-                AppUtil.spaceLabelField,
-                DropdownButton<ClienteModel>(
-                    // hint: const Text("Seleciona o cliente"),
-                    value: _cliente,
-                    items: _clientes
-                        .map((e) => DropdownMenuItem(
-                              child: Text(e.nome),
-                              value: e,
-                            ))
-                        .toList(),
-                    onChanged: (value) {
-                      // print(value);
-                      _cliente = value;
+                  ),
+                ],
+              ),
+              AppUtil.spaceLabelField,
+              const HorizontalDividerWithLabel(label: "Dados do cliente"),
+              AppUtil.spaceFields,
+              //Empresa
+              const Text("Selecionar cliente"),
+              AppUtil.spaceLabelField,
+              TextFormFieldDecorated(
+                controller: _clienteController,
+                hintText: "Selecione um cliente",
+              ),
+              AppUtil.spaceLabelField,
+              DropdownButton<ClienteModel>(
+                  // hint: const Text("Seleciona o cliente"),
+                  value: _cliente,
+                  items: _clientes
+                      .map((e) => DropdownMenuItem(
+                            child: Text(e.nome),
+                            value: e,
+                          ))
+                      .toList(),
+                  onChanged: (value) {
+                    // print(value);
+                    _cliente = value;
+                    setState(() {});
+                  }),
+              // AppUtil.spaceFields,s
+              Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: onPesquisarCliente,
+                      child: const Text("Pesquisar"),
+                    ),
+                  ),
+                ],
+              ),
+              AppUtil.spaceLabelField,
+              const HorizontalDividerWithLabel(
+                  label: "Dados do produto/serviço"),
+              AppUtil.spaceFields,
+              const Text("Selecionar produto/serviço"),
+              AppUtil.spaceLabelField,
+              TextFormFieldDecorated(
+                controller: _produtoNomeIdController,
+                hintText: "Selecione produto/serviço",
+              ),
+              // Seleciona o produto
+              dropdownProduct(_produtos, _produto, (value) {
+                setState(() {
+                  _produto = value;
+                  _quantidadeController.text = "";
+                });
+              }),
+              Row(
+                children: [
+                  Expanded(child: pesquisarProduto(onPesquisarProduto)),
+                  // const SizedBox(
+                  //   width: 10,
+                  // ),
+                  // Expanded(
+                  //     child: ElevatedButton(
+                  //         onPressed: () {}, child: const Text("Selecionar")))
+                ],
+              ),
+              AppUtil.spaceFields,
+              const Text("Insira a quantidade a ser vendida"),
+              AppUtil.spaceLabelField,
+              TextFormFieldDecorated(
+                enabled: _produto != null && _produto!.stock > 0,
+                controller: _quantidadeController,
+                hintText: "Digitar a quantidade",
+                keyboardType: TextInputType.number,
+              ),
+              AppUtil.spaceFields,
+              DropdownButton<String>(
+                  hint: const Text("Forma de Pagamento"),
+                  value: _pagamento,
+                  items: _pagamentos
+                      .map((e) => DropdownMenuItem(
+                            child: Text(e),
+                            value: e,
+                          ))
+                      .toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      _pagamento = value!;
+                    });
+                  }),
+              AppUtil.spaceFields,
+              Form(
+                  child: Column(
+                children: [
+                  TextFormFieldDecorated(
+                    controller: _pagamentoController,
+                    keyboardType: TextInputType.number,
+                    onChange: (value) {
                       setState(() {});
-                    }),
-                // AppUtil.spaceFields,s
-                Row(
-                  children: [
-                    Expanded(
-                      child: ElevatedButton(
-                        onPressed: onPesquisarCliente,
-                        child: const Text("Pesquisar"),
-                      ),
-                    ),
-                  ],
-                ),
-                AppUtil.spaceLabelField,
-                const HorizontalDividerWithLabel(
-                    label: "Dados do produto/serviço"),
-                AppUtil.spaceFields,
-                const Text("Selecionar produto/serviço"),
-                AppUtil.spaceLabelField,
-                TextFormFieldDecorated(
-                  controller: _produtoNomeIdController,
-                  hintText: "Selecione produto/serviço",
-                ),
-                // Seleciona o produto
-                dropdownProduct(_produtos, _produto, (value) {
-                  setState(() {
-                    _produto = value;
-                    _quantidadeController.text = "";
-                  });
-                }),
-                Row(
-                  children: [
-                    Expanded(child: pesquisarProduto(onPesquisarProduto)),
-                    // const SizedBox(
-                    //   width: 10,
-                    // ),
-                    // Expanded(
-                    //     child: ElevatedButton(
-                    //         onPressed: () {}, child: const Text("Selecionar")))
-                  ],
-                ),
-                AppUtil.spaceFields,
-                const Text("Insira a quantidade a ser vendida"),
-                AppUtil.spaceLabelField,
-                TextFormFieldDecorated(
-                  enabled: _produto != null && _produto!.stock > 0,
-                  controller: _quantidadeController,
-                  hintText: "Digitar a quantidade",
-                  keyboardType: TextInputType.number,
-                ),
-                AppUtil.spaceFields,
-                Center(
-                  child: ElevatedButton(
-                      onPressed: onAddLista,
-                      child: const Text("Adicionar a fatura")),
-                ),
-                AppUtil.spaceFields,
-                const HorizontalDividerWithLabel(
-                    label: "Produtos/serviços listados"),
-                AppUtil.spaceFields,
-              ],
-            ),
+                    },
+                    hintText: "Valor Entregue",
+                    enabled: _pagamentos[1] != _pagamento,
+                  ),
+                  AppUtil.spaceFields,
+                  TextFormFieldDecorated(
+                    keyboardType: TextInputType.number,
+                    hintText: _pagamentos[1] == _pagamento ||
+                            _pagamentos[4] == _pagamento
+                        ? _precoTotal().toString()
+                        : "Multicaixa",
+                    enabled: _pagamentos[4] == _pagamento,
+                  ),
+                  AppUtil.spaceFields,
+                  TextFormFieldDecorated(
+                    keyboardType: TextInputType.number,
+                    hintText: format.format((_pago() - _precoTotal())),
+                    enabled: false,
+                  ),
+                ],
+              )),
+              AppUtil.spaceFields,
+              Center(
+                child: ElevatedButton(
+                    onPressed: onAddLista,
+                    child: const Text("Adicionar a fatura")),
+              ),
+              AppUtil.spaceFields,
+              const HorizontalDividerWithLabel(
+                  label: "Produtos/serviços listados"),
+              AppUtil.spaceFields,
+            ],
           ),
           _itens.isEmpty ? _listaVazia() : _lista(),
           AppUtil.spaceLabelField,
@@ -203,6 +256,15 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
         ],
       ),
     );
+  }
+
+  double _pago() {
+    // print(double.tryParse(_pagamentoController.value.text));
+    var value = double.tryParse(
+            _pagamentoController.value.text.replaceFirst(RegExp(r','), '.')) ??
+        0;
+
+    return value;
   }
 
   void onPesquisarCliente() async {
@@ -277,11 +339,12 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
         final pdf = PDFGenerator(_itens,
             cliente: _cliente ??
                 ClienteModel(
-                    nome: "Desconhecido",
-                    nif: "Desconhecido",
-                    endereco: "Desconhecido",
-                    email: "Desconhecido",
-                    credito: 0));
+                    nome: "Cliente Diversos",
+                    nif: "99999999",
+                    endereco: "Diversos",
+                    email: "Diversos",
+                    credito: 0),
+            empresa: _empresa!);
         pdf.addPage();
         await pdf.save();
         // print(await file.exists());
@@ -385,4 +448,12 @@ class _ProdutoItemState extends State<ProdutoItem> {
       ),
     );
   }
+}
+
+class Pagamento {
+  String tipo;
+  double cashValor;
+  double? multicaixaValor;
+  Pagamento(
+      {required this.tipo, required this.cashValor, this.multicaixaValor});
 }
