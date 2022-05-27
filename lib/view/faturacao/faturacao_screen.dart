@@ -44,6 +44,9 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
   final _clienteController = TextEditingController();
   final _empresaController = TextEditingController();
   final _pagamentoController = TextEditingController();
+  final key = GlobalKey<State<ElevatedButton>>();
+
+  bool faturando = false;
   @override
   // void initState() {
   //   super.initState();
@@ -221,7 +224,6 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
                   ),
                   AppUtil.spaceFields,
                   TextFormFieldDecorated(
-                    keyboardType: TextInputType.number,
                     hintText: AppUtil.formatNumber((_pago() - _precoTotal())),
                     enabled: false,
                   ),
@@ -240,7 +242,15 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
           if (_itens.isNotEmpty)
             Row(mainAxisAlignment: MainAxisAlignment.center, children: [
               ElevatedButton(
-                  onPressed: onFaturar, child: const Text("Faturar")),
+                  onPressed: () {
+                    showModalBottomSheet(
+                      // enableDrag: false,
+                      context: context,
+                      builder: _modalBottomSheetContent,
+                    );
+                    /*onFaturar */
+                  },
+                  child: const Text("Faturar")),
               const SizedBox(
                 width: 10,
               ),
@@ -251,7 +261,8 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
                     });
                   },
                   child: const Text("Apagar Lista"))
-            ])
+            ]),
+          if (faturando) const CircularProgressIndicator()
         ],
       ),
     );
@@ -264,6 +275,63 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
         0;
 
     return value;
+  }
+
+  Widget _modalBottomSheetContent(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: const BoxDecoration(
+          borderRadius: BorderRadiusDirectional.only(
+              topStart: Radius.circular(40), topEnd: Radius.circular(40))),
+      width: double.infinity,
+      height: 146,
+      child: Column(
+        // crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                  child: ElevatedButton(
+                      onPressed: () async {
+                        setState(() {
+                          faturando = true;
+                        });
+                        Navigator.pop(context);
+                        await onFaturarProforma();
+                      },
+                      child: const Text("Fatura Proforma"))),
+              const SizedBox(
+                width: 10,
+              ),
+              Expanded(
+                  child: ElevatedButton(
+                      onPressed: () async {
+                        setState(() {
+                          faturando = true;
+                        });
+                        Navigator.pop(context);
+                        await onFaturarRecibo();
+                      },
+                      child: const Text("Fatura Recibo")))
+            ],
+          ),
+          // const SizedBox(
+          //   height: 10,
+          // ),
+          Row(
+            children: [
+              Expanded(
+                child: OutlinedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text("Cancelar")),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
   }
 
   void onPesquisarCliente() async {
@@ -326,29 +394,31 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
     }
   }
 
-  void onFaturar() async {
-    var status = await Permission.storage.status;
-    if (status.isDenied) {
-      status = await Permission.storage.request();
-    } else if (status.isPermanentlyDenied) {
-      openAppSettings();
-    }
+  Future<void> onFaturarProforma() async {
+    var status = await _writeReadPermission();
     if (!status.isDenied && !status.isPermanentlyDenied) {
       if (_empresa != null) {
-        final pdf = PDFGenerator(_itens,
-            cliente: _cliente ??
-                ClienteModel(
-                    nome: "Cliente Diversos",
-                    nif: "99999999",
-                    endereco: "Diversos",
-                    email: "Diversos",
-                    credito: 0),
-            empresa: _empresa!,
-            precoTotal: _precoTotal());
+        final vencimento = DateTime.now().add(const Duration(days: 15));
+        final pdf = PdfFatura(
+          _itens,
+          cliente: _cliente ??
+              ClienteModel(
+                  nome: "Cliente Diversos",
+                  nif: "99999999",
+                  endereco: "Diversos",
+                  email: "Diversos",
+                  credito: 0),
+          empresa: _empresa!,
+          precoTotal: _precoTotal(),
+          vencimento: vencimento,
+        );
         pdf.addPage();
         await pdf.save();
         // print(await file.exists());
         AppUtil.snackBar(context, "Fatura salva com sucesso!");
+        setState(() {
+          faturando = false;
+        });
         return;
       }
       AppUtil.snackBar(context,
@@ -357,6 +427,67 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
       AppUtil.snackBar(context,
           "O aplicativo nao tem permissao de acessar o armazenamento. Por Favor de permissao para poder continuar");
     }
+    setState(() {
+      faturando = false;
+    });
+  }
+
+  Future<PermissionStatus> _writeReadPermission() async {
+    var status = await Permission.storage.status;
+    if (status.isDenied) {
+      status = await Permission.storage.request();
+    } else if (status.isPermanentlyDenied) {
+      openAppSettings();
+    }
+    return status;
+  }
+
+  Future<void> onFaturarRecibo() async {
+    if (_pago() - _precoTotal() < 0) {
+      AppUtil.snackBar(context, "O troco nao pode ser menor que zero");
+      setState(() {
+        faturando = false;
+      });
+      return;
+    }
+    var status = await _writeReadPermission();
+    if (!status.isDenied && !status.isPermanentlyDenied) {
+      if (_empresa != null) {
+        final pdf = PdfRecibo(
+          _itens,
+          cliente: _cliente ??
+              ClienteModel(
+                  nome: "Cliente Diversos",
+                  nif: "99999999",
+                  endereco: "Diversos",
+                  email: "Diversos",
+                  credito: 0),
+          empresa: _empresa!,
+          precoTotal: _precoTotal(),
+          pagamento: Pagamento(
+            tipo: _pagamento!,
+            cashValor: double.parse(_pagamentoController.value.text),
+            troco: (_pago() - _precoTotal()),
+          ),
+        );
+        pdf.addPage();
+        await pdf.save();
+        // print(await file.exists());
+        AppUtil.snackBar(context, "Fatura salva com sucesso!");
+        setState(() {
+          faturando = false;
+        });
+        return;
+      }
+      AppUtil.snackBar(context,
+          "Nenhuma empresa selecionada! Por favor selecione uma empresa para faturar");
+    } else {
+      AppUtil.snackBar(context,
+          "O aplicativo nao tem permissao de acessar o armazenamento. Por Favor de permissao para poder continuar");
+    }
+    setState(() {
+      faturando = false;
+    });
   }
 
   Center _listaVazia() =>
