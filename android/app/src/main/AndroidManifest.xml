@@ -3,9 +3,9 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
    <application
-        android:label="sistema_de_gestao_comercial"
+        android:label="Sistema de gestão comercial e faturação"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/icon"
         android:requestLegacyExternalStorage="true">
         <activity
             android:name=".MainActivity"

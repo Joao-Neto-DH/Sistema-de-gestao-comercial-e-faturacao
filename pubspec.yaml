@@ -1,5 +1,5 @@
 name: sistema_de_gestao_comercial
-description: A new Flutter project.
+description: Gerenciar e faturar de forma fácil.
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -41,6 +41,9 @@ dependencies:
   path_provider: ^2.0.10
   intl: ^0.17.0
   modal_bottom_sheet: ^2.0.1
+  flutter_launcher_icons: "^0.9.2"
+  shared_preferences: ^2.0.15
+  # advance_pdf_viewer: ^2.0.1
 
 dev_dependencies:
   flutter_test:

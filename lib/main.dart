@@ -4,6 +4,7 @@ import 'package:sistema_de_gestao_comercial/view/cliente/cliente_screen.dart';
 import 'package:sistema_de_gestao_comercial/view/definicoes/definicoes_screen.dart';
 import 'package:sistema_de_gestao_comercial/view/empresa/empresa_screen.dart';
 import 'package:sistema_de_gestao_comercial/view/faturacao/faturacao_screen.dart';
+import 'package:sistema_de_gestao_comercial/view/login/senha.dart';
 import 'package:sistema_de_gestao_comercial/view/produtos_servicos/produtos_e_servicos.dart';
 import 'package:sistema_de_gestao_comercial/view/stock/stock_screen.dart';
 import 'view/login/login_widget.dart';
@@ -29,9 +30,9 @@ class GestaoComercial extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      initialRoute: "/signin",
+      initialRoute: "/",
       routes: {
-        "/": (context) => Login(formBody: SignIn()),
+        "/": (context) => Login(formBody: Senha()),
         "/signin": (context) => Login(formBody: SignIn()),
         "/signup": (context) => Login(formBody: SignUp()),
         "/recover-password": (context) =>

@@ -32,7 +32,7 @@ class _SideBarState extends State<SideBar> {
     const Color bgTileColor = Colors.black12;
 
     return Drawer(
-      child: Column(children: [
+      child: ListView(padding: EdgeInsets.zero, children: [
         DrawerHeader(
             decoration: const BoxDecoration(
                 color: Colors.blue,

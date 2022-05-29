@@ -20,7 +20,7 @@ class LogoModel {
       id: logo["id"],
       empresaID: logo["empresa_id"],
       logo: logo["logo"],
-      isFundo: logo["logo_marca"],
+      isFundo: logo["logo_marca"] == 1 ? true : false,
     );
   }
   @override

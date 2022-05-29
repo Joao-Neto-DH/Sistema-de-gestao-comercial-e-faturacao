@@ -6,6 +6,7 @@ import 'package:sistema_de_gestao_comercial/model/empresa_model.dart';
 import 'package:sistema_de_gestao_comercial/model/produto_model.dart';
 import 'package:sistema_de_gestao_comercial/pdf.dart';
 import 'package:sistema_de_gestao_comercial/util.dart';
+import 'package:sistema_de_gestao_comercial/validator.dart';
 import 'package:sistema_de_gestao_comercial/view/components/dropdown_product.dart';
 import 'package:sistema_de_gestao_comercial/view/components/pesquisar_produto.dart';
 import 'package:sistema_de_gestao_comercial/view/components/text_form_field_decorated.dart';
@@ -22,6 +23,11 @@ class FaturacaoScreen extends StatefulWidget {
 }
 
 class _FaturacaoScreenState extends State<FaturacaoScreen> {
+  _FaturacaoScreenState() {
+    onPesquisarCliente();
+    onPesquisarProduto();
+  }
+
   final _itens = <Widget>[];
   var _clientes = <ClienteModel>[];
   ClienteModel? _cliente;
@@ -38,16 +44,23 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
   ];
   String? _pagamento;
 
-  final TextEditingController? _produtoNomeIdController =
-      TextEditingController();
+  final _produtoNomeIdController = TextEditingController();
   final _quantidadeController = TextEditingController();
   final _clienteController = TextEditingController();
   final _empresaController = TextEditingController();
   final _pagamentoController = TextEditingController();
-  final key = GlobalKey<State<ElevatedButton>>();
+  final _validateForm = GlobalKey<FormState>();
 
-  bool faturando = false;
-  @override
+  final _produtoNome = TextEditingController();
+  final _produtoPreco = TextEditingController();
+  final _produtoQuantidade = TextEditingController();
+
+  var _faturando = false;
+  var _isDB = false;
+
+  var _hasIVA = true;
+
+  // @override
   // void initState() {
   //   super.initState();
   //   _selected = samples[0];
@@ -67,24 +80,25 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
               AppUtil.spaceLabelField,
               TextFormFieldDecorated(
                 controller: _empresaController,
-                hintText: "Selecione uma Empresa",
+                hintText: "Pesquisar Empresa",
               ),
               AppUtil.spaceLabelField,
-              DropdownButton<EmpresaModel>(
-                  // hint: const Text("Seleciona o cliente"),
-                  value: _empresa,
-                  items: _empresas
-                      .map((e) => DropdownMenuItem(
-                            child: Text(e.nome),
-                            value: e,
-                          ))
-                      .toList(),
-                  onChanged: (value) {
-                    // print(value);
-                    setState(() {
-                      _empresa = value;
-                    });
-                  }),
+              if (_empresas.isNotEmpty)
+                DropdownButton<EmpresaModel>(
+                    // hint: const Text("Seleciona o cliente"),
+                    value: _empresa,
+                    items: _empresas
+                        .map((e) => DropdownMenuItem(
+                              child: Text(e.nome),
+                              value: e,
+                            ))
+                        .toList(),
+                    onChanged: (value) {
+                      // print(value);
+                      setState(() {
+                        _empresa = value;
+                      });
+                    }),
               // AppUtil.spaceFields,s
               Row(
                 children: [
@@ -115,23 +129,24 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
               AppUtil.spaceLabelField,
               TextFormFieldDecorated(
                 controller: _clienteController,
-                hintText: "Selecione um cliente",
+                hintText: "Pesquisar cliente",
               ),
               AppUtil.spaceLabelField,
-              DropdownButton<ClienteModel>(
-                  // hint: const Text("Seleciona o cliente"),
-                  value: _cliente,
-                  items: _clientes
-                      .map((e) => DropdownMenuItem(
-                            child: Text(e.nome),
-                            value: e,
-                          ))
-                      .toList(),
-                  onChanged: (value) {
-                    // print(value);
-                    _cliente = value;
-                    setState(() {});
-                  }),
+              if (_clientes.isNotEmpty)
+                DropdownButton<ClienteModel>(
+                    // hint: const Text("Seleciona o cliente"),
+                    value: _cliente,
+                    items: _clientes
+                        .map((e) => DropdownMenuItem(
+                              child: Text(e.nome),
+                              value: e,
+                            ))
+                        .toList(),
+                    onChanged: (value) {
+                      // print(value);
+                      _cliente = value;
+                      setState(() {});
+                    }),
               // AppUtil.spaceFields,s
               Row(
                 children: [
@@ -148,18 +163,27 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
                   label: "Dados do produto/serviço"),
               AppUtil.spaceFields,
               const Text("Selecionar produto/serviço"),
+              CheckboxListTile(
+                  title: const Text("Carregar produto/serviço cadastrado"),
+                  value: _isDB,
+                  onChanged: (value) => setState(() {
+                        _isDB = !_isDB;
+                      })),
+              if (!_isDB) _insertProduto(),
               AppUtil.spaceLabelField,
-              TextFormFieldDecorated(
-                controller: _produtoNomeIdController,
-                hintText: "Selecione produto/serviço",
-              ),
+              if (_isDB)
+                TextFormFieldDecorated(
+                  controller: _produtoNomeIdController,
+                  hintText: "Pesquisar produto/serviço",
+                ),
               // Seleciona o produto
-              dropdownProduct(_produtos, _produto, (value) {
-                setState(() {
-                  _produto = value;
-                  _quantidadeController.text = "";
-                });
-              }),
+              if (_isDB)
+                dropdownProduct(_produtos, _produto, (value) {
+                  setState(() {
+                    _produto = value;
+                    _quantidadeController.text = "";
+                  });
+                }),
               Row(
                 children: [
                   Expanded(child: pesquisarProduto(onPesquisarProduto)),
@@ -201,35 +225,8 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
                     });
                   }),
               AppUtil.spaceFields,
-              Form(
-                  child: Column(
-                children: [
-                  TextFormFieldDecorated(
-                    controller: _pagamentoController,
-                    keyboardType: TextInputType.number,
-                    onChange: (value) {
-                      setState(() {});
-                    },
-                    hintText: "Valor Entregue",
-                    enabled: _pagamentos[1] != _pagamento,
-                  ),
-                  AppUtil.spaceFields,
-                  TextFormFieldDecorated(
-                    keyboardType: TextInputType.number,
-                    hintText: _pagamentos[1] == _pagamento ||
-                            _pagamentos[4] == _pagamento
-                        ? _precoTotal().toString()
-                        : "Multicaixa",
-                    enabled: _pagamentos[4] == _pagamento,
-                  ),
-                  AppUtil.spaceFields,
-                  TextFormFieldDecorated(
-                    hintText: AppUtil.formatNumber((_pago() - _precoTotal())),
-                    enabled: false,
-                  ),
-                ],
-              )),
-              AppUtil.spaceFields,
+              _formPagamento(),
+              // AppUtil.spaceFields,
 
               AppUtil.spaceFields,
               const HorizontalDividerWithLabel(
@@ -262,10 +259,17 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
                   },
                   child: const Text("Apagar Lista"))
             ]),
-          if (faturando) const CircularProgressIndicator()
+          if (_faturando) const CircularProgressIndicator()
         ],
       ),
     );
+  }
+
+  Future<ProdutoModel> _cadastrarProduto(ProdutoModel produto) async {
+    final controller = ProdutoController();
+    final id = await controller.cadastrarProduto(produto);
+    produto.id = id;
+    return produto;
   }
 
   double _pago() {
@@ -294,7 +298,7 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
                   child: ElevatedButton(
                       onPressed: () async {
                         setState(() {
-                          faturando = true;
+                          _faturando = true;
                         });
                         Navigator.pop(context);
                         await onFaturarProforma();
@@ -307,7 +311,7 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
                   child: ElevatedButton(
                       onPressed: () async {
                         setState(() {
-                          faturando = true;
+                          _faturando = true;
                         });
                         Navigator.pop(context);
                         await onFaturarRecibo();
@@ -334,6 +338,17 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
     );
   }
 
+  void clearData() {
+    _clienteController.clear();
+    _empresaController.clear();
+    _pagamentoController.clear();
+    _produtoNome.clear();
+    _produtoNomeIdController.clear();
+    _produtoPreco.clear();
+    _produtoQuantidade.clear();
+    _quantidadeController.clear();
+  }
+
   void onPesquisarCliente() async {
     final controller = ClienteController();
     final res =
@@ -348,25 +363,56 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
   }
 
   void onPesquisarProduto() async {
+    if (!_isDB) return;
     final controller = ProdutoController();
-    try {
-      _produtos.clear();
-      _produtos =
-          await controller.produto(_produtoNomeIdController!.value.text);
-      // for (var produto in res) {
-      //   _produtos.add(ProdutoModel.fromMap(produto));
-      // }
-      // setState(() {});
-      if (_produtos.isNotEmpty) {
-        _produto = _produtos[0];
-      }
-      setState(() {});
-    } catch (e) {
-      AppUtil.snackBar(context, "Produto/Serviço nao encontrado");
+    _produtos.clear();
+    _produtos = await controller.produto(_produtoNomeIdController.value.text);
+    // for (var produto in res) {
+    //   _produtos.add(ProdutoModel.fromMap(produto));
+    // }
+    // setState(() {});
+    if (_produtos.isNotEmpty) {
+      _produto = _produtos[0];
     }
+    setState(() {});
+    // try {
+    //   _produtos.clear();
+    //   _produtos = await controller.produto(_produtoNomeIdController.value.text);
+    //   // for (var produto in res) {
+    //   //   _produtos.add(ProdutoModel.fromMap(produto));
+    //   // }
+    //   // setState(() {});
+    //   if (_produtos.isNotEmpty) {
+    //     _produto = _produtos[0];
+    //   }
+    //   setState(() {});
+    // } catch (e) {
+    //   AppUtil.snackBar(context, "Produto/Serviço nao encontrado");
+    // }
   }
 
-  void onAddLista() {
+  void onAddLista() async {
+    if (!_isDB) {
+      if (_validateForm.currentState!.validate()) {
+        // print(_produtoPreco.value.text);
+        // print(_produtoQuantidade.value.text);
+        final produto = ProdutoModel(
+            nome: _produtoNome.value.text,
+            iva: _hasIVA,
+            preco: double.parse(_produtoPreco.value.text) * 1.0,
+            stock: int.parse(_produtoQuantidade.value.text));
+
+        try {
+          _produto = await _cadastrarProduto(produto);
+        } catch (e) {
+          AppUtil.snackBar(context, "Este produto ja existe na base de dados");
+        }
+      } else {
+        AppUtil.snackBar(context,
+            "Nao foi possivel cadastrar o produto/serviço. Verifique se ele nao existe e tente novamente");
+        return;
+      }
+    }
     if (_produto != null) {
       final qtd = int.tryParse(_quantidadeController.value.text) ?? 1;
 
@@ -387,7 +433,9 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
       };
       setState(() {
         _itens.add(item);
+        _quantidadeController.text = "";
         _produto = null;
+        AppUtil.snackBar(context, "Produto adicionado");
       });
     } else {
       AppUtil.snackBar(context, "Nenhum produto selecionado");
@@ -413,12 +461,15 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
           vencimento: vencimento,
         );
         pdf.addPage();
-        await pdf.save();
-        // print(await file.exists());
-        AppUtil.snackBar(context, "Fatura salva com sucesso!");
-        setState(() {
-          faturando = false;
-        });
+        try {
+          await pdf.save();
+          AppUtil.snackBar(context, "Fatura salva com sucesso!");
+        } catch (e) {
+          AppUtil.snackBar(context, "Ocorreu um erro ao salvar a fatura!");
+          setState(() {
+            _faturando = false;
+          });
+        }
         return;
       }
       AppUtil.snackBar(context,
@@ -428,7 +479,7 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
           "O aplicativo nao tem permissao de acessar o armazenamento. Por Favor de permissao para poder continuar");
     }
     setState(() {
-      faturando = false;
+      _faturando = false;
     });
   }
 
@@ -443,16 +494,19 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
   }
 
   Future<void> onFaturarRecibo() async {
-    if (_pago() - _precoTotal() < 0) {
+    final hasTroco =
+        (_pagamento == _pagamentos[0] || _pagamento == _pagamentos[4]) &&
+            (_pago() - _precoTotal() < 0);
+    if (hasTroco) {
       AppUtil.snackBar(context, "O troco nao pode ser menor que zero");
       setState(() {
-        faturando = false;
+        _faturando = false;
       });
       return;
     }
     var status = await _writeReadPermission();
     if (!status.isDenied && !status.isPermanentlyDenied) {
-      if (_empresa != null) {
+      if (_empresa != null && _pagamento != null) {
         final pdf = PdfRecibo(
           _itens,
           cliente: _cliente ??
@@ -471,22 +525,25 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
           ),
         );
         pdf.addPage();
-        await pdf.save();
-        // print(await file.exists());
-        AppUtil.snackBar(context, "Fatura salva com sucesso!");
-        setState(() {
-          faturando = false;
-        });
+        try {
+          await pdf.save();
+          AppUtil.snackBar(context, "Fatura salva com sucesso!");
+        } catch (e) {
+          AppUtil.snackBar(context, "Ocorreu um erro ao salvar a fatura!");
+          setState(() {
+            _faturando = false;
+          });
+        }
         return;
       }
-      AppUtil.snackBar(context,
-          "Nenhuma empresa selecionada! Por favor selecione uma empresa para faturar");
+      AppUtil.snackBar(
+          context, "O tipo de pagamento e a empresa nao podem estar vazios!");
     } else {
       AppUtil.snackBar(context,
           "O aplicativo nao tem permissao de acessar o armazenamento. Por Favor de permissao para poder continuar");
     }
     setState(() {
-      faturando = false;
+      _faturando = false;
     });
   }
 
@@ -506,6 +563,40 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
     return valor;
   }
 
+  Widget _insertProduto() {
+    return Form(
+        key: _validateForm,
+        child: Column(
+          children: [
+            TextFormFieldDecorated(
+                controller: _produtoNome,
+                validator: Validator.validateName,
+                hintText: "Nome do Produto/Serviço"),
+            AppUtil.spaceLabelField,
+            TextFormFieldDecorated(
+                controller: _produtoPreco,
+                keyboardType: TextInputType.number,
+                validator: Validator.validateNotEmpty,
+                hintText: "Preço"),
+            AppUtil.spaceLabelField,
+            TextFormFieldDecorated(
+                controller: _produtoQuantidade,
+                keyboardType: TextInputType.number,
+                validator: Validator.validateNotEmpty,
+                hintText: "Quantidade"),
+            AppUtil.spaceLabelField,
+            CheckboxListTile(
+                title: const Text("Incluir 14% de IVA"),
+                value: _hasIVA,
+                onChanged: (value) {
+                  setState(() {
+                    _hasIVA = !_hasIVA;
+                  });
+                })
+          ],
+        ));
+  }
+
   Container _lista() => Container(
       color: const Color.fromARGB(10, 0, 0, 0),
       child: Column(children: [
@@ -517,6 +608,38 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
           children: _itens,
         )
       ]));
+
+  Widget _formPagamento() {
+    return Form(
+        child: Column(
+      children: [
+        TextFormFieldDecorated(
+          controller: _pagamentoController,
+          keyboardType: TextInputType.number,
+          onChange: (value) {
+            setState(() {});
+          },
+          hintText: "Valor Entregue",
+          enabled: _pagamentos[1] != _pagamento,
+        ),
+        AppUtil.spaceFields,
+        TextFormFieldDecorated(
+          keyboardType: TextInputType.number,
+          hintText: _pagamentos[1] == _pagamento || _pagamentos[4] == _pagamento
+              ? _precoTotal().toString()
+              : "Multicaixa",
+          enabled: _pagamentos[4] == _pagamento,
+        ),
+        AppUtil.spaceFields,
+        TextFormFieldDecorated(
+          hintText: _pagamento != _pagamentos[1]
+              ? AppUtil.formatNumber((_pago() - _precoTotal()))
+              : "0",
+          enabled: false,
+        ),
+      ],
+    ));
+  }
 }
 
 // ignore: must_be_immutable

@@ -268,8 +268,8 @@ class PdfFatura {
   Future<File> save() async {
     //-${DateTime.now().toString()}
 
-    final path = await getExternalStorageDirectory();
-    final joined = join(path!.path, "fatura-$date.pdf");
+    final path = (await getExternalStorageDirectories())![1];
+    final joined = join(path.path, "fatura-proforma-$date.pdf");
     var file = File(joined);
     return await file.writeAsBytes(await pdf.save());
   }
@@ -542,11 +542,13 @@ class PdfRecibo {
     return pw.SizedBox(height: 10);
   }
 
-  Future<File> save() async {
+  Future<File?> save() async {
     //-${DateTime.now().toString()}
-
-    final path = await getExternalStorageDirectory();
-    final joined = join(path!.path, "fatura-$date.pdf");
+    final path = (await getExternalStorageDirectories())![1];
+    // (await getExternalStorageDirectories())![1]
+    // (await getExternalCacheDirectories())![1]
+    final joined = join(path.path, "fatura-recibo-$date.pdf");
+    // print(joined);
     var file = File(joined);
     return await file.writeAsBytes(await pdf.save());
   }
