@@ -55,21 +55,21 @@ class DB {
     )''');
 
     await db.execute('''CREATE TABLE if not exists empresas (
-        id       INTEGER      PRIMARY KEY AUTOINCREMENT,
-        nome     VARCHAR (60) NOT NULL UNIQUE,
-        nif      VARCHAR (20) NOT NULL UNIQUE,
-        endereco VARCHAR (60) NOT NULL UNIQUE,
-        cidade   VARCHAR (60) NOT NULL,
+        id         INTEGER      PRIMARY KEY AUTOINCREMENT,
+        nome       VARCHAR (60) NOT NULL UNIQUE,
+        nif        VARCHAR (20) NOT NULL UNIQUE,
+        endereco   VARCHAR (60) NOT NULL UNIQUE,
+        cidade     VARCHAR (60) NOT NULL,
         website    VARCHAR (60),
-        email      VARCHAR (60) NOT NULL UNIQUE
+        email      VARCHAR (60) UNIQUE
     )''');
 
     await db.execute('''CREATE TABLE if not exists clientes (
         id       INTEGER        PRIMARY KEY AUTOINCREMENT,
         nome     VARCHAR (60)   NOT NULL,
-        endereco VARCHAR (60)   NOT NULL,
-        nif      VARCHAR (20)   NOT NULL,
-        email    VARCHAR (60)   NOT NULL,
+        endereco VARCHAR (60),
+        nif      VARCHAR (20),
+        email    VARCHAR (60),
         credito  DECIMAL (8, 2),
         UNIQUE (
             nif,

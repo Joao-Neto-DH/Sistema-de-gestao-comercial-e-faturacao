@@ -8,23 +8,23 @@ Widget dropdownProduct(List<ProdutoModel> produtos, ProdutoModel? selected,
     // final qtd = produtos[0]["stock"];
 
     // quantidade = !quantidade;
-    if (produtos.length > 1) {
-      return DropdownButton<ProdutoModel>(
-          // hint: const Text("Seleciona o cliente"),
-          value: selected,
-          items: produtos
-              .map((e) => DropdownMenuItem(
-                    child: Text(e.nome),
-                    value: e,
-                  ))
-              .toList(),
-          onChanged: onChange);
-    }
+    // if (produtos.length > 1) {
+    return DropdownButton<ProdutoModel>(
+        // hint: const Text("Seleciona o cliente"),
+        value: selected,
+        items: produtos
+            .map((e) => DropdownMenuItem(
+                  child: Text(e.nome),
+                  value: e,
+                ))
+            .toList(),
+        onChanged: onChange);
+    // }
     // _stocavel = _produtos[0].stock < 0;
     // _quantidadeController.text =
     //     _stocavel ? "Produto nao estocavel" : _produtos[0].stock.toString();
     // print(qtd);
-    return Text("Encontrados ${produtos.length} produto/serviços(s)");
+    // return Text("Encontrados ${produtos.length} produto/serviços(s)");
   }
   // _quantidadeController.text = "";
   return const Text("Nenhum produto encontrado");

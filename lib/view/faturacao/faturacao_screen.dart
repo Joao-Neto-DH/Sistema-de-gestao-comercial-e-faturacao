@@ -340,10 +340,10 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
 
   void clearData() {
     _clienteController.clear();
-    _empresaController.clear();
+    // _empresaController.clear();
     _pagamentoController.clear();
     _produtoNome.clear();
-    _produtoNomeIdController.clear();
+    // _produtoNomeIdController.clear();
     _produtoPreco.clear();
     _produtoQuantidade.clear();
     _quantidadeController.clear();
@@ -392,6 +392,7 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
   }
 
   void onAddLista() async {
+    clearData();
     if (!_isDB) {
       if (_validateForm.currentState!.validate()) {
         // print(_produtoPreco.value.text);
@@ -520,7 +521,7 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
           precoTotal: _precoTotal(),
           pagamento: Pagamento(
             tipo: _pagamento!,
-            cashValor: double.parse(_pagamentoController.value.text),
+            cashValor: double.tryParse(_pagamentoController.value.text) ?? 0,
             troco: (_pago() - _precoTotal()),
           ),
         );

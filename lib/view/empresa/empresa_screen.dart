@@ -135,9 +135,7 @@ class _EmpresaScreenState extends State<EmpresaScreen> {
               TextFormFieldDecorated(
                 hintText: "Contacto",
                 controller: contactoControllers[0],
-                validator: (value) {
-                  return Validator.validateNotEmpty(value!);
-                },
+                validator: null,
               ),
               AppUtil.spaceFields,
               const Text(
@@ -156,9 +154,7 @@ class _EmpresaScreenState extends State<EmpresaScreen> {
               TextFormFieldDecorated(
                 hintText: "Email",
                 controller: emailController,
-                validator: (value) {
-                  return Validator.validateNotEmpty(value!);
-                },
+                validator: null,
               ),
               AppUtil.spaceFields,
               const Text(
@@ -180,9 +176,7 @@ class _EmpresaScreenState extends State<EmpresaScreen> {
               TextFormFieldDecorated(
                 hintText: "IBAN",
                 controller: ibanControllers[0],
-                validator: (value) {
-                  return Validator.validateNotEmpty(value!);
-                },
+                validator: null,
               ),
               AppUtil.spaceFields,
               const Text(
@@ -317,20 +311,16 @@ class _EmpresaScreenState extends State<EmpresaScreen> {
     // final logoDAO = LogoDAO();
     final logos = <LogoModel>[];
 
-    if (_logoImagePath != "") {
-      logos.add(LogoModel(
-          logo: _logoImagePath,
-          // empresaID: empresaID,
-          isFundo: _logoImagePath == _backgroundImagePath));
+    logos.add(LogoModel(
+        logo: _logoImagePath,
+        // empresaID: empresaID,
+        isFundo: false));
 
-      if (!(_logoImagePath == _backgroundImagePath) &&
-          _backgroundImagePath != "") {
-        logos.add(LogoModel(
-            logo: _backgroundImagePath,
-            // empresaID: empresaID,
-            isFundo: _logoImagePath == _backgroundImagePath));
-      }
-    }
+    logos.add(LogoModel(
+        logo: _backgroundImagePath,
+        // empresaID: empresaID,
+        isFundo: true));
+
     return logos;
   }
 
