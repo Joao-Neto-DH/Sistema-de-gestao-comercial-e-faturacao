@@ -25,6 +25,7 @@ class FaturacaoScreen extends StatefulWidget {
 class _FaturacaoScreenState extends State<FaturacaoScreen> {
   _FaturacaoScreenState() {
     onPesquisarCliente();
+    onPesquisarEmpresa();
     onPesquisarProduto();
   }
 
@@ -104,18 +105,7 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
                 children: [
                   Expanded(
                     child: ElevatedButton(
-                      onPressed: () async {
-                        final controller = EmpresaController();
-                        _empresas = await controller
-                            .getEmpresa(_empresaController.value.text);
-                        // print(res);
-                        if (_empresas.isNotEmpty) {
-                          _empresa = _empresas[0];
-                        } else {
-                          _empresa = null;
-                        }
-                        setState(() {});
-                      },
+                      onPressed: onPesquisarEmpresa,
                       child: const Text("Pesquisar"),
                     ),
                   ),
@@ -362,6 +352,18 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
     setState(() {});
   }
 
+  void onPesquisarEmpresa() async {
+    final controller = EmpresaController();
+    _empresas = await controller.getEmpresa(_empresaController.value.text);
+    // print(res);
+    if (_empresas.isNotEmpty) {
+      _empresa = _empresas[0];
+    } else {
+      _empresa = null;
+    }
+    setState(() {});
+  }
+
   void onPesquisarProduto() async {
     if (!_isDB) return;
     final controller = ProdutoController();
@@ -392,7 +394,6 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
   }
 
   void onAddLista() async {
-    clearData();
     if (!_isDB) {
       if (_validateForm.currentState!.validate()) {
         // print(_produtoPreco.value.text);
@@ -405,6 +406,7 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
 
         try {
           _produto = await _cadastrarProduto(produto);
+          clearData();
         } catch (e) {
           AppUtil.snackBar(context, "Este produto ja existe na base de dados");
         }
@@ -467,10 +469,10 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
           AppUtil.snackBar(context, "Fatura salva com sucesso!");
         } catch (e) {
           AppUtil.snackBar(context, "Ocorreu um erro ao salvar a fatura!");
-          setState(() {
-            _faturando = false;
-          });
         }
+        setState(() {
+          _faturando = false;
+        });
         return;
       }
       AppUtil.snackBar(context,
@@ -531,10 +533,10 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
           AppUtil.snackBar(context, "Fatura salva com sucesso!");
         } catch (e) {
           AppUtil.snackBar(context, "Ocorreu um erro ao salvar a fatura!");
-          setState(() {
-            _faturando = false;
-          });
         }
+        setState(() {
+          _faturando = false;
+        });
         return;
       }
       AppUtil.snackBar(

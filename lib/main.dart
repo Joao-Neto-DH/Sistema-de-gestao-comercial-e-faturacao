@@ -32,7 +32,7 @@ class GestaoComercial extends StatelessWidget {
       ),
       initialRoute: "/",
       routes: {
-        "/": (context) => Login(formBody: Senha()),
+        "/": (context) => Login(formBody: const Senha()),
         "/signin": (context) => Login(formBody: SignIn()),
         "/signup": (context) => Login(formBody: SignUp()),
         "/recover-password": (context) =>

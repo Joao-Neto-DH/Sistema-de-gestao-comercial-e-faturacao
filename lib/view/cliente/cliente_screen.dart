@@ -9,11 +9,11 @@ import '../../model/cliente_model.dart';
 
 class ClienteScreen extends StatelessWidget {
   final formKey = GlobalKey<FormState>();
-  final nifController = TextEditingController();
-  final creditoController = TextEditingController();
-  final nomeController = TextEditingController();
-  final enderecoController = TextEditingController();
-  final emailController = TextEditingController();
+  final _nifController = TextEditingController();
+  final _creditoController = TextEditingController();
+  final _nomeController = TextEditingController();
+  final _enderecoController = TextEditingController();
+  final _emailController = TextEditingController();
 
   ClienteScreen({Key? key}) : super(key: key);
 
@@ -39,13 +39,13 @@ class ClienteScreen extends StatelessWidget {
               ])),
               const Divider(),
               const Text(
-                "Nome do Cliente",
+                "Nome do Cliente*",
               ),
               AppUtil.spaceLabelField,
               TextFormFieldDecorated(
                 hintText: "Nome",
                 validator: Validator.validateName,
-                controller: nomeController,
+                controller: _nomeController,
               ),
               AppUtil.spaceFields,
               const Text(
@@ -55,8 +55,12 @@ class ClienteScreen extends StatelessWidget {
               AppUtil.spaceLabelField,
               TextFormFieldDecorated(
                 hintText: "NIF",
-                validator: Validator.validateNotEmpty,
-                controller: nifController,
+                validator: (value) {
+                  return _nifController.value.text.trim().isEmpty
+                      ? null
+                      : Validator.validateNotEmpty(value);
+                },
+                controller: _nifController,
               ),
               AppUtil.spaceFields,
               const Text(
@@ -65,8 +69,12 @@ class ClienteScreen extends StatelessWidget {
               AppUtil.spaceLabelField,
               TextFormFieldDecorated(
                 hintText: "Endereço",
-                validator: Validator.validateNotEmpty,
-                controller: enderecoController,
+                validator: (value) {
+                  return _enderecoController.value.text.trim().isEmpty
+                      ? null
+                      : Validator.validateNotEmpty(value);
+                },
+                controller: _enderecoController,
               ),
               AppUtil.spaceFields,
               const Text(
@@ -75,8 +83,12 @@ class ClienteScreen extends StatelessWidget {
               AppUtil.spaceLabelField,
               TextFormFieldDecorated(
                 hintText: "EMAIL",
-                validator: Validator.validateEmail,
-                controller: emailController,
+                validator: (value) {
+                  return _emailController.value.text.trim().isEmpty
+                      ? null
+                      : Validator.validateEmail(value);
+                },
+                controller: _emailController,
               ),
               AppUtil.spaceFields,
               const Text(
@@ -85,7 +97,7 @@ class ClienteScreen extends StatelessWidget {
               AppUtil.spaceLabelField,
               TextFormFieldDecorated(
                 hintText: "Credito",
-                controller: creditoController,
+                controller: _creditoController,
               ),
               AppUtil.spaceFields,
               ElevatedButton(
@@ -94,16 +106,17 @@ class ClienteScreen extends StatelessWidget {
                       final controller = ClienteController();
                       try {
                         await controller.cadastrarCliente(ClienteModel(
-                            nome: nomeController.value.text,
-                            nif: nifController.value.text,
-                            endereco: enderecoController.value.text,
-                            email: emailController.value.text,
-                            credito: creditoController.value.text.isEmpty
+                            nome: _nomeController.value.text,
+                            nif: _nifController.value.text,
+                            endereco: _enderecoController.value.text,
+                            email: _emailController.value.text,
+                            credito: _creditoController.value.text.isEmpty
                                 ? 0
-                                : double.parse(creditoController.value.text)));
+                                : double.parse(_creditoController.value.text)));
 
                         AppUtil.snackBar(
                             context, "Cliente cadastrado com sucesso");
+                        clearData();
                       } catch (e) {
                         // print(e);
                         AppUtil.snackBar(context,
@@ -128,5 +141,9 @@ class ClienteScreen extends StatelessWidget {
             ],
           ),
         ));
+  }
+
+  void clearData() {
+    formKey.currentState!.reset();
   }
 }

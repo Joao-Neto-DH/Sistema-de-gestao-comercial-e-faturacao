@@ -107,10 +107,7 @@ class DB {
         empresa_id INTEGER       NOT NULL
                                 REFERENCES empresa (id),
         logo       VARCHAR (100) NOT NULL,
-        logo_marca BOOLEAN       DEFAULT false,
-        UNIQUE (
-            logo
-        )
+        logo_marca BOOLEAN       DEFAULT false
     )''');
 
     await db.execute('''CREATE TABLE if not exists produtos (

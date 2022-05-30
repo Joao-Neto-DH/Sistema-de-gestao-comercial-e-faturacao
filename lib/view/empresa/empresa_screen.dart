@@ -27,27 +27,27 @@ class _EmpresaScreenState extends State<EmpresaScreen> {
 //  Imagens da empresa(logotipo e marca d'agua)
   String _logoImagePath = "";
   String _backgroundImagePath = "";
-  final LoadImage logoImage = LoadImage();
-  final LoadImage backgroundImage = LoadImage();
+  final LoadImage _logoImage = LoadImage();
+  // final LoadImage backgroundImage = LoadImage();
 //  Dados da empresa
-  final nomeController = TextEditingController();
-  final nifController = TextEditingController();
-  final enderecoController = TextEditingController();
-  final cidadeController = TextEditingController();
+  final _nomeController = TextEditingController();
+  final _nifController = TextEditingController();
+  final _enderecoController = TextEditingController();
+  final _cidadeController = TextEditingController();
 //  Dados de contacto da empresa
-  final contactoControllers = [
+  final _contactoControllers = [
     TextEditingController(),
     TextEditingController(),
   ];
-  final emailController = TextEditingController();
-  final websiteController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _websiteController = TextEditingController();
 //  Dados bancario da empresa
-  final ibanControllers = [
+  final _ibanControllers = [
     TextEditingController(),
     TextEditingController(),
     TextEditingController()
   ];
-  final contaControllers = [
+  final _contaControllers = [
     TextEditingController(),
     TextEditingController(),
     TextEditingController()
@@ -75,12 +75,12 @@ class _EmpresaScreenState extends State<EmpresaScreen> {
               ])),
               const Divider(),
               const Text(
-                "Nome da Empresa",
+                "Nome da Empresa*",
               ),
               AppUtil.spaceLabelField,
               //dados da empresa
               TextFormFieldDecorated(
-                controller: nomeController,
+                controller: _nomeController,
                 validator: (value) {
                   return Validator.validateNotEmpty(value!);
                 },
@@ -88,37 +88,37 @@ class _EmpresaScreenState extends State<EmpresaScreen> {
               ),
               AppUtil.spaceFields,
               const Text(
-                "NIF da Empresa",
+                "NIF da Empresa*",
                 textAlign: TextAlign.left,
               ),
               AppUtil.spaceLabelField,
               TextFormFieldDecorated(
                 hintText: "NIF da Empresa",
-                controller: nifController,
+                controller: _nifController,
                 validator: (value) {
                   return Validator.validateNotEmpty(value!);
                 },
               ),
               AppUtil.spaceFields,
               const Text(
-                "Endereço da Empresa",
+                "Endereço da Empresa*",
               ),
               AppUtil.spaceLabelField,
               TextFormFieldDecorated(
                 hintText: "Endereço da Empresa",
-                controller: enderecoController,
+                controller: _enderecoController,
                 validator: (value) {
                   return Validator.validateNotEmpty(value!);
                 },
               ),
               AppUtil.spaceFields,
               const Text(
-                "Cidade",
+                "Cidade*",
               ),
               AppUtil.spaceLabelField,
               TextFormFieldDecorated(
                 hintText: "Cidade",
-                controller: cidadeController,
+                controller: _cidadeController,
                 validator: (value) {
                   return Validator.validateNotEmpty(value!);
                 },
@@ -134,7 +134,7 @@ class _EmpresaScreenState extends State<EmpresaScreen> {
               AppUtil.spaceLabelField,
               TextFormFieldDecorated(
                 hintText: "Contacto",
-                controller: contactoControllers[0],
+                controller: _contactoControllers[0],
                 validator: null,
               ),
               AppUtil.spaceFields,
@@ -143,7 +143,7 @@ class _EmpresaScreenState extends State<EmpresaScreen> {
               ),
               AppUtil.spaceLabelField,
               TextFormFieldDecorated(
-                controller: contactoControllers[1],
+                controller: _contactoControllers[1],
                 hintText: "Contacto",
               ),
               AppUtil.spaceFields,
@@ -153,7 +153,7 @@ class _EmpresaScreenState extends State<EmpresaScreen> {
               AppUtil.spaceLabelField,
               TextFormFieldDecorated(
                 hintText: "Email",
-                controller: emailController,
+                controller: _emailController,
                 validator: null,
               ),
               AppUtil.spaceFields,
@@ -162,7 +162,7 @@ class _EmpresaScreenState extends State<EmpresaScreen> {
               ),
               AppUtil.spaceLabelField,
               TextFormFieldDecorated(
-                controller: websiteController,
+                controller: _websiteController,
                 hintText: "Website",
               ),
               AppUtil.spaceFields,
@@ -175,7 +175,7 @@ class _EmpresaScreenState extends State<EmpresaScreen> {
               AppUtil.spaceLabelField,
               TextFormFieldDecorated(
                 hintText: "IBAN",
-                controller: ibanControllers[0],
+                controller: _ibanControllers[0],
                 validator: null,
               ),
               AppUtil.spaceFields,
@@ -184,7 +184,7 @@ class _EmpresaScreenState extends State<EmpresaScreen> {
               ),
               AppUtil.spaceLabelField,
               TextFormFieldDecorated(
-                controller: ibanControllers[1],
+                controller: _ibanControllers[1],
                 hintText: "IBAN",
               ),
               AppUtil.spaceFields,
@@ -193,7 +193,7 @@ class _EmpresaScreenState extends State<EmpresaScreen> {
               ),
               AppUtil.spaceLabelField,
               TextFormFieldDecorated(
-                controller: ibanControllers[2],
+                controller: _ibanControllers[2],
                 hintText: "IBAN",
               ),
               AppUtil.spaceFields,
@@ -203,10 +203,7 @@ class _EmpresaScreenState extends State<EmpresaScreen> {
               AppUtil.spaceLabelField,
               TextFormFieldDecorated(
                 hintText: "Numero da Conta",
-                controller: contaControllers[0],
-                validator: (value) {
-                  return Validator.validateNotEmpty(value!);
-                },
+                controller: _contaControllers[0],
               ),
               AppUtil.spaceFields,
               const Text(
@@ -214,7 +211,7 @@ class _EmpresaScreenState extends State<EmpresaScreen> {
               ),
               AppUtil.spaceLabelField,
               TextFormFieldDecorated(
-                controller: contaControllers[1],
+                controller: _contaControllers[1],
                 hintText: "Numero da Conta",
               ),
               AppUtil.spaceFields,
@@ -223,13 +220,13 @@ class _EmpresaScreenState extends State<EmpresaScreen> {
               ),
               AppUtil.spaceLabelField,
               TextFormFieldDecorated(
-                controller: contaControllers[2],
+                controller: _contaControllers[2],
                 hintText: "Numero da Conta",
               ),
               AppUtil.spaceFields,
               ElevatedButton(
                   onPressed: () {
-                    logoImage.pickImage().then((value) => setState(() {
+                    _logoImage.pickImage().then((value) => setState(() {
                           _logoImagePath = value;
                         }));
                   },
@@ -238,7 +235,7 @@ class _EmpresaScreenState extends State<EmpresaScreen> {
               AppUtil.spaceFields,
               ElevatedButton(
                   onPressed: () {
-                    logoImage.pickImage().then((value) => setState(() {
+                    _logoImage.pickImage().then((value) => setState(() {
                           _backgroundImagePath = value;
                         }));
                   },
@@ -251,33 +248,34 @@ class _EmpresaScreenState extends State<EmpresaScreen> {
                       final contactos = <ContactoModel>[];
                       final coordenadas = <CoordenadaBancariaModel>[];
 
-                      contactoControllers.forEach(((element) {
+                      _contactoControllers.forEach(((element) {
                         if (element.value.text.trim().isNotEmpty) {
                           contactos.add(ContactoModel(
                               telefone: element.value.text.trim()));
                         }
                       }));
 
-                      for (var i = 0; i < contaControllers.length; i++) {
-                        if (contaControllers[i].value.text.isNotEmpty &&
-                            ibanControllers[i].value.text.isNotEmpty) {
+                      for (var i = 0; i < _contaControllers.length; i++) {
+                        if (_contaControllers[i].value.text.isNotEmpty &&
+                            _ibanControllers[i].value.text.isNotEmpty) {
                           coordenadas.add(CoordenadaBancariaModel(
-                              coordenada: ibanControllers[i].value.text,
-                              conta: contaControllers[i].value.text));
-                        } else if (contaControllers[i].value.text.isNotEmpty !=
-                            ibanControllers[i].value.text.isNotEmpty) {
-                          AppUtil.snackBar(context,
-                              "Um dos campos bancarios(Numero de Conta, IBAN) numero ${i + 1} nao esta preenchido! Por favor preencha e tente novan«mente");
-                          return;
+                              coordenada: _ibanControllers[i].value.text,
+                              conta: _contaControllers[i].value.text));
                         }
+                        //else if (contaControllers[i].value.text.isNotEmpty !=
+                        //     ibanControllers[i].value.text.isNotEmpty) {
+                        //   AppUtil.snackBar(context,
+                        //       "Um dos campos bancarios(Numero de Conta, IBAN) numero ${i + 1} nao esta preenchido! Por favor preencha e tente novan«mente");
+                        //   return;
+                        // }
                       }
                       final controller = EmpresaController();
                       final empresa = EmpresaModel(
-                          nome: nomeController.value.text,
-                          nif: nifController.value.text,
-                          email: emailController.value.text,
-                          endereco: enderecoController.value.text,
-                          cidade: cidadeController.value.text,
+                          nome: _nomeController.value.text,
+                          nif: _nifController.value.text,
+                          email: _emailController.value.text,
+                          endereco: _enderecoController.value.text,
+                          cidade: _cidadeController.value.text,
                           contactos: contactos,
                           coordenadas: coordenadas,
                           logos: _logos());
@@ -310,16 +308,18 @@ class _EmpresaScreenState extends State<EmpresaScreen> {
   List<LogoModel> _logos() {
     // final logoDAO = LogoDAO();
     final logos = <LogoModel>[];
-
-    logos.add(LogoModel(
-        logo: _logoImagePath,
-        // empresaID: empresaID,
-        isFundo: false));
-
-    logos.add(LogoModel(
-        logo: _backgroundImagePath,
-        // empresaID: empresaID,
-        isFundo: true));
+    if (_logoImagePath != "") {
+      logos.add(LogoModel(
+          logo: _logoImagePath,
+          // empresaID: empresaID,
+          isFundo: false));
+    }
+    if (_backgroundImagePath != "") {
+      logos.add(LogoModel(
+          logo: _backgroundImagePath,
+          // empresaID: empresaID,
+          isFundo: true));
+    }
 
     return logos;
   }
