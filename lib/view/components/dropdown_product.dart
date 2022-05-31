@@ -10,7 +10,7 @@ Widget dropdownProduct(List<ProdutoModel> produtos, ProdutoModel? selected,
     // quantidade = !quantidade;
     // if (produtos.length > 1) {
     return DropdownButton<ProdutoModel>(
-        // hint: const Text("Seleciona o cliente"),
+        hint: const Text("Selecionar"),
         value: selected,
         items: produtos
             .map((e) => DropdownMenuItem(

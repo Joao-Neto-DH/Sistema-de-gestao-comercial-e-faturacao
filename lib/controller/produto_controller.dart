@@ -21,4 +21,18 @@ class ProdutoController {
   Future<int> update(ProdutoModel produto) async {
     return await _dao.update(produto);
   }
+
+  Future<List<ProdutoModel>> get all async {
+    final lista = await _dao.all;
+    final produtos = <ProdutoModel>[];
+    for (var item in lista) {
+      produtos.add(ProdutoModel.fromMap(item));
+    }
+
+    return produtos;
+  }
+
+  Future<int> delete(ProdutoModel produto) async {
+    return await _dao.remove(produto);
+  }
 }

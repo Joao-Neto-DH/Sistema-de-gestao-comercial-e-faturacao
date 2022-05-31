@@ -1,9 +1,11 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sistema_de_gestao_comercial/controller/produto_controller.dart';
 // import 'package:sistema_de_gestao_comercial/dao/produto_dao.dart';
 import 'package:sistema_de_gestao_comercial/model/produto_model.dart';
 import 'package:sistema_de_gestao_comercial/util.dart';
 import 'package:sistema_de_gestao_comercial/validator.dart';
+import 'package:sistema_de_gestao_comercial/view/components/dropdown_product.dart';
 import '../components/text_form_field_decorated.dart';
 
 class ProdutosServicos extends StatefulWidget {
@@ -119,7 +121,8 @@ class _ProdutosServicosState extends State<ProdutosServicos> {
               // AppUtil.spaceLabelField,
               // ElevatedButton(onPressed: () {}, child: const Text("Alterar")),
               AppUtil.spaceLabelField,
-              ElevatedButton(onPressed: () {}, child: const Text("Eliminar")),
+              ElevatedButton(
+                  onPressed: _eliminar, child: const Text("Eliminar")),
               AppUtil.spaceLabelField
             ],
           )),
@@ -130,5 +133,85 @@ class _ProdutosServicosState extends State<ProdutosServicos> {
     _nomeController.clear();
     _precoController.clear();
     _qtdController.clear();
+  }
+
+  void _eliminar() async {
+    showCupertinoDialog(
+        context: context, builder: (context) => const DeleteProdutoSheet());
+  }
+}
+
+class DeleteProdutoSheet extends StatefulWidget {
+  const DeleteProdutoSheet({Key? key}) : super(key: key);
+
+  @override
+  State<DeleteProdutoSheet> createState() => _DeleteProdutoSheetState();
+}
+
+class _DeleteProdutoSheetState extends State<DeleteProdutoSheet> {
+  _DeleteProdutoSheetState() {
+    _load();
+  }
+  ProdutoModel? _produto;
+  List<ProdutoModel>? _produtos;
+
+  final _controller = ProdutoController();
+  var _loading = true;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.transparent,
+      body: Center(
+        child: Container(
+          width: MediaQuery.of(context).size.width - 20,
+          color: Colors.white,
+          padding: const EdgeInsets.all(10),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _loading
+                  ? const CircularProgressIndicator()
+                  : dropdownProduct(_produtos!, _produto, (value) {
+                      setState(() {
+                        _produto = value!;
+                      });
+                    }),
+              AppUtil.spaceLabelField,
+              ElevatedButton(
+                  onPressed: () async {
+                    if (_produto == null) return;
+                    final res = await _controller.delete(_produto!);
+                    if (res > 0) {
+                      AppUtil.snackBar(context,
+                          "Produto/Serviço ${_produto!.nome} foi apagado!");
+                      _produto = null;
+                    }
+                    setState(() {
+                      _load();
+                    });
+                  },
+                  child: const Text("Eliminar")),
+              ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text("Voltar"))
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _load() async {
+    _loading = true;
+    _produtos = await _controller.all;
+    if (_produtos!.isNotEmpty) {
+      _produto = _produtos!.first;
+    }
+    setState(() {
+      _loading = false;
+    });
   }
 }
