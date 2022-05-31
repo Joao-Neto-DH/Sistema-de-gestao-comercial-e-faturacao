@@ -18,9 +18,9 @@ class _ProdutosServicosState extends State<ProdutosServicos> {
   var _hasStock = true;
   final formKey = GlobalKey<FormState>();
 
-  final nomeController = TextEditingController();
-  final precoController = TextEditingController();
-  final qtdController = TextEditingController();
+  final _nomeController = TextEditingController();
+  final _precoController = TextEditingController();
+  final _qtdController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +42,7 @@ class _ProdutosServicosState extends State<ProdutosServicos> {
 
               TextFormFieldDecorated(
                 hintText: "Nome do produto/serviço",
-                controller: nomeController,
+                controller: _nomeController,
                 validator: Validator.validateName,
               ),
               AppUtil.spaceFields,
@@ -51,7 +51,7 @@ class _ProdutosServicosState extends State<ProdutosServicos> {
               TextFormFieldDecorated(
                 hintText: "Preço do produto/serviço",
                 keyboardType: TextInputType.number,
-                controller: precoController,
+                controller: _precoController,
                 validator: Validator.validateNotEmpty,
               ),
               AppUtil.spaceFields,
@@ -87,7 +87,7 @@ class _ProdutosServicosState extends State<ProdutosServicos> {
                 enabled: _hasStock,
                 hintText: "Quantidade em Stock",
                 keyboardType: TextInputType.number,
-                controller: qtdController,
+                controller: _qtdController,
                 validator: (value) =>
                     _hasStock ? Validator.validateNotEmpty(value) : null,
               ),
@@ -98,29 +98,37 @@ class _ProdutosServicosState extends State<ProdutosServicos> {
                       final controller = ProdutoController();
                       try {
                         await controller.cadastrarProduto(ProdutoModel(
-                          nome: nomeController.value.text,
-                          preco: double.parse(precoController.value.text),
-                          stock: qtdController.value.text.isEmpty
+                          nome: _nomeController.value.text,
+                          preco: double.parse(_precoController.value.text),
+                          stock: _qtdController.value.text.isEmpty
                               ? -1
-                              : int.parse(qtdController.value.text),
+                              : int.parse(_qtdController.value.text),
                           iva: _hasIVA,
                         ));
                         AppUtil.snackBar(
                             context, "Produto/Serviço cadastrado com sucesso!");
+                        formKey.currentState!.reset();
                       } catch (e) {
                         AppUtil.snackBar(context,
                             "Erro ao cadastrar Produto/Serviço. Certifique-se o mesmo produto nao exista e tente novamente!");
                       }
+                      _clearFields();
                     }
                   },
                   child: const Text("Salvar")),
-              AppUtil.spaceLabelField,
-              ElevatedButton(onPressed: () {}, child: const Text("Alterar")),
+              // AppUtil.spaceLabelField,
+              // ElevatedButton(onPressed: () {}, child: const Text("Alterar")),
               AppUtil.spaceLabelField,
               ElevatedButton(onPressed: () {}, child: const Text("Eliminar")),
               AppUtil.spaceLabelField
             ],
           )),
     );
+  }
+
+  void _clearFields() {
+    _nomeController.clear();
+    _precoController.clear();
+    _qtdController.clear();
   }
 }

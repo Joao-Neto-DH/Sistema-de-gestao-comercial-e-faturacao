@@ -61,7 +61,7 @@ class _StockScreenState extends State<StockScreen> {
               AppUtil.spaceLabelField,
               TextFormFieldDecorated(
                 hintText: "Nome ou id do produto/serviço",
-                validator: Validator.validateName,
+                // validator: Validator.validateName,
                 controller: _nomeOrIDController,
               ),
               dropdownProduct(
