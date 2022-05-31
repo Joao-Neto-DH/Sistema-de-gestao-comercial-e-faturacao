@@ -34,6 +34,7 @@ class ProdutoDAO {
 
   Future<int> update(ProdutoModel produto) async {
     var db = await DB.instace.database;
-    return db!.update(_table, {}, where: "id = ?", whereArgs: [produto.id]);
+    return db!.update(_table, produto.toMap,
+        where: "id = ?", whereArgs: [produto.id]);
   }
 }

@@ -483,9 +483,15 @@ class PdfRecibo {
                       pw.Row(
                           mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                           children: [
+                            _columnTitle("Pago"),
+                            pw.Text(pagamento.cashValor.toString())
+                          ]),
+                      pw.Row(
+                          mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                          children: [
                             _columnTitle("Troco"),
                             pw.Text(pagamento.troco.toString())
-                          ])
+                          ]),
                     ]))
           ]),
       _spaceBetween(),

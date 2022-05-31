@@ -49,7 +49,8 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
   final _quantidadeController = TextEditingController();
   final _clienteController = TextEditingController();
   final _empresaController = TextEditingController();
-  final _pagamentoController = TextEditingController();
+  final _cashController = TextEditingController();
+  final _multicaixaController = TextEditingController();
   final _validateForm = GlobalKey<FormState>();
 
   final _produtoNome = TextEditingController();
@@ -57,7 +58,7 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
   final _produtoQuantidade = TextEditingController();
 
   var _faturando = false;
-  var _isDB = false;
+  var _isDB = true;
 
   var _hasIVA = true;
 
@@ -264,11 +265,14 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
 
   double _pago() {
     // print(double.tryParse(_pagamentoController.value.text));
-    var value = double.tryParse(
-            _pagamentoController.value.text.replaceFirst(RegExp(r','), '.')) ??
+    final entregue = double.tryParse(
+            _cashController.value.text.replaceFirst(RegExp(r','), '.')) ??
+        0;
+    final multicaixa = double.tryParse(
+            _multicaixaController.value.text.replaceFirst(RegExp(r','), '.')) ??
         0;
 
-    return value;
+    return entregue + multicaixa;
   }
 
   Widget _modalBottomSheetContent(BuildContext context) {
@@ -331,7 +335,7 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
   void clearData() {
     _clienteController.clear();
     // _empresaController.clear();
-    _pagamentoController.clear();
+    _cashController.clear();
     _produtoNome.clear();
     // _produtoNomeIdController.clear();
     _produtoPreco.clear();
@@ -498,7 +502,7 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
 
   Future<void> onFaturarRecibo() async {
     final hasTroco =
-        (_pagamento == _pagamentos[0] || _pagamento == _pagamentos[4]) &&
+        (_pagamento == _pagamentos[0] || _pagamento == _pagamentos[3]) &&
             (_pago() - _precoTotal() < 0);
     if (hasTroco) {
       AppUtil.snackBar(context, "O troco nao pode ser menor que zero");
@@ -523,7 +527,7 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
           precoTotal: _precoTotal(),
           pagamento: Pagamento(
             tipo: _pagamento!,
-            cashValor: double.tryParse(_pagamentoController.value.text) ?? 0,
+            cashValor: _pago(),
             troco: (_pago() - _precoTotal()),
           ),
         );
@@ -617,13 +621,13 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
         child: Column(
       children: [
         TextFormFieldDecorated(
-          controller: _pagamentoController,
+          controller: _cashController,
           keyboardType: TextInputType.number,
           onChange: (value) {
             setState(() {});
           },
           hintText: "Valor Entregue",
-          enabled: _pagamentos[1] != _pagamento,
+          enabled: _pagamentos[1] != _pagamento && _pagamentos[2] != _pagamento,
         ),
         AppUtil.spaceFields,
         TextFormFieldDecorated(
@@ -635,7 +639,7 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
         ),
         AppUtil.spaceFields,
         TextFormFieldDecorated(
-          hintText: _pagamento != _pagamentos[1]
+          hintText: _pagamento == _pagamentos[0] || _pagamentos[3] == _pagamento
               ? AppUtil.formatNumber((_pago() - _precoTotal()))
               : "0",
           enabled: false,

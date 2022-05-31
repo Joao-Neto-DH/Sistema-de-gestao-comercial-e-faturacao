@@ -19,10 +19,12 @@ class StockScreen extends StatefulWidget {
 }
 
 class _StockScreenState extends State<StockScreen> {
-  final _nomeOrIDController = TextEditingController();
   var _produtos = <ProdutoModel>[];
+  final _nomeOrIDController = TextEditingController();
   final _quantidadeController = TextEditingController();
+  final _newQuantidadeController = TextEditingController();
   ProdutoModel? _produto;
+  final key = GlobalKey<FormState>();
   // bool _stocavel = true;
   @override
   void initState() {
@@ -35,93 +37,164 @@ class _StockScreenState extends State<StockScreen> {
   @override
   Widget build(BuildContext context) {
     return Form(
+        key: key,
         child: SingleChildScrollView(
-      padding: AppUtil.paddingBody,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          const Text(
-            "GERENCIAR STOCK",
-            textAlign: TextAlign.center,
-            style: AppUtil.styleHeader,
+          padding: AppUtil.paddingBody,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const Text(
+                "GERENCIAR STOCK",
+                textAlign: TextAlign.center,
+                style: AppUtil.styleHeader,
+              ),
+              AppUtil.spaceLabelField,
+              const Text.rich(
+                  TextSpan(text: "Os campos marcados com (", children: [
+                TextSpan(text: "*", style: TextStyle(color: Colors.red)),
+                TextSpan(text: ") sao obrigatorios")
+              ])),
+              AppUtil.spaceFields,
+              const Text(
+                "Filtrar produto/serviço",
+              ),
+              AppUtil.spaceLabelField,
+              TextFormFieldDecorated(
+                hintText: "Nome ou id do produto/serviço",
+                validator: Validator.validateName,
+                controller: _nomeOrIDController,
+              ),
+              dropdownProduct(
+                _produtos,
+                _produto,
+                ((value) => setState(() {
+                      _produto = value;
+                      _quantidadeController.text = _produto!.stock.toString();
+                    })),
+              ),
+              AppUtil.spaceFields,
+              pesquisarProduto(() async {
+                final controller = ProdutoController();
+                try {
+                  _produtos.clear();
+                  _produtos =
+                      await controller.produto(_nomeOrIDController.value.text);
+                  // for (var produto in res) {
+                  //   _produtos.add(ProdutoModel.fromMap(produto));
+                  // }
+                  // setState(() {});
+                  if (_produtos.isNotEmpty) {
+                    _produto = _produtos[0];
+                    _quantidadeController.text = _produto!.stock.toString();
+                  } else {
+                    _quantidadeController.text = "";
+                  }
+                  setState(() {});
+                } catch (e) {
+                  AppUtil.snackBar(context, "Produto/Serviço nao encontrado");
+                }
+              }),
+              AppUtil.spaceLabelField,
+              const HorizontalDividerWithLabel(
+                  label: "Detalhes do Produto/Serviço"),
+              AppUtil.spaceLabelField,
+              const Text(
+                "Quantidade em Stock",
+                textAlign: TextAlign.left,
+              ),
+              AppUtil.spaceLabelField,
+              TextFormFieldDecorated(
+                controller: _quantidadeController,
+                enabled: false,
+              ),
+              AppUtil.spaceFields,
+              const Text(
+                "Adicionar novo Stock",
+              ),
+              AppUtil.spaceLabelField,
+              TextFormFieldDecorated(
+                enabled: _produto == null ? false : _produto!.stock > 0,
+                hintText: "Adicionar novo Stock",
+                keyboardType: TextInputType.number,
+                controller: _newQuantidadeController,
+                validator: (value) {
+                  if (int.tryParse(value!) == null) {
+                    return "Este nao e um numero valido";
+                  }
+                  return null;
+                },
+              ),
+              AppUtil.spaceLabelField,
+              ElevatedButton(
+                  onPressed: () async {
+                    if (_produto == null) {
+                      AppUtil.snackBar(context,
+                          "Nenhum produto selecionado. Por favor selecione um produto e tente novamente!");
+                      return;
+                    } else if (_produto!.stock < 0) {
+                      AppUtil.snackBar(context,
+                          "Este produto nao e estocavel. Por favor selecione um produto que possua estoque e tente novamente!");
+                      return;
+                    }
+
+                    if (key.currentState!.validate()) {
+                      final newValue =
+                          int.parse(_newQuantidadeController.value.text);
+                      if (newValue < 0 || _produto!.stock < newValue) {
+                        AppUtil.snackBar(context,
+                            "A quantidade a ser reduzida nao pode ser maior que a quantidade actual em Stock nem menor que zero.\nPor favor digite uma nova quantidade valida!");
+                        return;
+                      }
+                      final controller = ProdutoController();
+                      _produto!.stock = _produto!.stock - newValue;
+                      try {
+                        await controller.update(_produto!);
+                        AppUtil.snackBar(context,
+                            "Nova quantidade actualizada com sucesso!");
+                      } catch (e) {
+                        AppUtil.snackBar(context,
+                            "Ocorreu um erro ao atribuir a nova quantidade!");
+                      }
+                    }
+                  },
+                  child: const Text("Dimininuir Stock")),
+              AppUtil.spaceFields,
+              ElevatedButton(
+                  onPressed: () async {
+                    if (_produto == null) {
+                      AppUtil.snackBar(context,
+                          "Nenhum produto selecionado. Por favor selecione um produto e tente novamente!");
+                      return;
+                    } else if (_produto!.stock < 0) {
+                      AppUtil.snackBar(context,
+                          "Este produto nao e estocavel. Por favor selecione um produto que possua estoque e tente novamente!");
+                      return;
+                    }
+
+                    if (key.currentState!.validate()) {
+                      final newValue =
+                          int.parse(_newQuantidadeController.value.text);
+                      if (newValue < 0) {
+                        AppUtil.snackBar(context,
+                            "A quantidade a ser adicionada nao pode ser menor que zero.\nPor favor digite uma nova quantidade valida!");
+                        return;
+                      }
+                      final controller = ProdutoController();
+                      _produto!.stock = _produto!.stock + newValue;
+                      try {
+                        await controller.update(_produto!);
+                        AppUtil.snackBar(context,
+                            "Nova quantidade actualizada com sucesso!");
+                      } catch (e) {
+                        AppUtil.snackBar(context,
+                            "Ocorreu um erro ao atribuir a nova quantidade!");
+                      }
+                    }
+                  },
+                  child: const Text("Adicionar Stock")),
+            ],
           ),
-          AppUtil.spaceLabelField,
-          const Text.rich(TextSpan(text: "Os campos marcados com (", children: [
-            TextSpan(text: "*", style: TextStyle(color: Colors.red)),
-            TextSpan(text: ") sao obrigatorios")
-          ])),
-          AppUtil.spaceFields,
-          const Text(
-            "Filtrar produto/serviço",
-          ),
-          AppUtil.spaceLabelField,
-          TextFormFieldDecorated(
-            hintText: "Nome ou id do produto/serviço",
-            validator: Validator.validateName,
-            controller: _nomeOrIDController,
-          ),
-          dropdownProduct(
-            _produtos,
-            _produto,
-            ((value) => setState(() {
-                  _produto = value;
-                  _quantidadeController.text = _produto!.stock.toString();
-                })),
-          ),
-          AppUtil.spaceFields,
-          pesquisarProduto(() async {
-            final controller = ProdutoController();
-            try {
-              _produtos.clear();
-              _produtos =
-                  await controller.produto(_nomeOrIDController.value.text);
-              // for (var produto in res) {
-              //   _produtos.add(ProdutoModel.fromMap(produto));
-              // }
-              // setState(() {});
-              if (_produtos.isNotEmpty) {
-                _produto = _produtos[0];
-                _quantidadeController.text = _produto!.stock.toString();
-              } else {
-                _quantidadeController.text = "";
-              }
-              setState(() {});
-            } catch (e) {
-              AppUtil.snackBar(context, "Produto/Serviço nao encontrado");
-            }
-          }),
-          AppUtil.spaceLabelField,
-          const HorizontalDividerWithLabel(
-              label: "Detalhes do Produto/Serviço"),
-          AppUtil.spaceLabelField,
-          const Text(
-            "Quantidade em Stock",
-            textAlign: TextAlign.left,
-          ),
-          AppUtil.spaceLabelField,
-          TextFormFieldDecorated(
-            controller: _quantidadeController,
-            enabled: false,
-          ),
-          AppUtil.spaceFields,
-          const Text(
-            "Adicionar novo Stock",
-          ),
-          AppUtil.spaceLabelField,
-          TextFormFieldDecorated(
-            enabled: _produto == null ? false : _produto!.stock > 0,
-            hintText: "Adicionar novo Stock",
-            keyboardType: TextInputType.number,
-          ),
-          AppUtil.spaceLabelField,
-          ElevatedButton(
-              onPressed: () {}, child: const Text("Dimininuir Stock")),
-          AppUtil.spaceFields,
-          ElevatedButton(
-              onPressed: () {}, child: const Text("Adicionar Stock")),
-        ],
-      ),
-    ));
+        ));
   }
 
   // Widget _found() {
