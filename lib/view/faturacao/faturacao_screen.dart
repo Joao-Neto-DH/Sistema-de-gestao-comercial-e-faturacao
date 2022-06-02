@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:advance_pdf_viewer/advance_pdf_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:sistema_de_gestao_comercial/controller/cliente_controller.dart';
 import 'package:sistema_de_gestao_comercial/controller/empresa_controller.dart';
@@ -469,9 +472,14 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
         );
         pdf.addPage();
         try {
-          await pdf.save();
+          final file = await pdf.save();
+
           AppUtil.snackBar(context, "Fatura salva com sucesso!");
+
+          // Navigator.of(context).push(
+          //     MaterialPageRoute(builder: (context) => PdfView(pdf: file)));
         } catch (e) {
+          print(e);
           AppUtil.snackBar(context, "Ocorreu um erro ao salvar a fatura!");
         }
         setState(() {
@@ -721,4 +729,40 @@ class Pagamento {
       required this.cashValor,
       this.multicaixaValor,
       this.troco});
+}
+
+class PdfView extends StatefulWidget {
+  const PdfView({Key? key, required this.pdf}) : super(key: key);
+  final File pdf;
+
+  @override
+  State<PdfView> createState() => _PdfViewState();
+}
+
+class _PdfViewState extends State<PdfView> {
+  bool _loading = true;
+  PDFDocument? doc;
+
+  @override
+  void initState() {
+    super.initState();
+    load();
+  }
+
+  void load() async {
+    doc = await PDFDocument.fromFile(widget.pdf);
+    _loading = false;
+    setState(() {});
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: _loading
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
+          : PDFViewer(document: doc!),
+    );
+  }
 }

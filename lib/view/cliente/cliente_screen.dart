@@ -1,9 +1,11 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sistema_de_gestao_comercial/controller/cliente_controller.dart';
 import 'package:sistema_de_gestao_comercial/validator.dart';
 // import '../../dao/cliente_dao.dart';
 
 import '../../util.dart';
+// import '../components/dropdown_product.dart';
 import '../components/text_form_field_decorated.dart';
 import '../../model/cliente_model.dart';
 
@@ -134,7 +136,10 @@ class ClienteScreen extends StatelessWidget {
                   onPressed: () {}, child: const Text("Extrato do cliente")),
               AppUtil.spaceFields,
               ElevatedButton(
-                  onPressed: () {}, child: const Text("Eliminar cliente")),
+                  onPressed: () {
+                    _eliminar(context);
+                  },
+                  child: const Text("Eliminar cliente")),
               AppUtil.spaceFields,
               ElevatedButton(
                   onPressed: () {}, child: const Text("Listar clientes"))
@@ -145,5 +150,101 @@ class ClienteScreen extends StatelessWidget {
 
   void clearData() {
     formKey.currentState!.reset();
+  }
+
+  void _eliminar(BuildContext context) {
+    showCupertinoDialog(
+        barrierDismissible: true,
+        context: context,
+        builder: (context) => const DeleteClienteSheet());
+  }
+}
+
+class DeleteClienteSheet extends StatefulWidget {
+  const DeleteClienteSheet({Key? key}) : super(key: key);
+
+  @override
+  State<DeleteClienteSheet> createState() => _DeleteClienteSheetState();
+}
+
+class _DeleteClienteSheetState extends State<DeleteClienteSheet> {
+  _DeleteClienteSheetState() {
+    _load();
+  }
+  ClienteModel? _cliente;
+  List<ClienteModel>? _clientes;
+
+  final _controller = ClienteController();
+  var _loading = true;
+
+  @override
+  Widget build(BuildContext context) {
+    return SimpleDialog(
+        title: const Text("Eliminar Cliente"),
+        titleTextStyle: const TextStyle(fontSize: 16.0, color: Colors.black),
+        children: [
+          Center(
+            child: Container(
+              width: MediaQuery.of(context).size.width - 20,
+              color: Colors.white,
+              padding: const EdgeInsets.all(10),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  _loading
+                      ? const Align(
+                          child: CircularProgressIndicator(),
+                          alignment: Alignment.center,
+                        )
+                      : DropdownButton<ClienteModel>(
+                          hint: const Text("Selecione um cliente"),
+                          value: _cliente,
+                          items: _clientes!
+                              .map((e) => DropdownMenuItem(
+                                    child: Text(e.nome),
+                                    value: e,
+                                  ))
+                              .toList(),
+                          onChanged: (value) {
+                            setState(() {
+                              _cliente = value;
+                            });
+                          }),
+                  AppUtil.spaceLabelField,
+                  ElevatedButton(
+                      onPressed: () async {
+                        if (_cliente == null) return;
+                        final res = await _controller.delete(_cliente!);
+                        if (res > 0) {
+                          AppUtil.snackBar(context,
+                              "Produto/Serviço ${_cliente!.nome} foi apagado!");
+                          _clientes!.remove(_cliente);
+                          _cliente = null;
+                        }
+                        setState(() {});
+                      },
+                      child: const Text("Eliminar")),
+                  ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: const Text("Fechar"))
+                ],
+              ),
+            ),
+          ),
+        ]);
+  }
+
+  void _load() async {
+    _loading = true;
+    _clientes = await _controller.all;
+    if (_clientes!.isNotEmpty) {
+      _cliente = _clientes!.first;
+    }
+    setState(() {
+      _loading = false;
+    });
   }
 }

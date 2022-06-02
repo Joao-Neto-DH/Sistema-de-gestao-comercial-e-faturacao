@@ -19,4 +19,18 @@ class ClienteController {
     }
     return clientes;
   }
+
+  Future<List<ClienteModel>> get all async {
+    final res = await _dao.all;
+    final clientes = <ClienteModel>[];
+    for (var item in res) {
+      clientes.add(ClienteModel.fromMap(item));
+    }
+
+    return clientes;
+  }
+
+  Future<int> delete(ClienteModel cliente) async {
+    return await _dao.remove(cliente);
+  }
 }

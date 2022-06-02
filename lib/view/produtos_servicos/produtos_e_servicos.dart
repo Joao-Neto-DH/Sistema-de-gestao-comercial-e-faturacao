@@ -135,9 +135,11 @@ class _ProdutosServicosState extends State<ProdutosServicos> {
     _qtdController.clear();
   }
 
-  void _eliminar() async {
+  void _eliminar() {
     showCupertinoDialog(
-        context: context, builder: (context) => const DeleteProdutoSheet());
+        barrierDismissible: true,
+        context: context,
+        builder: (context) => const DeleteProdutoSheet());
   }
 }
 
@@ -160,48 +162,53 @@ class _DeleteProdutoSheetState extends State<DeleteProdutoSheet> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.transparent,
-      body: Center(
-        child: Container(
-          width: MediaQuery.of(context).size.width - 20,
-          color: Colors.white,
-          padding: const EdgeInsets.all(10),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _loading
-                  ? const CircularProgressIndicator()
-                  : dropdownProduct(_produtos!, _produto, (value) {
-                      setState(() {
-                        _produto = value!;
-                      });
-                    }),
-              AppUtil.spaceLabelField,
-              ElevatedButton(
-                  onPressed: () async {
-                    if (_produto == null) return;
-                    final res = await _controller.delete(_produto!);
-                    if (res > 0) {
-                      AppUtil.snackBar(context,
-                          "Produto/Serviço ${_produto!.nome} foi apagado!");
-                      _produto = null;
-                    }
-                    setState(() {
-                      _load();
-                    });
-                  },
-                  child: const Text("Eliminar")),
-              ElevatedButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: const Text("Voltar"))
-            ],
+    return SimpleDialog(
+        title: const Text("Eliminar Produto/serviço"),
+        titleTextStyle: const TextStyle(fontSize: 16.0, color: Colors.black),
+        children: [
+          Center(
+            child: Container(
+              width: MediaQuery.of(context).size.width - 20,
+              color: Colors.white,
+              padding: const EdgeInsets.all(10),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  _loading
+                      ? const Align(
+                          child: CircularProgressIndicator(),
+                          alignment: Alignment.center,
+                        )
+                      : dropdownProduct(_produtos!, _produto, (value) {
+                          setState(() {
+                            _produto = value!;
+                          });
+                        }),
+                  AppUtil.spaceLabelField,
+                  ElevatedButton(
+                      onPressed: () async {
+                        if (_produto == null) return;
+                        final res = await _controller.delete(_produto!);
+                        if (res > 0) {
+                          AppUtil.snackBar(context,
+                              "Produto/Serviço ${_produto!.nome} foi apagado!");
+                          _produtos!.remove(_produto);
+                          _produto = null;
+                        }
+                        setState(() {});
+                      },
+                      child: const Text("Eliminar")),
+                  ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: const Text("Fechar"))
+                ],
+              ),
+            ),
           ),
-        ),
-      ),
-    );
+        ]);
   }
 
   void _load() async {

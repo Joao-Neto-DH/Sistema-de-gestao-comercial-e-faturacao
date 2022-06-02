@@ -44,6 +44,10 @@ dependencies:
   flutter_launcher_icons: "^0.9.2"
   shared_preferences: ^2.0.15
   # advance_pdf_viewer: ^2.0.1
+  flutter_file_dialog: ^2.3.0
+  advance_pdf_viewer: ^2.0.1
+  # downloads_path_provider_28: ^0.1.2
+  pdf_viewer_plugin: ^2.0.1
 
 dev_dependencies:
   flutter_test:

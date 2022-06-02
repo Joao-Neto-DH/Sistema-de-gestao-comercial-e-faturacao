@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sistema_de_gestao_comercial/model/produto_model.dart';
 // import 'package:sistema_de_gestao_comercial/controller/stock_controller.dart';
 // import 'package:sistema_de_gestao_comercial/dao/produto_dao.dart';
-import 'package:sistema_de_gestao_comercial/validator.dart';
+// import 'package:sistema_de_gestao_comercial/validator.dart';
 import 'package:sistema_de_gestao_comercial/view/empresa/empresa_screen.dart';
 
 import '../../controller/produto_controller.dart';
@@ -19,6 +19,10 @@ class StockScreen extends StatefulWidget {
 }
 
 class _StockScreenState extends State<StockScreen> {
+  _StockScreenState() {
+    pesquisarProduto(onPesquisarProduto);
+  }
+
   var _produtos = <ProdutoModel>[];
   final _nomeOrIDController = TextEditingController();
   final _quantidadeController = TextEditingController();
@@ -73,27 +77,7 @@ class _StockScreenState extends State<StockScreen> {
                     })),
               ),
               AppUtil.spaceFields,
-              pesquisarProduto(() async {
-                final controller = ProdutoController();
-                try {
-                  _produtos.clear();
-                  _produtos =
-                      await controller.produto(_nomeOrIDController.value.text);
-                  // for (var produto in res) {
-                  //   _produtos.add(ProdutoModel.fromMap(produto));
-                  // }
-                  // setState(() {});
-                  if (_produtos.isNotEmpty) {
-                    _produto = _produtos[0];
-                    _quantidadeController.text = _produto!.stock.toString();
-                  } else {
-                    _quantidadeController.text = "";
-                  }
-                  setState(() {});
-                } catch (e) {
-                  AppUtil.snackBar(context, "Produto/Serviço nao encontrado");
-                }
-              }),
+              pesquisarProduto(onPesquisarProduto),
               AppUtil.spaceLabelField,
               const HorizontalDividerWithLabel(
                   label: "Detalhes do Produto/Serviço"),
@@ -195,6 +179,27 @@ class _StockScreenState extends State<StockScreen> {
             ],
           ),
         ));
+  }
+
+  void onPesquisarProduto() async {
+    final controller = ProdutoController();
+    try {
+      _produtos.clear();
+      _produtos = await controller.produto(_nomeOrIDController.value.text);
+      // for (var produto in res) {
+      //   _produtos.add(ProdutoModel.fromMap(produto));
+      // }
+      // setState(() {});
+      if (_produtos.isNotEmpty) {
+        _produto = _produtos[0];
+        _quantidadeController.text = _produto!.stock.toString();
+      } else {
+        _quantidadeController.text = "";
+      }
+      setState(() {});
+    } catch (e) {
+      AppUtil.snackBar(context, "Produto/Serviço nao encontrado");
+    }
   }
 
   // Widget _found() {

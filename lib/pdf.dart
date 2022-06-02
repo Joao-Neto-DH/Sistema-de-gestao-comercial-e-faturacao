@@ -1,5 +1,6 @@
 // import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_file_dialog/flutter_file_dialog.dart';
 // import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
@@ -265,13 +266,17 @@ class PdfFatura {
     return pw.SizedBox(height: 10);
   }
 
-  Future<File> save() async {
+  Future<File?> save() async {
     //-${DateTime.now().toString()}
-
-    final path = (await getExternalStorageDirectories())![1];
-    final joined = join(path.path, "fatura-proforma-$date.pdf");
-    var file = File(joined);
-    return await file.writeAsBytes(await pdf.save());
+    await FlutterFileDialog.saveFile(
+        params: SaveFileDialogParams(
+      fileName: "fatura-proforma-$date.pdf",
+      data: await pdf.save(),
+    ));
+    // final path = (await getExternalStorageDirectories())![1];
+    // final joined = join(path.path, "fatura-proforma-$date.pdf");
+    // var file = File(joined);
+    // return await file.writeAsBytes();
   }
 }
 
@@ -551,6 +556,7 @@ class PdfRecibo {
   Future<File?> save() async {
     //-${DateTime.now().toString()}
     final path = (await getExternalStorageDirectories())![1];
+    // final path = await FlutterFileDialog.saveFile();
     // (await getExternalStorageDirectories())![1]
     // (await getExternalCacheDirectories())![1]
     final joined = join(path.path, "fatura-recibo-$date.pdf");
