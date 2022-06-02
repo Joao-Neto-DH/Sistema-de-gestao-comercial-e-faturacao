@@ -20,7 +20,7 @@ class StockScreen extends StatefulWidget {
 
 class _StockScreenState extends State<StockScreen> {
   _StockScreenState() {
-    pesquisarProduto(onPesquisarProduto);
+    onPesquisarProduto();
   }
 
   var _produtos = <ProdutoModel>[];
@@ -135,6 +135,10 @@ class _StockScreenState extends State<StockScreen> {
                         await controller.update(_produto!);
                         AppUtil.snackBar(context,
                             "Nova quantidade actualizada com sucesso!");
+                        setState(() {
+                          _quantidadeController.text =
+                              _produto!.stock.toString();
+                        });
                       } catch (e) {
                         AppUtil.snackBar(context,
                             "Ocorreu um erro ao atribuir a nova quantidade!");
@@ -169,6 +173,10 @@ class _StockScreenState extends State<StockScreen> {
                         await controller.update(_produto!);
                         AppUtil.snackBar(context,
                             "Nova quantidade actualizada com sucesso!");
+                        setState(() {
+                          _quantidadeController.text =
+                              _produto!.stock.toString();
+                        });
                       } catch (e) {
                         AppUtil.snackBar(context,
                             "Ocorreu um erro ao atribuir a nova quantidade!");

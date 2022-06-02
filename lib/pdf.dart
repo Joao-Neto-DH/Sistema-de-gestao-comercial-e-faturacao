@@ -2,14 +2,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_file_dialog/flutter_file_dialog.dart';
 // import 'package:intl/intl.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
-import 'package:path/path.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:sistema_de_gestao_comercial/model/cliente_model.dart';
 import 'package:sistema_de_gestao_comercial/model/empresa_model.dart';
 import 'package:sistema_de_gestao_comercial/util.dart';
-import 'dart:io';
 
 import 'package:sistema_de_gestao_comercial/view/faturacao/faturacao_screen.dart';
 
@@ -553,15 +550,12 @@ class PdfRecibo {
     return pw.SizedBox(height: 10);
   }
 
-  Future<File?> save() async {
+  Future<String?> save() async {
     //-${DateTime.now().toString()}
-    final path = (await getExternalStorageDirectories())![1];
-    // final path = await FlutterFileDialog.saveFile();
-    // (await getExternalStorageDirectories())![1]
-    // (await getExternalCacheDirectories())![1]
-    final joined = join(path.path, "fatura-recibo-$date.pdf");
-    // print(joined);
-    var file = File(joined);
-    return await file.writeAsBytes(await pdf.save());
+    return await FlutterFileDialog.saveFile(
+        params: SaveFileDialogParams(
+      fileName: "fatura-proforma-$date.pdf",
+      data: await pdf.save(),
+    ));
   }
 }

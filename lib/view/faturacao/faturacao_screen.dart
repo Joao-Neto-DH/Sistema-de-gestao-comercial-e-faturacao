@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:advance_pdf_viewer/advance_pdf_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:sistema_de_gestao_comercial/controller/cliente_controller.dart';
@@ -17,6 +15,14 @@ import 'package:sistema_de_gestao_comercial/view/empresa/empresa_screen.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../../controller/produto_controller.dart';
+
+enum FormaPagamento {
+  cash,
+  multicaixa,
+  transferencia,
+  deposito,
+  duplo,
+}
 
 class FaturacaoScreen extends StatefulWidget {
   const FaturacaoScreen({Key? key}) : super(key: key);
@@ -39,14 +45,14 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
   ProdutoModel? _produto;
   var _empresas = <EmpresaModel>[];
   EmpresaModel? _empresa;
-  final _pagamentos = [
-    "Cash",
-    "Multicaixa",
-    "Transferencia",
-    "Deposito",
-    "Pagamento Duplo"
-  ];
-  String? _pagamento;
+  // final _pagamentos = [
+  //   "Cash",
+  //   "Multicaixa",
+  //   "Transferencia",
+  //   "Deposito",
+  //   "Pagamento Duplo"
+  // ];
+  FormaPagamento? _pagamento;
 
   final _produtoNomeIdController = TextEditingController();
   final _quantidadeController = TextEditingController();
@@ -178,6 +184,15 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
                     _quantidadeController.text = "";
                   });
                 }),
+              const Text("Insira a quantidade a ser vendida"),
+              AppUtil.spaceLabelField,
+              TextFormFieldDecorated(
+                enabled: _produto != null && _produto!.stock > 0,
+                controller: _quantidadeController,
+                hintText: "Digitar a quantidade",
+                keyboardType: TextInputType.number,
+              ),
+              AppUtil.spaceFields,
               Row(
                 children: [
                   Expanded(child: pesquisarProduto(onPesquisarProduto)),
@@ -195,27 +210,30 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
                 ],
               ),
               AppUtil.spaceFields,
-              const Text("Insira a quantidade a ser vendida"),
-              AppUtil.spaceLabelField,
-              TextFormFieldDecorated(
-                enabled: _produto != null && _produto!.stock > 0,
-                controller: _quantidadeController,
-                hintText: "Digitar a quantidade",
-                keyboardType: TextInputType.number,
-              ),
-              AppUtil.spaceFields,
-              DropdownButton<String>(
+              DropdownButton<FormaPagamento>(
                   hint: const Text("Forma de Pagamento"),
                   value: _pagamento,
-                  items: _pagamentos
+                  items: FormaPagamento.values
                       .map((e) => DropdownMenuItem(
-                            child: Text(e),
+                            child: Text(e.name.toUpperCase()),
                             value: e,
                           ))
                       .toList(),
                   onChanged: (value) {
                     setState(() {
                       _pagamento = value!;
+
+                      _cashController.text =
+                          FormaPagamento.cash == _pagamento ||
+                                  FormaPagamento.duplo == _pagamento
+                              ? _cashController.value.text
+                              : "";
+
+                      _multicaixaController.text =
+                          FormaPagamento.cash != _pagamento &&
+                                  FormaPagamento.duplo != _pagamento
+                              ? AppUtil.formatNumber(_precoTotal())
+                              : "";
                     });
                   }),
               AppUtil.spaceFields,
@@ -271,9 +289,13 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
     final entregue = double.tryParse(
             _cashController.value.text.replaceFirst(RegExp(r','), '.')) ??
         0;
-    final multicaixa = double.tryParse(
-            _multicaixaController.value.text.replaceFirst(RegExp(r','), '.')) ??
+    final multicaixa = double.tryParse(_multicaixaController.value.text
+            .replaceFirst(RegExp(r','), '.')
+            .replaceAll(r'Kz', '')) ??
         0;
+
+    // print(_multicaixaController.value.text);
+    // print(multicaixa);
 
     return entregue + multicaixa;
   }
@@ -473,11 +495,13 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
         pdf.addPage();
         try {
           final filePath = await pdf.save();
+          // print("Verificando se o ficheiro existe $filePath");
+          // print(await File(filePath!).exists());
 
           AppUtil.snackBar(context, "Fatura salva com sucesso!");
 
-          // Navigator.of(context).push(
-          //     MaterialPageRoute(builder: (context) => PdfView(pdf: file)));
+          Navigator.of(context).push(
+              MaterialPageRoute(builder: (context) => PdfView(pdf: filePath!)));
         } catch (e) {
           // print(e);
           AppUtil.snackBar(context, "Ocorreu um erro ao salvar a fatura!");
@@ -509,10 +533,8 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
   }
 
   Future<void> onFaturarRecibo() async {
-    final hasTroco =
-        (_pagamento == _pagamentos[0] || _pagamento == _pagamentos[3]) &&
-            (_pago() - _precoTotal() < 0);
-    if (hasTroco) {
+    final troco = _pago() - _precoTotal();
+    if (troco < 0) {
       AppUtil.snackBar(context, "O troco nao pode ser menor que zero");
       setState(() {
         _faturando = false;
@@ -534,9 +556,9 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
           empresa: _empresa!,
           precoTotal: _precoTotal(),
           pagamento: Pagamento(
-            tipo: _pagamento!,
+            tipo: _pagamento!.name.toUpperCase(),
             cashValor: _pago(),
-            troco: (_pago() - _precoTotal()),
+            troco: troco,
           ),
         );
         pdf.addPage();
@@ -598,7 +620,7 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
                 controller: _produtoQuantidade,
                 keyboardType: TextInputType.number,
                 validator: Validator.validateNotEmpty,
-                hintText: "Quantidade"),
+                hintText: "Quantidade em Stock"),
             AppUtil.spaceLabelField,
             CheckboxListTile(
                 title: const Text("Incluir 14% de IVA"),
@@ -635,21 +657,22 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
             setState(() {});
           },
           hintText: "Valor Entregue",
-          enabled: _pagamentos[1] != _pagamento && _pagamentos[2] != _pagamento,
+          enabled: FormaPagamento.cash == _pagamento ||
+              FormaPagamento.duplo == _pagamento,
         ),
         AppUtil.spaceFields,
         TextFormFieldDecorated(
+          controller: _multicaixaController,
           keyboardType: TextInputType.number,
-          hintText: _pagamentos[1] == _pagamento || _pagamentos[4] == _pagamento
-              ? _precoTotal().toString()
-              : "Multicaixa",
-          enabled: _pagamentos[4] == _pagamento,
+          onChange: (value) {
+            setState(() {});
+          },
+          hintText: "Multicaixa",
+          enabled: FormaPagamento.duplo == _pagamento,
         ),
         AppUtil.spaceFields,
         TextFormFieldDecorated(
-          hintText: _pagamento == _pagamentos[0] || _pagamentos[3] == _pagamento
-              ? AppUtil.formatNumber((_pago() - _precoTotal()))
-              : "0",
+          hintText: AppUtil.formatNumber((_pago() - _precoTotal())),
           enabled: false,
         ),
       ],
@@ -733,7 +756,7 @@ class Pagamento {
 
 class PdfView extends StatefulWidget {
   const PdfView({Key? key, required this.pdf}) : super(key: key);
-  final File pdf;
+  final String pdf;
 
   @override
   State<PdfView> createState() => _PdfViewState();
@@ -750,7 +773,7 @@ class _PdfViewState extends State<PdfView> {
   }
 
   void load() async {
-    doc = await PDFDocument.fromFile(widget.pdf);
+    doc = await PDFDocument.fromAsset("assets/livro.pdf");
     _loading = false;
     setState(() {});
   }
