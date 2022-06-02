@@ -472,14 +472,14 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
         );
         pdf.addPage();
         try {
-          final file = await pdf.save();
+          final filePath = await pdf.save();
 
           AppUtil.snackBar(context, "Fatura salva com sucesso!");
 
           // Navigator.of(context).push(
           //     MaterialPageRoute(builder: (context) => PdfView(pdf: file)));
         } catch (e) {
-          print(e);
+          // print(e);
           AppUtil.snackBar(context, "Ocorreu um erro ao salvar a fatura!");
         }
         setState(() {

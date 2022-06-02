@@ -266,9 +266,9 @@ class PdfFatura {
     return pw.SizedBox(height: 10);
   }
 
-  Future<File?> save() async {
+  Future<String?> save() async {
     //-${DateTime.now().toString()}
-    await FlutterFileDialog.saveFile(
+    return await FlutterFileDialog.saveFile(
         params: SaveFileDialogParams(
       fileName: "fatura-proforma-$date.pdf",
       data: await pdf.save(),
