@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../util.dart';
 import '../components/input_text_widget.dart';
+import 'login_widget.dart';
 
 class Senha extends StatefulWidget {
   const Senha({Key? key}) : super(key: key);
@@ -16,23 +17,10 @@ class _SenhaState extends State<Senha> {
   final _senhaController = TextEditingController();
   final _tempoController = TextEditingController();
 
-  _SenhaState() {
-    _instance();
-  }
-
-  void _instance() async {
-    _shared = await prefs;
-    final psw = _shared!.getString("licenca");
-    final date = _shared!.getString("tempo") ?? "";
-    if (psw == "C@ndimb@.5000" &&
-        DateTime.now().toString().split(" ")[0].compareTo(date) < 0) {
-      Navigator.pushReplacementNamed(context, "/signin");
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Login(
+        formBody: Column(
       children: [
         InputText(
           obscureText: true,
@@ -62,8 +50,7 @@ class _SenhaState extends State<Senha> {
                       DateTime.now()
                           .add(Duration(
                               days: int.parse(_tempoController.value.text)))
-                          .toString()
-                          .split(" ")[0]);
+                          .toString());
                   if (!res || !res2) {
                     // print(DateTime.now()
                     //     .add(Duration(
@@ -84,6 +71,6 @@ class _SenhaState extends State<Senha> {
             child: const Text("Avançar"),
             style: TextButton.styleFrom(backgroundColor: Colors.blueGrey)),
       ],
-    );
+    ));
   }
 }
