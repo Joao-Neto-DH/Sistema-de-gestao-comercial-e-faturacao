@@ -343,6 +343,20 @@ class PdfRecibo {
   addPage() {
     pdf.addPage(pw.MultiPage(
       pageTheme: pw.PageTheme(
+          clip: true,
+          buildBackground: (context) {
+            if (empresa.logos.isNotEmpty && empresa.logos[0].isFundo!) {
+              return _drawWaterMark(0);
+            }
+
+            if (empresa.logos.isNotEmpty &&
+                empresa.logos.length > 1 &&
+                empresa.logos[1].isFundo!) {
+              return _drawWaterMark(1);
+            }
+
+            return pw.Center();
+          },
           theme: pw.ThemeData(
               header5:
                   pw.TextStyle(fontSize: 14, fontWeight: pw.FontWeight.bold),
@@ -359,6 +373,11 @@ class PdfRecibo {
 
   List<pw.Widget> _content() {
     return [
+      if (empresa.logos.isNotEmpty && !empresa.logos[0].isFundo!) _drawLogo(0),
+      if (empresa.logos.isNotEmpty &&
+          empresa.logos.length > 1 &&
+          !empresa.logos[1].isFundo!)
+        _drawLogo(1),
       // pw.Image(),
       // pw.Container(
       //     color: PdfColors.grey300,
@@ -491,7 +510,7 @@ class PdfRecibo {
                       color: PdfColors.grey200,
                       child: pw.Text("Coordenadas Bancarias")),
                   for (var coord in empresa.coordenadas)
-                    pw.Text(coord.coordenada),
+                    pw.Text("${coord.coordenada}\n${coord.conta}"),
                 ]),
             pw.Container(
                 width: 250,
@@ -604,5 +623,20 @@ class PdfRecibo {
       data: await pdf.save(),
     ));
     return path;
+  }
+
+  pw.Widget _drawLogo(int i) {
+    return pw.Image(
+        pw.MemoryImage(File(empresa.logos[i].logo).readAsBytesSync()),
+        width: 100);
+  }
+
+  pw.Widget _drawWaterMark(int i) {
+    return pw.Center(
+        child: pw.Opacity(
+            child: pw.Image(
+              pw.MemoryImage(File(empresa.logos[i].logo).readAsBytesSync()),
+            ),
+            opacity: .3));
   }
 }
