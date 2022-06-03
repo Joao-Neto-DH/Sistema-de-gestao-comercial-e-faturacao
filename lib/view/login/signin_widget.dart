@@ -54,18 +54,18 @@ class _SignInState extends State<SignIn> {
         const Padding(
           padding: EdgeInsets.symmetric(vertical: 4),
         ),
-        Align(
-          alignment: Alignment.bottomRight,
-          child: GestureDetector(
-            child: const Text("Esqueci a minha senha",
-                style: TextStyle(
-                  color: Colors.blueGrey,
-                )),
-            onTap: () {
-              Navigator.pushNamed(context, "/recover-password");
-            },
-          ),
-        ),
+        // Align(
+        //   alignment: Alignment.bottomRight,
+        //   child: GestureDetector(
+        //     child: const Text("Esqueci a minha senha",
+        //         style: TextStyle(
+        //           color: Colors.blueGrey,
+        //         )),
+        //     onTap: () {
+        //       Navigator.pushNamed(context, "/recover-password");
+        //     },
+        //   ),
+        // ),
         RadioListTile<OptionLogin>(
           value: OptionLogin.administracao,
           groupValue: widget._optionLogin,
@@ -118,7 +118,7 @@ class _SignInState extends State<SignIn> {
           if (widget._optionLogin == OptionLogin.fatutracao) {
             Navigator.pushReplacementNamed(context, "/faturacao");
           } else {
-            Navigator.pushReplacementNamed(context, "/empresa");
+            Navigator.pushReplacementNamed(context, "/administracao");
           }
         }
       } catch (e) {

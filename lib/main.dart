@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sistema_de_gestao_comercial/util.dart';
 // import 'package:flutter/services.dart';
 import 'package:sistema_de_gestao_comercial/view/cliente/cliente_screen.dart';
+import 'package:sistema_de_gestao_comercial/view/components/side_bar_widget.dart';
 import 'package:sistema_de_gestao_comercial/view/definicoes/definicoes_screen.dart';
 import 'package:sistema_de_gestao_comercial/view/empresa/empresa_screen.dart';
 import 'package:sistema_de_gestao_comercial/view/faturacao/faturacao_screen.dart';
@@ -12,7 +12,6 @@ import 'package:sistema_de_gestao_comercial/view/stock/stock_screen.dart';
 import 'view/login/login_widget.dart';
 import 'view/login/signup_widget.dart';
 
-import 'view/login/recover_password_widget.dart';
 import 'view/login/signin_widget.dart';
 import 'view/main_screen_widget.dart';
 
@@ -38,9 +37,15 @@ class GestaoComercial extends StatelessWidget {
         "/": (context) => const SplashScreen(),
         "/signin": (context) => Login(formBody: SignIn()),
         "/signup": (context) => Login(formBody: SignUp()),
-        "/validate": (context) => const Senha(),
-        "/recover-password": (context) =>
-            Login(formBody: const RecoverPassword()),
+        "/validate": (context) => Login(formBody: const Senha()),
+        // "/recover-password": (context) =>
+        //     Login(formBody: const RecoverPassword()),
+        "/administracao": (context) => Scaffold(
+              appBar: AppBar(
+                title: const Text("Administraçao"),
+              ),
+              body: const Center(child: Menu(title: "administracao")),
+            ),
         "/empresa": (context) =>
             MainScreen(title: "Empresa", body: const EmpresaScreen()),
         "/produtos": (context) => MainScreen(

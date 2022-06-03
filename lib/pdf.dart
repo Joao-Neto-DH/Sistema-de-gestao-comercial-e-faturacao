@@ -1,4 +1,5 @@
 // import 'package:flutter/cupertino.dart';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_file_dialog/flutter_file_dialog.dart';
 // import 'package:intl/intl.dart';
@@ -29,6 +30,20 @@ class PdfFatura {
   addPage() {
     pdf.addPage(pw.MultiPage(
       pageTheme: pw.PageTheme(
+          clip: true,
+          buildBackground: (context) {
+            if (empresa.logos.isNotEmpty && empresa.logos[0].isFundo!) {
+              return _drawWaterMark(0);
+            }
+
+            if (empresa.logos.isNotEmpty &&
+                empresa.logos.length > 1 &&
+                empresa.logos[1].isFundo!) {
+              return _drawWaterMark(1);
+            }
+
+            return pw.Center();
+          },
           theme: pw.ThemeData(
               header5:
                   pw.TextStyle(fontSize: 14, fontWeight: pw.FontWeight.bold),
@@ -45,48 +60,63 @@ class PdfFatura {
 
   List<pw.Widget> _content() {
     return [
-      // pw.Image(),
+      if (empresa.logos.isNotEmpty && !empresa.logos[0].isFundo!) _drawLogo(0),
+      if (empresa.logos.isNotEmpty &&
+          empresa.logos.length > 1 &&
+          !empresa.logos[1].isFundo!)
+        _drawLogo(1),
+      pw.SizedBox(height: 10),
       // pw.Container(
       //     color: PdfColors.grey300,
       //     padding: const pw.EdgeInsets.all(8),
       //     child:
       pw.Row(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
-        pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
-          _titleWidget("EMPRESA"),
-          _spaceBetweenText(),
-          pw.Text(empresa.nome.toUpperCase()),
-          _spaceBetweenText(),
-          pw.Text("NIF: ${empresa.nif}"),
-          _spaceBetweenText(),
-          for (var contacto in empresa.contactos) _contacto(contacto.telefone),
-          pw.Text("Email: ${empresa.email}"),
-          _spaceBetweenText(),
-          pw.Text("Website: ${empresa.website ?? ""}"),
-          _spaceBetweenText(),
-          pw.Container(
-              color: PdfColors.grey200,
-              width: 200,
-              padding: const pw.EdgeInsets.all(4))
-        ]),
+        pw.Container(
+            width: 200,
+            child: pw.Column(
+                crossAxisAlignment: pw.CrossAxisAlignment.start,
+                children: [
+                  _titleWidget("EMPRESA"),
+                  _spaceBetweenText(),
+                  pw.Text(empresa.nome.toUpperCase()),
+                  _spaceBetweenText(),
+                  pw.Text("NIF: ${empresa.nif}"),
+                  _spaceBetweenText(),
+                  for (var contacto in empresa.contactos)
+                    _contacto(contacto.telefone),
+                  pw.Text("Email: ${empresa.email}"),
+                  _spaceBetweenText(),
+                  pw.Text("Website: ${empresa.website ?? ""}"),
+                  _spaceBetweenText(),
+                  pw.Container(
+                      color: PdfColors.grey200,
+                      width: 200,
+                      padding: const pw.EdgeInsets.all(4))
+                ])),
         pw.Spacer(),
-        pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
-          _titleWidget("CLIENTE"),
-          _spaceBetweenText(),
-          pw.Text(cliente.nome.toUpperCase()),
-          _spaceBetweenText(),
-          pw.Text("Endereço: ${cliente.endereco}"),
-          _spaceBetweenText(),
-          pw.Text("NIF: ${cliente.nif}"),
-          // _spaceBetweenText(),
-          // pw.Text("Telefone: "),
-          _spaceBetweenText(),
-          pw.Text("Email: ${cliente.email}"),
-          _spaceBetweenText(),
-          pw.Container(
-              color: PdfColors.grey200,
-              width: 200,
-              padding: const pw.EdgeInsets.all(4))
-        ]),
+        pw.Container(
+          width: 200,
+          child: pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
+              children: [
+                _titleWidget("CLIENTE"),
+                _spaceBetweenText(),
+                pw.Text(cliente.nome.toUpperCase()),
+                _spaceBetweenText(),
+                pw.Text("Endereço: ${cliente.endereco}"),
+                _spaceBetweenText(),
+                pw.Text("NIF: ${cliente.nif}"),
+                // _spaceBetweenText(),
+                // pw.Text("Telefone: "),
+                _spaceBetweenText(),
+                pw.Text("Email: ${cliente.email}"),
+                _spaceBetweenText(),
+                pw.Container(
+                    color: PdfColors.grey200,
+                    width: 200,
+                    padding: const pw.EdgeInsets.all(4))
+              ]),
+        )
       ]), //), // Cabeçalho
       _spaceBetween(),
       pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
@@ -265,15 +295,31 @@ class PdfFatura {
 
   Future<String?> save() async {
     //-${DateTime.now().toString()}
-    return await FlutterFileDialog.saveFile(
+    final path = await FlutterFileDialog.saveFile(
         params: SaveFileDialogParams(
       fileName: "fatura-proforma-$date.pdf",
       data: await pdf.save(),
     ));
+    return path;
     // final path = (await getExternalStorageDirectories())![1];
     // final joined = join(path.path, "fatura-proforma-$date.pdf");
     // var file = File(joined);
     // return await file.writeAsBytes();
+  }
+
+  pw.Widget _drawLogo(int i) {
+    return pw.Image(
+        pw.MemoryImage(File(empresa.logos[i].logo).readAsBytesSync()),
+        width: 100);
+  }
+
+  pw.Widget _drawWaterMark(int i) {
+    return pw.Center(
+        child: pw.Opacity(
+            child: pw.Image(
+              pw.MemoryImage(File(empresa.logos[i].logo).readAsBytesSync()),
+            ),
+            opacity: .3));
   }
 }
 
@@ -552,10 +598,11 @@ class PdfRecibo {
 
   Future<String?> save() async {
     //-${DateTime.now().toString()}
-    return await FlutterFileDialog.saveFile(
+    final path = await FlutterFileDialog.saveFile(
         params: SaveFileDialogParams(
       fileName: "fatura-proforma-$date.pdf",
       data: await pdf.save(),
     ));
+    return path;
   }
 }

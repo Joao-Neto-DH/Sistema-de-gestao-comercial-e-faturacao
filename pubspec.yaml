@@ -80,6 +80,14 @@ flutter:
     - assets/img/logo.png
     # - assets/img
 
+  plugin:
+    platforms:
+      android:
+        package: pt.tribeiro.flutter_plugin_pdf_viewer
+        pluginClass: FlutterPluginPdfViewerPlugin
+      ios:
+        pluginClass: FlutterPluginPdfViewerPlugin
+
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 

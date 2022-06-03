@@ -24,4 +24,14 @@ class AppUtil {
     final format = NumberFormat("#,###.00 Kz", "pt_BR");
     return format.format(number);
   }
+
+  static double toNumber(String number) {
+    // final format = NumberFormat("#,###.00 Kz", "pt_BR");
+    // print(number.replaceAll(RegExp(r'.'), ''));
+    return double.tryParse(number
+            .replaceFirst(r'Kz', '')
+            .replaceAll(r'.', "")
+            .replaceFirst(r',', '.')) ??
+        0;
+  }
 }

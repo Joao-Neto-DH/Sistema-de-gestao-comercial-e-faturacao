@@ -80,6 +80,7 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
   // var nomes = ["Primeiro", "Segundo"];
   @override
   Widget build(BuildContext context) {
+    _upadatePreco();
     return SingleChildScrollView(
       padding: AppUtil.paddingBody,
       child: Column(
@@ -222,18 +223,7 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
                   onChanged: (value) {
                     setState(() {
                       _pagamento = value!;
-
-                      _cashController.text =
-                          FormaPagamento.cash == _pagamento ||
-                                  FormaPagamento.duplo == _pagamento
-                              ? _cashController.value.text
-                              : "";
-
-                      _multicaixaController.text =
-                          FormaPagamento.cash != _pagamento &&
-                                  FormaPagamento.duplo != _pagamento
-                              ? AppUtil.formatNumber(_precoTotal())
-                              : "";
+                      // _upadatePreco();
                     });
                   }),
               AppUtil.spaceFields,
@@ -277,6 +267,19 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
     );
   }
 
+  void _upadatePreco() {
+    if (_pagamento != FormaPagamento.cash &&
+        _pagamento != FormaPagamento.duplo) {
+      _cashController.text = "";
+    }
+
+    if (_pagamento != FormaPagamento.duplo) {
+      _multicaixaController.text = _pagamento != FormaPagamento.cash
+          ? AppUtil.formatNumber(_precoTotal())
+          : "";
+    }
+  }
+
   Future<ProdutoModel> _cadastrarProduto(ProdutoModel produto) async {
     final controller = ProdutoController();
     final id = await controller.cadastrarProduto(produto);
@@ -286,15 +289,9 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
 
   double _pago() {
     // print(double.tryParse(_pagamentoController.value.text));
-    final entregue = double.tryParse(
-            _cashController.value.text.replaceFirst(RegExp(r','), '.')) ??
-        0;
-    final multicaixa = double.tryParse(_multicaixaController.value.text
-            .replaceFirst(RegExp(r','), '.')
-            .replaceAll(r'Kz', '')) ??
-        0;
+    final entregue = AppUtil.toNumber(_cashController.value.text);
+    final multicaixa = AppUtil.toNumber(_multicaixaController.value.text);
 
-    // print(_multicaixaController.value.text);
     // print(multicaixa);
 
     return entregue + multicaixa;
@@ -436,6 +433,7 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
         try {
           _produto = await _cadastrarProduto(produto);
           clearData();
+          onPesquisarProduto();
         } catch (e) {
           AppUtil.snackBar(context, "Este produto ja existe na base de dados");
         }
@@ -446,6 +444,10 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
       }
     }
     if (_produto != null) {
+      if (_isListado()) {
+        AppUtil.snackBar(context, "Esse produto ja esta na lista");
+        return;
+      }
       final qtd = int.tryParse(_quantidadeController.value.text) ?? 1;
 
       if (_produto!.stock != -1 && (_produto!.stock < qtd || qtd < 0)) {
@@ -474,6 +476,13 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
     }
   }
 
+  bool _isListado() {
+    for (var item in _itens) {
+      if ((item as ProdutoItem).produto.id == _produto!.id) return true;
+    }
+    return false;
+  }
+
   Future<void> onFaturarProforma() async {
     var status = await _writeReadPermission();
     if (!status.isDenied && !status.isPermanentlyDenied) {
@@ -494,14 +503,14 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
         );
         pdf.addPage();
         try {
-          final filePath = await pdf.save();
+          await pdf.save();
           // print("Verificando se o ficheiro existe $filePath");
           // print(await File(filePath!).exists());
 
           AppUtil.snackBar(context, "Fatura salva com sucesso!");
 
-          Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => PdfView(pdf: filePath!)));
+          // Navigator.of(context).push(
+          //     MaterialPageRoute(builder: (context) => PdfView(pdf: filePath!)));
         } catch (e) {
           // print(e);
           AppUtil.snackBar(context, "Ocorreu um erro ao salvar a fatura!");
