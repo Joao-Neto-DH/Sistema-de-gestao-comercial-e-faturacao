@@ -99,9 +99,12 @@ class _ProdutosServicosState extends State<ProdutosServicos> {
                     if (formKey.currentState!.validate()) {
                       final controller = ProdutoController();
                       try {
+                        var preco = double.parse(_precoController.value.text);
+                        if (_hasIVA) preco += _addIVA(preco);
+                        // print(preco);
                         await controller.cadastrarProduto(ProdutoModel(
                           nome: _nomeController.value.text,
-                          preco: double.parse(_precoController.value.text),
+                          preco: preco,
                           stock: _qtdController.value.text.isEmpty
                               ? -1
                               : int.parse(_qtdController.value.text),
@@ -110,11 +113,11 @@ class _ProdutosServicosState extends State<ProdutosServicos> {
                         AppUtil.snackBar(
                             context, "Produto/Serviço cadastrado com sucesso!");
                         formKey.currentState!.reset();
+                        _clearFields();
                       } catch (e) {
                         AppUtil.snackBar(context,
                             "Erro ao cadastrar Produto/Serviço. Certifique-se o mesmo produto nao exista e tente novamente!");
                       }
-                      _clearFields();
                     }
                   },
                   child: const Text("Salvar")),
@@ -127,6 +130,10 @@ class _ProdutosServicosState extends State<ProdutosServicos> {
             ],
           )),
     );
+  }
+
+  double _addIVA(double preco) {
+    return preco * 0.14;
   }
 
   void _clearFields() {
