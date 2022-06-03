@@ -97,6 +97,7 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
               AppUtil.spaceLabelField,
               if (_empresas.isNotEmpty)
                 DropdownButton<EmpresaModel>(
+                    isExpanded: true,
                     // hint: const Text("Seleciona o cliente"),
                     value: _empresa,
                     items: _empresas

@@ -194,7 +194,7 @@ class PdfFatura {
                       color: PdfColors.grey200,
                       child: pw.Text("Coordenadas Bancarias")),
                   for (var coord in empresa.coordenadas)
-                    pw.Text(coord.coordenada),
+                    pw.Text("${coord.coordenada}\n${coord.conta}"),
                 ]),
             pw.Container(
                 width: 250,
