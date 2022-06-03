@@ -425,10 +425,12 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
       if (_validateForm.currentState!.validate()) {
         // print(_produtoPreco.value.text);
         // print(_produtoQuantidade.value.text);
+        var preco = double.parse(_produtoPreco.value.text) * 1.0;
+
         final produto = ProdutoModel(
             nome: _produtoNome.value.text,
             iva: _hasIVA,
-            preco: double.parse(_produtoPreco.value.text) * 1.0,
+            preco: _hasIVA ? preco + (preco * 0.14) : preco,
             stock: int.parse(_produtoQuantidade.value.text));
 
         try {
