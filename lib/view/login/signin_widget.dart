@@ -122,7 +122,6 @@ class _SignInState extends State<SignIn> {
           }
         }
       } catch (e) {
-        // print(e);
         AppUtil.snackBar(context,
             "Nao possivel fazer o login. Certifique-se que este usuario existe e tente novamente!");
       }

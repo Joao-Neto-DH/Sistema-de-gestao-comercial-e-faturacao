@@ -11,6 +11,7 @@ class DB {
   static Database? _db;
 
   Future<Database?> get database async {
+    // print("BD START: $_db");
     if (_db != null) return _db;
     var paths = await getDatabasesPath();
     var path = join(paths, _name);
@@ -22,30 +23,12 @@ class DB {
       await _generateTable(_db);
       // ignore: empty_catches
     } catch (e) {}
+    // print("BD END: $_db");
     return _db;
   }
 
   Future<void> _generateTable(Database? db) async {
-    // print("apagando tabelas");
     await db!.execute('''
-    drop TABLE if exists clientes;
-
-    drop TABLE if exists contactos;
-
-    drop TABLE if exists coordenadas_bancarias;
-
-    drop TABLE if exists empresas;
-
-    drop TABLE if exists imagens ;
-
-    drop TABLE if exists produtos ;
-
-    drop TABLE if exists vendidos;
-
-    drop table if exists usuarios;
-    ''');
-    // print("criando de tabelas");
-    await db.execute('''
     CREATE TABLE if not exists usuarios (
         id    INTEGER      PRIMARY KEY AUTOINCREMENT,
         nome  VARCHAR (60) NOT NULL,
@@ -61,7 +44,7 @@ class DB {
         endereco   VARCHAR (60) NOT NULL UNIQUE,
         cidade     VARCHAR (60) NOT NULL,
         website    VARCHAR (60),
-        email      VARCHAR (60) UNIQUE
+        email      VARCHAR (60)
     )''');
 
     await db.execute('''CREATE TABLE if not exists clientes (

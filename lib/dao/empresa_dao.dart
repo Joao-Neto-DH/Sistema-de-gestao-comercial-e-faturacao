@@ -10,38 +10,51 @@ class EmpresaDAO {
   static const _contactoTable = "contactos";
   static const _coordenadaTable = "coordenadas_bancarias";
   static const _imagemTable = "imagens";
+  final _instance = DB.instace;
 
   Future<List<Map<String, Object?>>> get all async {
-    var db = await DB.instace.database;
-    return db!.query(_empresaTable);
+    var db = await _instance.database;
+    final res = await db!.query(_empresaTable);
+    await _instance.close();
+    return res;
   }
 
   Future<List<Map<String, Object?>>> getEmpresa(EmpresaModel empresa) async {
-    var db = await DB.instace.database;
-    return db!.query(_empresaTable, where: "id = ?", whereArgs: [empresa.id]);
+    var db = await _instance.database;
+    final res = await db!
+        .query(_empresaTable, where: "id = ?", whereArgs: [empresa.id]);
+    await _instance.close();
+    return res;
   }
 
   Future<List<Map<String, Object?>>> empresa(String nomeOrID) async {
-    var db = await DB.instace.database;
-    return db!.query(_empresaTable,
+    var db = await _instance.database;
+    final res = await db!.query(_empresaTable,
         where: "id = ? or nome like ?", whereArgs: [nomeOrID, "%$nomeOrID%"]);
+    await _instance.close();
+    return res;
   }
 
   Future<List<Map<String, Object?>>> empresaDados(
       String table, int empresaID) async {
-    var db = await DB.instace.database;
-    return db!.rawQuery(
+    var db = await _instance.database;
+    final res = await db!.rawQuery(
         "select * from $table as t where t.empresa_id = ?", [empresaID]);
+    await _instance.close();
+    return res;
   }
 
   Future<int> remove(EmpresaModel empresa) async {
-    var db = await DB.instace.database;
-    return db!.delete(_empresaTable, where: "id = ?", whereArgs: [empresa.id]);
+    var db = await _instance.database;
+    final res = await db!
+        .delete(_empresaTable, where: "id = ?", whereArgs: [empresa.id]);
+    await _instance.close();
+    return res;
   }
 
   Future<int?> insert(EmpresaModel empresa) async {
-    // await DB.instace.close();
-    var db = await DB.instace.database;
+    // await _instance.close();
+    var db = await _instance.database;
     const int erro = -1;
     var imgs = <int?>[];
     var cts = <int?>[];
@@ -68,6 +81,7 @@ class EmpresaDAO {
         imgs.add(res);
       }
 
+      await _instance.close();
       return id;
     } catch (e) {
       for (var id in cts) {
@@ -90,12 +104,16 @@ class EmpresaDAO {
     // print(await db?.query(_contactoTable));
     // print(await db?.query(_coordenadaTable));
     // print(await db?.query(_imagemTable));
+
+    await _instance.close();
     return erro; //  preencher
   }
 
   Future<int> update(EmpresaModel empresa) async {
-    var db = await DB.instace.database;
-    return db!.update(_empresaTable, empresa.toMap,
+    var db = await _instance.database;
+    final res = await db!.update(_empresaTable, empresa.toMap,
         where: "id = ?", whereArgs: [empresa.id]);
+    await _instance.close();
+    return res;
   }
 }

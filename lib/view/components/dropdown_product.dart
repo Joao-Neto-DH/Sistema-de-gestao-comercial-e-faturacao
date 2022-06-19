@@ -11,6 +11,7 @@ Widget dropdownProduct(List<ProdutoModel> produtos, ProdutoModel? selected,
     // if (produtos.length > 1) {
     return DropdownButton<ProdutoModel>(
         // hint: const Text("Selecionar"),
+        isExpanded: true,
         value: selected,
         items: produtos
             .map((e) => DropdownMenuItem(

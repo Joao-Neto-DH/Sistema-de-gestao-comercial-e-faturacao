@@ -1,5 +1,13 @@
-import 'package:advance_pdf_viewer/advance_pdf_viewer.dart';
+import 'dart:async';
+import 'dart:io';
+// import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
+// import 'package:flutter/services.dart';
+// import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart' as io;
 import 'package:sistema_de_gestao_comercial/controller/cliente_controller.dart';
 import 'package:sistema_de_gestao_comercial/controller/empresa_controller.dart';
 import 'package:sistema_de_gestao_comercial/model/cliente_model.dart';
@@ -13,6 +21,7 @@ import 'package:sistema_de_gestao_comercial/view/components/pesquisar_produto.da
 import 'package:sistema_de_gestao_comercial/view/components/text_form_field_decorated.dart';
 import 'package:sistema_de_gestao_comercial/view/empresa/empresa_screen.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:flutter_pdfview/flutter_pdfview.dart';
 
 import '../../controller/produto_controller.dart';
 
@@ -32,11 +41,8 @@ class FaturacaoScreen extends StatefulWidget {
 }
 
 class _FaturacaoScreenState extends State<FaturacaoScreen> {
-  _FaturacaoScreenState() {
-    onPesquisarCliente();
-    onPesquisarEmpresa();
-    onPesquisarProduto();
-  }
+  // _FaturacaoScreenState() {
+  // }
 
   final _itens = <Widget>[];
   var _clientes = <ClienteModel>[];
@@ -71,11 +77,17 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
 
   var _hasIVA = true;
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   _selected = samples[0];
-  // }
+  @override
+  void initState() {
+    super.initState;
+    start();
+  }
+
+  void start() async {
+    await onPesquisarCliente();
+    await onPesquisarEmpresa();
+    await onPesquisarProduto();
+  }
 
   // var nomes = ["Primeiro", "Segundo"];
   @override
@@ -136,6 +148,7 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
               AppUtil.spaceLabelField,
               if (_clientes.isNotEmpty)
                 DropdownButton<ClienteModel>(
+                    isExpanded: true,
                     // hint: const Text("Seleciona o cliente"),
                     value: _cliente,
                     items: _clientes
@@ -274,7 +287,7 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
       _cashController.text = "";
     }
 
-    if (_pagamento != FormaPagamento.duplo) {
+    if (_pagamento != null && _pagamento != FormaPagamento.duplo) {
       _multicaixaController.text = _pagamento != FormaPagamento.cash
           ? AppUtil.formatNumber(_precoTotal())
           : "";
@@ -366,7 +379,7 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
     _quantidadeController.clear();
   }
 
-  void onPesquisarCliente() async {
+  Future<void> onPesquisarCliente() async {
     final controller = ClienteController();
     final res =
         await controller.getClienteByNomeOrId(_clienteController.value.text);
@@ -379,7 +392,7 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
     setState(() {});
   }
 
-  void onPesquisarEmpresa() async {
+  Future<void> onPesquisarEmpresa() async {
     final controller = EmpresaController();
     _empresas = await controller.getEmpresa(_empresaController.value.text);
     // print(res);
@@ -391,7 +404,7 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
     setState(() {});
   }
 
-  void onPesquisarProduto() async {
+  Future<void> onPesquisarProduto() async {
     if (!_isDB) return;
     final controller = ProdutoController();
     _produtos.clear();
@@ -506,14 +519,11 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
         );
         pdf.addPage();
         try {
-          await pdf.save();
-          // print("Verificando se o ficheiro existe $filePath");
-          // print(await File(filePath!).exists());
-
+          final pdfData = await pdf.save();
           AppUtil.snackBar(context, "Fatura salva com sucesso!");
 
-          // Navigator.of(context).push(
-          //     MaterialPageRoute(builder: (context) => PdfView(pdf: filePath!)));
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => PdfView(pdfData: pdfData!)));
         } catch (e) {
           // print(e);
           AppUtil.snackBar(context, "Ocorreu um erro ao salvar a fatura!");
@@ -575,8 +585,11 @@ class _FaturacaoScreenState extends State<FaturacaoScreen> {
         );
         pdf.addPage();
         try {
-          await pdf.save();
+          final pdfData = await pdf.save();
           AppUtil.snackBar(context, "Fatura salva com sucesso!");
+
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => PdfView(pdfData: pdfData!)));
         } catch (e) {
           AppUtil.snackBar(context, "Ocorreu um erro ao salvar a fatura!");
         }
@@ -767,37 +780,79 @@ class Pagamento {
 }
 
 class PdfView extends StatefulWidget {
-  const PdfView({Key? key, required this.pdf}) : super(key: key);
-  final String pdf;
+  const PdfView({Key? key, required this.pdfData}) : super(key: key);
+  // final String? pdf = "";
+  final Uint8List pdfData;
 
   @override
   State<PdfView> createState() => _PdfViewState();
 }
 
 class _PdfViewState extends State<PdfView> {
-  bool _loading = true;
-  PDFDocument? doc;
+  // bool _loading = true;
+  // PDFDocument? doc;
+  // File? file;
 
-  @override
-  void initState() {
-    super.initState();
-    load();
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   // load();
+  //   fromAsset('assets/book.pdf', 'book.pdf').then((value) {
+  //     file = value;
+  //     _loading = false;
+  //     setState(() {});
+  //   });
+  // }
 
-  void load() async {
-    doc = await PDFDocument.fromAsset("assets/livro.pdf");
-    _loading = false;
-    setState(() {});
-  }
+  // Future<File> fromAsset(String asset, String filename) async {
+  //   // To open from assets, you can copy them to the app storage folder, and the access them "locally"
+  //   Completer<File> completer = Completer();
+
+  //   try {
+  //     var dir = await getApplicationDocumentsDirectory();
+  //     File file = File("${dir.path}/$filename");
+  //     var data = await rootBundle.load(asset);
+  //     var bytes = data.buffer.asUint8List();
+  //     await file.writeAsBytes(bytes, flush: true);
+  //     completer.complete(file);
+  //   } catch (e) {
+  //     throw Exception('Error parsing asset file!');
+  //   }
+
+  //   return completer.future;
+  // }
+
+  // void load() async {
+  //   doc = await PDFDocument.fromAsset("assets/book.pdf");
+  //   _loading = false;
+  //   setState(() {});
+  // }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _loading
-          ? const Center(
-              child: CircularProgressIndicator(),
-            )
-          : PDFViewer(document: doc!),
+      appBar: AppBar(title: const Text("Fatura")),
+      body: PDFView(
+        fitEachPage: false,
+        pdfData: widget.pdfData,
+      ),
+      bottomNavigationBar: ElevatedButton(
+        child: const Text("Compartilhar"),
+        onPressed: _onPressed,
+      ),
+      // _loading
+      //     ? const CircularProgressIndicator()
+      //     :
     );
+  }
+
+  void _onPressed() async {
+    final dir = await getTemporaryDirectory();
+    final path = io.join(dir.path, "fatura.pdf");
+    final file = await File(path).writeAsBytes(widget.pdfData);
+    // print(await file.exists());
+    await Share.shareFiles([file.path]);
+    await file.delete();
+    // print(await file.exists());
   }
 }

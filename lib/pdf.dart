@@ -1,5 +1,6 @@
 // import 'package:flutter/cupertino.dart';
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_file_dialog/flutter_file_dialog.dart';
 // import 'package:intl/intl.dart';
@@ -222,7 +223,7 @@ class PdfFatura {
                       pw.Row(
                           mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                           children: [
-                            _columnTitle("Retençao da fonte"),
+                            _columnTitle("Retençao da fonte(6,5%)"),
                             pw.Text(AppUtil.formatNumber(0))
                           ]),
                       pw.Row(
@@ -256,7 +257,7 @@ class PdfFatura {
 
   pw.TableRow _row(Widget widget) {
     final item = widget as ProdutoItem;
-    final iva = item.produto.preco * 0.14;
+    final iva = item.produto.preco * 0.1228070175438596491228070175;
     _totalIva += iva;
     return pw.TableRow(
         decoration: const pw.BoxDecoration(
@@ -293,14 +294,15 @@ class PdfFatura {
     return pw.SizedBox(height: 10);
   }
 
-  Future<String?> save() async {
+  Future<Uint8List?> save() async {
     //-${DateTime.now().toString()}
+    Uint8List data;
     final path = await FlutterFileDialog.saveFile(
         params: SaveFileDialogParams(
       fileName: "fatura-proforma-$date.pdf",
-      data: await pdf.save(),
+      data: data = await pdf.save(),
     ));
-    return path;
+    return path == null ? null : data;
     // final path = (await getExternalStorageDirectories())![1];
     // final joined = join(path.path, "fatura-proforma-$date.pdf");
     // var file = File(joined);
@@ -615,14 +617,15 @@ class PdfRecibo {
     return pw.SizedBox(height: 10);
   }
 
-  Future<String?> save() async {
+  Future<Uint8List?> save() async {
     //-${DateTime.now().toString()}
+    Uint8List data;
     final path = await FlutterFileDialog.saveFile(
         params: SaveFileDialogParams(
-      fileName: "fatura-proforma-$date.pdf",
-      data: await pdf.save(),
+      fileName: "fatura-recibo-$date.pdf",
+      data: data = await pdf.save(),
     ));
-    return path;
+    return path == null ? null : data;
   }
 
   pw.Widget _drawLogo(int i) {
